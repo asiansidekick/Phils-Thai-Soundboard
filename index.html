@@ -223,10 +223,22 @@ function applyP5(){
   });
   S.applied.push('crafty1');save();
 }
+function applyP6(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('sched1'))return;
+  const cat='Schedule & meals';
+  const rows=[`กาแฟอยู่ที่ไหน|gaa-fae yuu thii nai|Where's the coffee?`,`ขอกาแฟหนึ่งแก้ว|khor gaa-fae neung gaeo|One coffee, please`,`น้ำดื่มอยู่ที่ไหน|nam duem yuu thii nai|Where's the drinking water?`,`มื้อเช้าอยู่ที่ไหน|meu chao yuu thii nai|Where's breakfast?`,`พักกินข้าวกี่โมง|phak gin khaao gii mohng|When's lunch?`,`พักกี่นาที|phak gii naa-thii|How long is the break?`,`คอลไทม์กี่โมง|khon-thaim gii mohng|What's my call time?`,`ต้องมากี่โมง|tong maa gii mohng|What time do I need to arrive?`,`พรุ่งนี้คอลไทม์กี่โมง|phrung-nii khon-thaim gii mohng|What's tomorrow's call time?`,`วันนี้เลิกกองกี่โมง|wan-nii loek gong gii mohng|What time do we wrap today?`,`เมื่อวานเลิกกองกี่โมง|meua-waan loek gong gii mohng|What time did we wrap yesterday?`,`ถ่ายเสร็จกี่โมง|thaai set gii mohng|What time do we finish filming?`,`ตอนนี้กี่โมง|ton-nii gii mohng|What time is it now?`,`วันนี้มีกี่ฉาก|wan-nii mii gii chaak|How many scenes are there today?`,`พรุ่งนี้ถ่ายที่ไหน|phrung-nii thaai thii nai|Where are we filming tomorrow?`,`จุดนัดพบอยู่ที่ไหน|jut nat-phop yuu thii nai|Where's the meeting point?`,`ที่จอดรถอยู่ที่ไหน|thii jot rot yuu thii nai|Where's the parking?`,`ห้องแต่งตัวอยู่ที่ไหน|hong taeng tua yuu thii nai|Where's the dressing room?`,`ใครเป็นผู้ช่วยผู้กำกับ|khrai pen phuu chuay phuu gam-gap|Who's the assistant director?`,`ขอดูตารางถ่ายทำหน่อย|khor duu taa-raang thaai tham noi|Can I see the shooting schedule?`,`ต้องใส่ชุดอะไร|tong sai chut a-rai|What should I wear?`];
+  rows.forEach(r=>{
+    const[t,ro,en]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    S.items.push({id:uid(),th:t,ro,en,cat,np:0});
+  });
+  S.applied.push('sched1');save();
+}
 const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
-function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5()}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-const ORDER=["On set","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const ORDER=["On set","Schedule & meals","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const r=c=>{const k=ORDER.indexOf(c);return k<0?99:k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
 
 // Polite particle: ครับ (male) / ค่ะ statements, คะ questions (female)
@@ -333,7 +345,7 @@ $("pol").onchange=e=>{S.pol=e.target.value;save();render()};
 $("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
 $("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
 $("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
-$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();save();cat="All";render();$("setD").close()}};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6();save();cat="All";render();$("setD").close()}};
 
 load();render();loadVoices();
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
