@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d9402b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Phil's Thai Soundboard">
+<title>Phil's Thai Soundboard</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--mute:#76746c;--line:#e2dfd6;--acc:#d9402b;--accink:#fff;--danger:#d64545;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--card:#232321;--ink:#f1efe8;--mute:#9a978d;--line:#34332f;--acc:#ff6b55;--accink:#101010;--danger:#ff7a7a}}
+:root[data-theme="dark"]{--bg:#151514;--card:#232321;--ink:#f1efe8;--mute:#9a978d;--line:#34332f;--acc:#ff6b55;--accink:#101010;--danger:#ff7a7a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:6px}
+h1{font-size:18px;margin:0;flex:1}
+button{font:inherit;color:inherit;cursor:pointer}
+.ib{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 11px;min-height:38px}
+.ib.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#q{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 13px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#now{min-height:20px;margin-top:6px;color:var(--mute);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+main{padding:10px 12px 96px}
+.sec{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:14px 2px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{position:relative;min-height:96px;padding:12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:transform .08s}
+.tile:active,.tile.hit{transform:scale(.96);background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.tile:active small,.tile.hit small{color:inherit}
+.th{font-size:21px;font-weight:600;line-height:1.35}
+.tile small{color:var(--mute);font-size:13px}
+.tile .ro{font-style:italic}
+.x{position:absolute;top:-7px;right:-7px;width:26px;height:26px;border-radius:50%;background:var(--danger);color:#fff;border:2px solid var(--bg);font-size:15px;display:grid;place-items:center}
+.edit .tile{border-style:dashed}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;border:0;background:var(--acc);color:var(--accink);font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.empty,.note{color:var(--mute);text-align:center;padding:30px 10px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;text-align:left;font-size:14px}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);width:min(420px,92vw);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+label.ck{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:16px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
+input[type=checkbox]{width:auto}
+.act{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.pri{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.warn{color:var(--danger)}
+.ib.big{font-size:30px;line-height:1;min-height:50px;min-width:50px;padding:4px 12px}
+h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw{display:flex;align-items:center;gap:7px;flex:none;margin:0;color:var(--ink);font-size:14px;cursor:pointer;position:relative}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;padding:0;border:0;cursor:pointer}
+.trk{width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;transition:background .15s;flex:none}
+.trk::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s}
+.sw input:checked+.trk{background:var(--acc)}
+.sw input:checked+.trk::after{transform:translateX(18px)}
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <h1>🇹🇭 Phil's Thai Soundboard</h1>
+    <button class="ib" id="slow" aria-label="Slow speech" title="Slow speech">🐢</button>
+    <button class="ib big" id="setBtn" aria-label="Settings">⚙︎</button>
+    <button class="ib" id="editBtn">Edit</button>
+  </div>
+  <div class="row" style="margin-top:8px;gap:12px"><input id="q" type="search" placeholder="Search phrases"><label class="sw" aria-label="Polite ending"><input type="checkbox" id="polT"><span class="trk"></span><span>Polite</span></label></div>
+  <div id="now"></div>
+</header>
+<div class="chips" id="chips"></div>
+<main id="main"></main>
+<button class="fab" id="fab" aria-label="Add phrase">+</button>
+
+<dialog id="addD">
+  <h3 style="margin:0">Add a phrase</h3>
+  <label for="en">English meaning</label>
+  <input id="en" placeholder="Coffee, please">
+  <div id="trs" style="font-size:13px;color:var(--mute);min-height:18px;margin-top:6px"></div>
+  <label for="th">Thai script (spoken aloud)</label>
+  <input id="th" lang="th" placeholder="เช่น ขอกาแฟหน่อย">
+  <label for="ro">Romanization (optional)</label>
+  <input id="ro" placeholder="khor gaa-fae noi">
+  <label for="cat">Category</label>
+  <input id="cat" list="cats" placeholder="Pick or type a new one">
+  <datalist id="cats"></datalist>
+  <div class="act">
+    <button class="ib" id="addCancel">Close</button>
+    <button class="ib pri" id="addGo">Add</button>
+  </div>
+</dialog>
+
+<dialog id="setD">
+  <h3 style="margin:0">Settings</h3>
+  <label for="pol">Speaker (sets which polite ending to use; turn it on or off with the Polite switch at the top)</label>
+  <select id="pol">
+    <option value="m">ครับ khrap: male speaker</option>
+    <option value="f">ค่ะ / คะ kha: female speaker</option>
+  </select>
+  <label for="voice">Thai voice</label>
+  <select id="voice"></select>
+  <label class="ck"><input type="checkbox" id="sRo"> Show romanization</label>
+  <label class="ck"><input type="checkbox" id="sEn"> Show English</label>
+  <label>Backup (phrases only; import merges with what you have)</label>
+  <div class="row"><button class="ib" id="exp" style="flex:1">Export backup</button><button class="ib" id="imp" style="flex:1">Import backup</button></div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+  <div id="bs" style="font-size:13px;color:var(--mute);min-height:18px;margin-top:6px"></div>
+  <div class="act" style="justify-content:space-between">
+    <button class="ib warn" id="reset">Reset phrases</button>
+    <button class="ib pri" id="setClose">Done</button>
+  </div>
+</dialog>
+
+<script>
+const D={
+"Basics":["สวัสดี|sa-wat-dee|Hello","ขอบคุณ|khop khun|Thank you","ไม่เป็นไร|mai pen rai|You're welcome / no problem","ขอโทษ|khor thot|Sorry / excuse me","ใช่|chai|Yes (that's right)","ไม่|mai|No","ได้|dai|OK / can do","ไม่ได้|mai dai|Can't / not allowed","ลาก่อน|laa gon|Goodbye","เข้าใจแล้ว|khao jai laeo|I understand","ไม่เข้าใจ|mai khao jai|I don't understand","พูดช้าๆ ได้ไหม|phuut chaa-chaa dai mai|Can you speak slowly?","พูดอีกครั้งได้ไหม|phuut eek khrang dai mai|Can you say it again?","พูดภาษาไทยได้นิดหน่อย|phuut phaa-saa thai dai nit noi|I speak a little Thai","พูดภาษาอังกฤษได้ไหม|phuut phaa-saa ang-grit dai mai|Do you speak English?"],
+"Eating":["ขอเมนูหน่อย|khor may-nuu noi|Menu, please","ขอน้ำเปล่า|khor nam plao|Water, please","ขอเช็คบิลหน่อย|khor chek bin noi|Check, please","อร่อยมาก|a-roi maak|Delicious","ไม่เผ็ด|mai phet|Not spicy","เผ็ดนิดหน่อย|phet nit noi|A little spicy","ไม่ใส่ผักชี|mai sai phak chee|No coriander","กินมังสวิรัติ|gin mang-sa-wi-rat|I'm vegetarian","แพ้ถั่วลิสง|phae thua li-song|I'm allergic to peanuts","ขออีกหนึ่ง|khor eek neung|One more, please","ห่อกลับบ้าน|hor glap baan|Takeaway, please"],
+"Getting around":["ห้องน้ำอยู่ที่ไหน|hong nam yuu thi nai|Where's the toilet?","ไปสนามบิน|pai sa-naam bin|To the airport","ไปโรงแรม|pai rong raem|To the hotel","เปิดมิเตอร์ได้ไหม|poet mi-tter dai mai|Can you use the meter?","จอดที่นี่|jort thi nii|Stop here","เลี้ยวซ้าย|liao saai|Turn left","เลี้ยวขวา|liao khwaa|Turn right","ตรงไป|trong pai|Straight ahead","ไกลไหม|glai mai|Is it far?","สถานีรถไฟฟ้าอยู่ที่ไหน|sa-thaa-nii rot fai faa yuu thi nai|Where's the skytrain station?"],
+"Shopping":["ราคาเท่าไหร่|raa-khaa thao rai|How much?","แพงไป|phaeng pai|Too expensive","ลดได้ไหม|lot dai mai|Can you discount it?","ขอดูอันนี้หน่อย|khor duu an nii noi|Can I see this one?","เอาอันนี้|ao an nii|I'll take this","จ่ายด้วยบัตรได้ไหม|jaai duay bat dai mai|Can I pay by card?","มีไซส์ใหญ่กว่านี้ไหม|mii sai yai gwaa nii mai|Do you have a bigger size?"],
+"Numbers":["หนึ่ง|neung|1","สอง|song|2","สาม|saam|3","สี่|sii|4","ห้า|haa|5","หก|hok|6","เจ็ด|jet|7","แปด|paet|8","เก้า|gao|9","สิบ|sip|10","ร้อย|roi|100","พัน|phan|1,000"],
+"Social":["สบายดีไหม|sa-baai dii mai|How are you?","สบายดี|sa-baai dii|I'm fine","ยินดีที่ได้รู้จัก|yin dii thii dai ruu jak|Nice to meet you","คุณชื่ออะไร|khun cheu a-rai|What's your name?","สนุกมาก|sa-nuk maak|Really fun","สวยมาก|suay maak|Beautiful","เจอกันใหม่|jer gan mai|See you again"],
+"Emergency":["ช่วยด้วย|chuay duay|Help!","เรียกตำรวจ|riak tam-ruat|Call the police","เรียกรถพยาบาล|riak rot pha-yaa-baan|Call an ambulance","โรงพยาบาลอยู่ที่ไหน|rong pha-yaa-baan yuu thi nai|Where's the hospital?","ไม่สบาย|mai sa-baai|I feel unwell","หลงทาง|long thaang|I'm lost"],
+"Film production":["แอคชั่น|aek-chan|Action!|-","คัท|khat|Cut!|-","ผ่าน|phaan|Good, approved","อีกเทค|eek thek|One more take","เงียบ|ngiap|Quiet, please|-","พร้อม|phrom|Ready|-","ทุกคนเข้าตำแหน่ง|thuk khon khao tam-naeng|Everyone to your positions|-","ฉากต่อไป|chaak tor pai|Next scene|-","พักก่อน|phak gon|Take a break","เลิกกอง|loek gong|That's a wrap|-","กองถ่าย|gong thaai|Film set|-","ถ่ายทำ|thaai tham|Filming / shooting|-","ตารางถ่ายทำ|taa-raang thaai tham|Shooting schedule|-","บท|bot|Script|-","ผู้กำกับ|phuu gam-gap|Director|-","ผู้กำกับภาพ|phuu gam-gap phaap|Cinematographer (DP)|-","ผู้ช่วยผู้กำกับ|phuu chuay phuu gam-gap|Assistant director|-","ผู้อำนวยการสร้าง|phuu am-nuay-gaan sang|Producer|-","นักแสดง|nak sa-daeng|Actor|-","ทีมงาน|thiim ngaan|Crew|-","กล้อง|klong|Camera|-","ย้ายกล้อง|yaai klong|Move the camera|-","ไฟ|fai|Light|-","ไฟสว่างไป|fai sa-waang pai|The light is too bright","ไมค์|mai|Microphone|-","เสียงดังไป|siang dang pai|Too loud","ขอดูมอนิเตอร์หน่อย|khor duu mon-ni-toe noi|Can I see the monitor?","เครื่องแต่งกาย|khrueang taeng gaai|Costume|-","แต่งหน้า|taeng naa|Makeup|-","อุปกรณ์ประกอบฉาก|up-pa-gon pra-gop chaak|Props|-","ตัดต่อ|tat tor|Editing|-"],
+"On set":["เซ็ตต่อไป|set tor pai|Next set-up|-","ไปต่อ|pai tor|Moving on|-","เริ่มถ่าย|roem thaai|Start shooting|-","ฉากที่หนึ่ง เทคสอง|chaak thii neung thek song|Scene one, take two|-","ซ้อมก่อน|sorm gon|Rehearse first|-","ถ่ายซ้ำ|thaai sam|Reshoot / retake|-","ตั้งกล้อง|tang klong|Set up the camera|-","ตั้งไฟ|tang fai|Set up the lights|-","มุมกล้อง|mum klong|Camera angle|-","ภาพมุมกว้าง|phaap mum gwaang|Wide shot|-","แพนกล้อง|phaen klong|Pan the camera|-","ซูมเข้า|suum khao|Zoom in|-","ซูมออก|suum ok|Zoom out|-","โฟกัส|foh-gat|Focus|-","ภาพเบลอ|phaap bler|Out of focus|-","ไมค์บูม|mai buum|Boom mic|-","เช็คเสียงหน่อย|chek siang noi|Sound check, please","ปิดเสียงโทรศัพท์|pit siang thoo-ra-sap|Silence your phones|-","ห้ามเข้า|haam khao|Do not enter|-","ยืนตรงนี้|yuen trong nii|Stand here|-","มองกล้อง|mong klong|Look at the camera|-","อย่ามองกล้อง|yaa mong klong|Don't look at the camera|-","พูดเสียงดังขึ้น|phuut siang dang khuen|Speak louder|-","ช้ากว่านี้|chaa gwaa nii|Slower|-","เร็วกว่านี้|reo gwaa nii|Faster|-","ทำอีกครั้ง|tham eek khrang|Do it again|-","ดีมาก|dii maak|Very good","พักกินข้าว|phak gin khaao|Lunch break","เวลาเรียกตัว|we-laa riak tua|Call time|-","ขอเวลาเตรียมฉากหน่อย|khor we-laa triam chaak noi|I need a moment to set up the scene","ขออนุญาตถ่ายทำที่นี่ได้ไหม|khor a-nu-yaat thaai tham thii nii dai mai|May we film here?","ต้องขอใบอนุญาตถ่ายทำไหม|tong khor bai a-nu-yaat thaai tham mai|Do we need a filming permit?","ขอบคุณทุกคน|khop khun thuk khon|Thanks, everyone"]
+};
+const KEY="thaisb.v2",Q=/(ไหม|ไหน|อะไร|เท่าไหร่|เหรอ|หรือเปล่า)$/;
+let S={items:[],pol:"m",polite:true,slow:false,voice:"",ro:true,en:true},cat="All",edit=false,qs="";
+const $=id=>document.getElementById(id);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function defaults(){const a=[];for(const c in D)D[c].forEach(r=>{const[t,ro,en,f]=r.split("|");a.push({id:uid(),th:t,ro,en,cat:c,np:f==="-"?1:0})});return a}
+const PATCHES={onset2:{cat:"On set",items:["เซ็ตต่อไป|set tor pai|Next set-up|-","ไปต่อ|pai tor|Moving on|-"]}};
+function applyPatches(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  let ch=false;
+  for(const k in PATCHES){
+    if(S.applied.includes(k))continue;
+    const P=PATCHES[k],at=S.items.findIndex(i=>i.cat===P.cat);
+    P.items.forEach((r,n)=>{
+      const[t,ro,en,f]=r.split("|");
+      if(S.items.some(i=>i.th===t&&i.cat===P.cat))return;
+      const it={id:uid(),th:t,ro,en,cat:P.cat,np:f==="-"?1:0};
+      if(at<0)S.items.push(it);else S.items.splice(at+n,0,it);
+    });
+    S.applied.push(k);ch=true;
+  }
+  if(ch)save();
+}
+const P2={key:'crew2',rm:['aek-chan','khat','phaan','eek thek','thuk khon khao tam-naeng','chaak tor pai','sorm gon','thaai sam','yuen trong nii','mong klong','yaa mong klong','phuut siang dang khuen','chaa gwaa nii','reo gwaa nii','tham eek khrang','dii maak','roem thaai'],add:[
+['Film production',[`ฝ่ายกล้อง|faai klong|Camera department|-`,`ฝ่ายไฟ|faai fai|Lighting department|-`,`ฝ่ายเสียง|faai siang|Sound department|-`,`ฝ่ายกริป|faai grip|Grip department|-`,`ฝ่ายศิลป์|faai sin|Art department|-`,`ฝ่ายเครื่องแต่งกาย|faai khrueang taeng gaai|Costume department|-`,`ฝ่ายแต่งหน้า|faai taeng naa|Makeup department|-`,`ฝ่ายสร้างฉาก|faai sang chaak|Set construction|-`,`ฝ่ายโปรดักชัน|faai pro-dak-chan|Production department|-`,`ฝ่ายตัดต่อ|faai tat tor|Editing department|-`,`ตากล้อง|taa klong|Camera operator|-`,`ผู้ช่วยตากล้อง|phuu chuay taa klong|Camera assistant|-`,`หัวหน้าช่างไฟ|hua-naa chaang fai|Gaffer (head electrician)|-`,`ช่างไฟ|chaang fai|Electrician|-`,`กริป|grip|Grip|-`,`ช่างบันทึกเสียง|chaang ban-thuek siang|Sound recordist|-`,`คนถือไมค์บูม|khon thue mai buum|Boom operator|-`,`ผู้ออกแบบงานสร้าง|phuu ok-baep ngaan sang|Production designer|-`,`ผู้กำกับศิลป์|phuu gam-gap sin|Art director|-`,`ผู้ออกแบบเครื่องแต่งกาย|phuu ok-baep khrueang taeng gaai|Costume designer|-`,`ช่างแต่งหน้า|chaang taeng naa|Makeup artist|-`,`ผู้ดูแลความต่อเนื่อง|phuu duu-lae khwaam tor-nuang|Script supervisor (continuity)|-`,`ผู้จัดการกองถ่าย|phuu jat-gaan gong thaai|Production manager|-`,`ผู้ประสานงาน|phuu pra-saan ngaan|Production coordinator|-`,`พีเอ|phii-ee|Production assistant (PA)|-`,`ผู้ตัดต่อ|phuu tat tor|Editor|-`,`ช่างภาพนิ่ง|chaang phaap ning|Still photographer|-`,`คุณอยู่ฝ่ายไหน|khun yuu faai nai|Which department are you in?`,`อยู่ฝ่ายกล้อง|yuu faai klong|I'm in the camera department`,`ใครเป็นหัวหน้าฝ่ายนี้|khrai pen hua-naa faai nii|Who's the head of this department?`,`ขอคุยกับผู้ช่วยผู้กำกับหน่อย|khor khui gap phuu chuay phuu gam-gap noi|Can I talk to the assistant director?`]],
+['Technical',[`เลนส์|len|Lens|-`,`ขาตั้งกล้อง|khaa tang klong|Tripod|-`,`ดอลลี่|don-lii|Dolly|-`,`เครน|khreen|Crane|-`,`สเตดิแคม|sa-te-dii-khaem|Steadicam|-`,`ขาตั้งไฟ|khaa tang fai|Light stand|-`,`ไฟแอลอีดี|fai ael-ii-dii|LED light|-`,`ฟิลเตอร์|fin-ter|Filter|-`,`เครื่องปั่นไฟ|khrueang pan fai|Generator|-`,`สายไฟ|saai fai|Power cable|-`,`ปลั๊กพ่วง|plak phuang|Extension cord|-`,`แบตเตอรี่|baet-toe-rii|Battery|-`,`การ์ดความจำ|gaat khwaam jam|Memory card|-`,`หูฟัง|huu fang|Headphones|-`,`วอล์กกี้ทอล์กกี้|wok-gii thok-gii|Walkie-talkie|-`,`ไมค์ไร้สาย|mai rai-saai|Wireless mic|-`,`ไมค์ปกเสื้อ|mai pok-seua|Lavalier mic|-`,`รูรับแสง|ruu rap saeng|Aperture|-`,`ความไวแสง|khwaam wai saeng|ISO|-`,`ความเร็วชัตเตอร์|khwaam reo chat-toe|Shutter speed|-`,`เฟรมเรต|frem-ret|Frame rate|-`,`ไวต์บาลานซ์|wai-baa-laan|White balance|-`,`ความชัดลึก|khwaam chat leuk|Depth of field|-`,`ระดับเสียง|ra-dap siang|Audio level|-`,`ใช้เลนส์อะไร|chai len a-rai|Which lens are you using?`,`ตั้งเฟรมเรตเท่าไหร่|tang frem-ret thao rai|What's the frame rate set to?`,`แบตหมด|baet mot|The battery's dead`,`ขอแบตเพิ่ม|khor baet phoem|I need more batteries`,`มีเสียงรบกวน|mii siang rop-guan|There's background noise`,`มีเสียงสะท้อน|mii siang sa-thon|There's an echo`,`สัญญาณขาด|san-yaan khaat|The signal dropped`,`ไฟดับ|fai dap|The power's out`]]
+]};
+function applyPatches2(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P2.key))return;
+  S.items=S.items.filter(i=>i.t||!P2.rm.includes(i.ro));
+  P2.add.forEach(([cat,rows])=>rows.forEach(r=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }));
+  S.applied.push(P2.key);save();
+}
+const P3={key:'sfx1',add:[['SFX',[`เพิ่มควันหน่อย|phoem khwan noi|More smoke, please`,`ลดควันหน่อย|lot khwan noi|Less smoke, please`,`ซ่อนตัว|son tua|Hide|-`,`เคลียร์เฟรม|khliia frem|Clear the frame|-`,`ตรงนั้นปลอดภัย|trong nan plot-phai|It's safe there`,`ออกจากเฟรม|ok jaak frem|Get out of shot|-`,`ควันหนาไป|khwan naa pai|Too much smoke`,`ควันบางไป|khwan baang pai|Not enough smoke`,`ปลอดภัยแล้ว|plot-phai laeo|All clear, it's safe now`,`ถอยหลัง|thoi lang|Stand back|-`,`ทุกคนถอยหลัง|thuk khon thoi lang|Everyone stand back|-`,`ระวัง|ra-wang|Careful!|-`,`ระวังร้อน|ra-wang ron|Careful, hot|-`,`ระวังลื่น|ra-wang luen|Careful, slippery|-`,`อันตราย|an-ta-raai|Danger|-`,`หยุดเดี๋ยวนี้|yut diao nii|Stop right now|-`,`รอก่อน|ror gon|Wait|-`,`เตรียมพร้อม|triam phrom|Standing by|-`,`เปิดเครื่อง|poet khrueang|Turn it on|-`,`ปิดเครื่อง|pit khrueang|Turn it off|-`,`เปิดพัดลมไล่ควัน|poet phat lom lai khwan|Turn on the fan to clear the smoke|-`,`ควัน|khwan|Smoke|-`,`หมอก|mok|Fog / haze|-`,`เครื่องควัน|khrueang khwan|Smoke machine|-`,`เครื่องทำหมอก|khrueang tham mok|Fog machine|-`,`ฝนเทียม|fon thiam|Rain effect|-`,`น้ำยาควัน|nam-yaa khwan|Smoke fluid|-`,`ขอเวลาเติมน้ำยาหน่อย|khor we-laa term nam-yaa noi|I need a moment to refill the fluid`,`ถังดับเพลิง|thang dap phloeng|Fire extinguisher|-`,`เจ้าหน้าที่ความปลอดภัย|chao-naa-thii khwaam plot-phai|Safety officer|-`,`ฝ่ายเอฟเฟกต์พิเศษ|faai e-fek phi-set|Special effects department|-`,`ช่างเอฟเฟกต์พิเศษ|chaang e-fek phi-set|SFX technician|-`]]]};
+function applyP3(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P3.key))return;
+  P3.add.forEach(([cat,rows])=>rows.forEach(r=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }));
+  S.applied.push(P3.key);save();
+}
+function applyP4(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('sfx2'))return;
+  const t='ขอบเฟรม';
+  if(!S.items.some(i=>i.th===t&&i.cat==='SFX')){
+    const it={id:uid(),th:t,ro:'khop frem',en:'Edge of frame',cat:'SFX',np:1};
+    let at=S.items.findIndex(i=>i.cat==='SFX'&&i.ro==='ok jaak frem');
+    if(at<0)S.items.forEach((x,n)=>{if(x.cat==='SFX')at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }
+  S.applied.push('sfx2');save();
+}
+const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const ORDER=["On set","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const r=c=>{const k=ORDER.indexOf(c);return k<0?99:k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
+
+// Polite particle: ครับ (male) / ค่ะ statements, คะ questions (female)
+function full(i){
+  let th=i.th,ro=i.ro||"";
+  if(S.polite&&S.pol&&i.cat!=="Numbers"&&!i.np){
+    const q=Q.test(i.th);
+    th+=S.pol==="m"?"ครับ":(q?"คะ":"ค่ะ");
+    if(ro)ro+=S.pol==="m"?" khrap":" kha";
+  }
+  return{th,ro,en:i.en||""};
+}
+
+let thV=[],voicesLoaded=false;
+function loadVoices(){
+  if(!("speechSynthesis" in window))return;
+  const all=speechSynthesis.getVoices();
+  if(all.length)voicesLoaded=true;
+  thV=all.filter(v=>/^th/i.test(v.lang));
+  $("voice").innerHTML=thV.map(v=>`<option value="${esc(v.voiceURI)}">${esc(v.name)}</option>`).join("")||"<option value=''>None found</option>";
+  if(S.voice)$("voice").value=S.voice;
+  render();
+}
+function speak(i){
+  const f=full(i);
+  $("now").textContent="🔊 "+f.th+(f.ro?"  ·  "+f.ro:"")+(f.en?"  ·  "+f.en:"");
+  if(!("speechSynthesis" in window)){$("now").textContent="Speech isn't supported in this browser.";return}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(f.th);
+  u.lang="th-TH";u.rate=S.slow?.55:.9;
+  const v=thV.find(v=>v.voiceURI===S.voice)||thV[0];
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+
+function render(){
+  const cs=cats();
+  const hasR=S.items.some(i=>i.t);
+  if(cat!=="All"&&cat!=="__r"&&!cs.includes(cat))cat="All";
+  if(cat==="__r"&&!hasR)cat="All";
+  $("chips").innerHTML=["All",...(hasR?["__r"]:[]),...cs].map(c=>`<button class="chip${c===cat?" on":""}" data-c="${esc(c)}">${c==="__r"?"🕑 Recently added":esc(c)}</button>`).join("");
+  $("cats").innerHTML=cs.map(c=>`<option value="${esc(c)}">`).join("");
+  $("slow").classList.toggle("on",S.slow);
+  const ql=qs.toLowerCase();
+  const hit=i=>!ql||(i.th+" "+(i.ro||"")+" "+(i.en||"")).toLowerCase().includes(ql);
+  let h="";
+  if(voicesLoaded&&!thV.length)h+=`<div class="note">No Thai voice found on this device, so phrases may sound wrong. Add a Thai voice in your device's text-to-speech or accessibility settings.</div>`;
+  (cat==="All"?cs:[cat]).forEach(c=>{
+    const list=c==="__r"?S.items.filter(i=>i.t&&hit(i)).sort((a,b)=>b.t-a.t).slice(0,20):S.items.filter(i=>i.cat===c&&hit(i));
+    if(!list.length)return;
+    if(cat==="All")h+=`<div class="sec">${esc(c)}</div>`;
+    h+=`<div class="grid">`+list.map(i=>{const f=full(i);return `<button class="tile" data-id="${i.id}"><span class="th" lang="th">${esc(f.th)}</span>${S.ro&&f.ro?`<small class="ro">${esc(f.ro)}</small>`:""}${S.en&&f.en?`<small>${esc(f.en)}</small>`:""}${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`}).join("")+`</div>`;
+  });
+  $("main").className=edit?"edit":"";
+  $("main").innerHTML=h+(/class="grid"/.test(h)?"":`<div class="empty">Nothing here. Tap + to add a phrase.</div>`);
+  $("editBtn").classList.toggle("on",edit);
+  $("editBtn").textContent=edit?"Done":"Edit";
+}
+
+$("chips").onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;render();window.scrollTo(0,0)}};
+$("q").oninput=e=>{qs=e.target.value.trim();render()};
+$("main").onclick=e=>{
+  const d=e.target.closest("[data-del]");
+  if(d){e.stopPropagation();S.items=S.items.filter(i=>i.id!==d.dataset.del);save();render();return}
+  const t=e.target.closest(".tile");
+  if(!t||edit)return;
+  const it=S.items.find(i=>i.id===t.dataset.id);
+  if(it){t.classList.add("hit");setTimeout(()=>t.classList.remove("hit"),180);speak(it)}
+};
+$("slow").onclick=()=>{S.slow=!S.slow;save();render()};
+$("editBtn").onclick=()=>{edit=!edit;render()};
+$("fab").onclick=()=>{["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("cat").value=(cat==="All"||cat==="__r")?"":cat;$("addD").showModal();$("en").focus()};
+$("addCancel").onclick=()=>$("addD").close();
+let SM=null;
+async function translate(){
+  const en=$("en").value.trim();
+  if(!en||!SM)return false;
+  $("trs").textContent="Translating…";
+  try{
+    const r=await SM.json(`Translate this English phrase into natural, polite Thai for a traveler. Do not add a politeness particle (ครับ/ค่ะ) at the end; the app adds it. Reply with ONLY JSON: {"th":"Thai script","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
+    if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(!$("cat").value.trim()&&r.cat)$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Add.";return true}
+  }catch(e){}
+  $("trs").textContent="Couldn't translate. You can type the Thai yourself.";
+  return false;
+}
+async function add(){
+  if(!$("th").value.trim()&&$("en").value.trim()&&SM){await translate();return}
+  const th=$("th").value.trim();
+  if(!th){$("en").focus();return}
+  const c=$("cat").value.trim()||"Custom";
+  S.items.push({id:uid(),th,ro:$("ro").value.trim(),en:$("en").value.trim(),cat:c,t:Date.now()});
+  save();cat=c;qs="";$("q").value="";render();
+  $("now").textContent="Added: "+th;
+  ["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("en").focus();
+}
+$("addGo").onclick=add;
+$("addD").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();add()}};
+$("setBtn").onclick=()=>{$("pol").value=S.pol;$("sRo").checked=S.ro;$("sEn").checked=S.en;$("setD").showModal()};
+$("setClose").onclick=()=>$("setD").close();
+$("pol").onchange=e=>{S.pol=e.target.value;save();render()};
+$("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
+$("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
+$("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();save();cat="All";render();$("setD").close()}};
+
+load();render();loadVoices();
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
+$("polT").checked=S.polite;
+$("polT").onchange=e=>{S.polite=e.target.checked;save();render()};
+$("exp").onclick=()=>{
+  try{
+    const blob=new Blob([JSON.stringify({app:"thai-soundboard",v:2,items:S.items},null,1)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);a.download="thai-soundboard-backup.json";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    $("bs").textContent="Backup downloaded.";
+  }catch(e){$("bs").textContent="Couldn't export a backup."}
+};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";
+  if(!f)return;
+  try{
+    const d=JSON.parse(await f.text());
+    if(!d||!Array.isArray(d.items))throw 0;
+    const have=new Set(S.items.map(i=>i.cat+"|"+i.th));
+    let n=0;
+    d.items.forEach(i=>{
+      if(!i||typeof i.th!=="string"||!i.th)return;
+      const c=i.cat||"Custom";
+      if(have.has(c+"|"+i.th))return;
+      S.items.push({id:uid(),th:i.th,ro:i.ro||"",en:i.en||"",cat:c,t:i.t,np:i.np});n++;
+    });
+    save();render();
+    $("bs").textContent=n+" new phrase"+(n===1?"":"s")+" imported.";
+  }catch(x){$("bs").textContent="That file isn't a valid backup."}
+};
+</script>
+</body>
+</html>
