@@ -76,6 +76,10 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
 .tile:active .th,.tile.hit .th,.tile:active small,.tile.hit small{color:#101010!important}
 #now{color:#ffd23f;font-size:15px;font-weight:600}
 .fab{background:#ffd23f;color:#101010}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:50;max-width:90vw;padding:12px 18px;border-radius:14px;font-weight:700;font-size:17px;background:#7bd88f;color:#101010;box-shadow:0 6px 20px rgba(0,0,0,.5);transition:opacity .2s,transform .2s;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.bad{background:#ff6b6b}
+#trs{font-size:15px}
 </style>
 </head>
 <body>
@@ -92,6 +96,7 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
 <div class="chips" id="chips"></div>
 <main id="main"></main>
 <button class="fab" id="fab" aria-label="Add phrase">+</button>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <dialog id="addD">
   <h3 style="margin:0">Add a phrase</h3>
@@ -103,11 +108,12 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
   <label for="ro">Romanization (optional)</label>
   <input id="ro" placeholder="khor gaa-fae noi">
   <label for="cat">Category</label>
-  <input id="cat" list="cats" placeholder="Pick or type a new one">
+  <select id="cat"></select>
+  <input id="catNew" placeholder="New category name" style="display:none;margin-top:8px">
   <datalist id="cats"></datalist>
   <div class="act">
     <button class="ib" id="addCancel">Close</button>
-    <button class="ib pri" id="addGo">Add</button>
+    <button class="ib pri" id="addGo">Save</button>
   </div>
 </dialog>
 
@@ -237,7 +243,12 @@ function applyP6(){
 }
 const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return localStorage.getItem(KEY)!==null}catch(e){return false}}
+function testStore(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
+const STORE_OK=testStore();
+let toastT;
+function toast(msg,bad){const t=$("toast");t.textContent=msg;t.className="show"+(bad?" bad":"");clearTimeout(toastT);toastT=setTimeout(()=>{t.className=""},2600)}
+function say(msg,ok){const t=$("trs");t.textContent=msg;t.style.color=ok?"#7bd88f":"#ff6b6b";t.style.fontWeight="700"}
 const ORDER=["On set","Schedule & meals","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const r=c=>{const k=ORDER.indexOf(c);return k<0?99:k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
 
@@ -288,6 +299,7 @@ function render(){
   const ql=qs.toLowerCase();
   const hit=i=>!ql||(i.th+" "+(i.ro||"")+" "+(i.en||"")).toLowerCase().includes(ql);
   let h="";
+  if(!STORE_OK)h+=`<div class="note" style="border-color:#ff6b6b;color:#fff">⚠ This browser is blocking storage (private browsing?), so your added phrases will be lost when you close the page.</div>`;
   if(voicesLoaded&&!thV.length)h+=`<div class="note">No Thai voice found on this device, so phrases may sound wrong. Add a Thai voice in your device's text-to-speech or accessibility settings.</div>`;
   (cat==="All"?cs:[cat]).forEach(c=>{
     const list=c==="__r"?S.items.filter(i=>i.t&&hit(i)).sort((a,b)=>b.t-a.t).slice(0,20):S.items.filter(i=>i.cat===c&&hit(i));
@@ -305,7 +317,7 @@ $("chips").onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;r
 $("q").oninput=e=>{qs=e.target.value.trim();render()};
 $("main").onclick=e=>{
   const d=e.target.closest("[data-del]");
-  if(d){e.stopPropagation();S.items=S.items.filter(i=>i.id!==d.dataset.del);save();render();return}
+  if(d){e.stopPropagation();S.items=S.items.filter(i=>i.id!==d.dataset.del);const ok=save();render();toast(ok?"Deleted":"⚠ Deleted, but not saved",!ok);return}
   const t=e.target.closest(".tile");
   if(!t||edit)return;
   const it=S.items.find(i=>i.id===t.dataset.id);
@@ -313,7 +325,7 @@ $("main").onclick=e=>{
 };
 $("slow").onclick=()=>{S.slow=!S.slow;save();render()};
 $("editBtn").onclick=()=>{edit=!edit;render()};
-$("fab").onclick=()=>{["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("cat").value=(cat==="All"||cat==="__r")?"":cat;$("addD").showModal();$("en").focus()};
+$("fab").onclick=()=>{["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("catNew").value="";fillCat();$("addD").showModal();$("en").focus()};
 $("addCancel").onclick=()=>$("addD").close();
 let SM=null;
 async function translate(){
@@ -322,23 +334,36 @@ async function translate(){
   $("trs").textContent="Translating…";
   try{
     const r=await SM.json(`Translate this English phrase into natural, polite Thai for a traveler. Do not add a politeness particle (ครับ/ค่ะ) at the end; the app adds it. Reply with ONLY JSON: {"th":"Thai script","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
-    if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(!$("cat").value.trim()&&r.cat)$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Add.";return true}
+    if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(r.cat&&cats().includes(r.cat))$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Save.";return true}
   }catch(e){}
   $("trs").textContent="Couldn't translate. You can type the Thai yourself.";
   return false;
 }
+function fillCat(sel){
+  const cs=cats();
+  const pick=sel||((cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:(cs[0]||"__new"));
+  $("cat").innerHTML=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")+`<option value="__new">＋ New category…</option>`;
+  $("cat").value=pick;
+  $("catNew").style.display=$("cat").value==="__new"?"":"none";
+}
+$("cat").onchange=()=>{const n=$("cat").value==="__new";$("catNew").style.display=n?"":"none";if(n)$("catNew").focus()};
 async function add(){
   if(!$("th").value.trim()&&$("en").value.trim()&&SM){await translate();return}
   const th=$("th").value.trim();
-  if(!th){$("en").focus();return}
-  const c=$("cat").value.trim()||"Custom";
+  if(!th){$("trs").textContent="Type the Thai script first so it can be spoken.";$("th").focus();return}
+  let c=$("cat").value;
+  if(c==="__new"){c=$("catNew").value.trim();if(!c){$("trs").textContent="Type a name for the new category.";$("catNew").focus();return}}
   S.items.push({id:uid(),th,ro:$("ro").value.trim(),en:$("en").value.trim(),cat:c,t:Date.now()});
-  save();cat=c;qs="";$("q").value="";render();
+  const ok=save();cat=c;qs="";$("q").value="";render();
   $("now").textContent="Added: "+th;
-  ["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("en").focus();
+  ["th","ro","en","catNew"].forEach(k=>$(k).value="");
+  fillCat(c);
+  if(ok){say("✓ Saved to "+c+". Add another, or tap Close.",true);toast("✓ Saved: "+th)}
+  else{say("⚠ Added, but this browser can't keep it after you close the page (private browsing?).",false);toast("⚠ Not saved permanently",true)}
+  $("en").focus();
 }
 $("addGo").onclick=add;
-$("addD").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();add()}};
+$("addD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName!=="BUTTON"&&e.target.tagName!=="SELECT"){e.preventDefault();add()}};
 $("setBtn").onclick=()=>{$("pol").value=S.pol;$("sRo").checked=S.ro;$("sEn").checked=S.en;$("setD").showModal()};
 $("setClose").onclick=()=>$("setD").close();
 $("pol").onchange=e=>{S.pol=e.target.value;save();render()};
