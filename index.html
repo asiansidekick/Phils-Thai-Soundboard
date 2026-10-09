@@ -80,6 +80,7 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
 #toast.show{opacity:1;transform:translateX(-50%)}
 #toast.bad{background:#ff6b6b}
 #trs{font-size:15px}
+dialog{max-height:88vh;overflow:auto}
 </style>
 </head>
 <body>
@@ -99,7 +100,7 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
 <div id="toast" role="status" aria-live="polite"></div>
 
 <dialog id="addD">
-  <h3 style="margin:0">Add a phrase</h3>
+  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0">Add a phrase</h3><div class="row"><button class="ib" id="addCancel">Close</button><button class="ib pri" id="addGo">Save</button></div></div>
   <label for="en">English meaning</label>
   <input id="en" placeholder="Coffee, please">
   <div id="trs" style="font-size:13px;color:var(--mute);min-height:18px;margin-top:6px"></div>
@@ -111,10 +112,6 @@ h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-backgro
   <select id="cat"></select>
   <input id="catNew" placeholder="New category name" style="display:none;margin-top:8px">
   <datalist id="cats"></datalist>
-  <div class="act">
-    <button class="ib" id="addCancel">Close</button>
-    <button class="ib pri" id="addGo">Save</button>
-  </div>
 </dialog>
 
 <dialog id="setD">
