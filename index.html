@@ -3,15 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#d9402b">
+<meta name="theme-color" content="#07070f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Phil's Thai Soundboard">
 <title>Phil's Thai Soundboard</title>
 <style>
-:root{--bg:#f6f5f1;--card:#fff;--ink:#1d1d1b;--mute:#76746c;--line:#e2dfd6;--acc:#d9402b;--accink:#fff;--danger:#d64545;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--card:#232321;--ink:#f1efe8;--mute:#9a978d;--line:#34332f;--acc:#ff6b55;--accink:#101010;--danger:#ff7a7a}}
-:root[data-theme="dark"]{--bg:#151514;--card:#232321;--ink:#f1efe8;--mute:#9a978d;--line:#34332f;--acc:#ff6b55;--accink:#101010;--danger:#ff7a7a}
+:root{--bg:#07070f;--card:#16162a;--ink:#ffffff;--mute:#d4d4ee;--line:#3b3b66;--acc:#ffd23f;--accink:#101010;--danger:#ff6b6b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line)}
@@ -57,12 +55,33 @@ h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .trk::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s}
 .sw input:checked+.trk{background:var(--acc)}
 .sw input:checked+.trk::after{transform:translateX(18px)}
+
+/* night / high-contrast theme */
+body{font-size:17px}
+header{background:linear-gradient(180deg,#14143a,#07070f);border-bottom:2px solid #ffd23f}
+h1{white-space:normal;overflow:visible;text-overflow:clip;font-size:21px;line-height:1.15;font-weight:800}
+h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.ib{border:2px solid #5a5a99;background:#1f1f3d;color:#fff;font-weight:600}
+.ib.on{background:#ffd23f;color:#101010;border-color:#ffd23f}
+.chip{border:2px solid var(--c,#8a8ab5);background:transparent;color:#fff;font-weight:700;padding:7px 14px}
+.chip.on{background:var(--c,#fff);color:#101010;border-color:var(--c,#fff)}
+.sec{color:var(--c,#fff);font-size:14px;font-weight:800;letter-spacing:.1em;border-bottom:2px solid var(--c,#fff);padding-bottom:4px}
+.grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
+.tile{border:2px solid var(--c,#8a8ab5);background:var(--card);min-height:106px;gap:4px}
+.tile:active,.tile.hit{background:var(--c,#ffd23f);color:#101010;border-color:var(--c,#ffd23f)}
+.th{font-size:24px;font-weight:800;color:#fff}
+.tile small{font-size:16px;color:var(--mute)}
+.tile .ro{font-size:15px;font-weight:600;color:var(--c,#ffd23f)}
+.tile .en{font-size:19px;font-weight:700;color:#fff;line-height:1.2;font-style:normal}
+.tile:active .th,.tile.hit .th,.tile:active small,.tile.hit small{color:#101010!important}
+#now{color:#ffd23f;font-size:15px;font-weight:600}
+.fab{background:#ffd23f;color:#101010}
 </style>
 </head>
 <body>
 <header>
   <div class="row">
-    <h1>🇹🇭 Phil's Thai Soundboard</h1>
+    <h1><span class="fl">🇹🇭</span> <span class="tt">Phil's Thai Soundboard</span></h1>
     <button class="ib" id="slow" aria-label="Slow speech" title="Slow speech">🐢</button>
     <button class="ib big" id="setBtn" aria-label="Settings">⚙︎</button>
     <button class="ib" id="editBtn">Edit</button>
@@ -190,8 +209,22 @@ function applyP4(){
   }
   S.applied.push('sfx2');save();
 }
+function applyP5(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('crafty1'))return;
+  const rows=[`คราฟต์เซอร์วิสอยู่ที่ไหน|khraap-soe-wit yuu thii nai|Where's craft services (crafty)?`,`โต๊ะอาหารว่างอยู่ที่ไหน|to aa-haan waang yuu thii nai|Where's the snack table?`];
+  let at=S.items.findIndex(i=>i.cat==='On set'&&i.ro==='phak gin khaao');
+  if(at<0)S.items.forEach((x,n)=>{if(x.cat==='On set')at=n});
+  rows.forEach((r,k)=>{
+    const[t,ro,en]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat==='On set'))return;
+    const it={id:uid(),th:t,ro,en,cat:'On set',np:0};
+    if(at<0)S.items.push(it);else S.items.splice(at+1+k,0,it);
+  });
+  S.applied.push('crafty1');save();
+}
 const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
-function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4()}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const ORDER=["On set","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const r=c=>{const k=ORDER.indexOf(c);return k<0?99:k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
@@ -229,12 +262,15 @@ function speak(i){
   speechSynthesis.speak(u);
 }
 
+const CMAP={"On set":"#ffb703","SFX":"#ff5d73","Film production":"#4cc9f0","Technical":"#7bd88f","Basics":"#c77dff","Eating":"#f4a261","Getting around":"#2ec4b6","Shopping":"#ff8fab","Numbers":"#e9ff70","Social":"#9d8cff","Emergency":"#ff4d4d"};
+const PAL=["#ffb703","#4cc9f0","#7bd88f","#c77dff","#ff8fab","#2ec4b6","#e9ff70","#9d8cff"];
+function colr(c){if(c==="All")return"#ffffff";if(c==="__r")return"#ffd23f";if(CMAP[c])return CMAP[c];let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]}
 function render(){
   const cs=cats();
   const hasR=S.items.some(i=>i.t);
   if(cat!=="All"&&cat!=="__r"&&!cs.includes(cat))cat="All";
   if(cat==="__r"&&!hasR)cat="All";
-  $("chips").innerHTML=["All",...(hasR?["__r"]:[]),...cs].map(c=>`<button class="chip${c===cat?" on":""}" data-c="${esc(c)}">${c==="__r"?"🕑 Recently added":esc(c)}</button>`).join("");
+  $("chips").innerHTML=["All",...(hasR?["__r"]:[]),...cs].map(c=>`<button class="chip${c===cat?" on":""}" style="--c:${colr(c)}" data-c="${esc(c)}">${c==="__r"?"🕑 Recently added":esc(c)}</button>`).join("");
   $("cats").innerHTML=cs.map(c=>`<option value="${esc(c)}">`).join("");
   $("slow").classList.toggle("on",S.slow);
   const ql=qs.toLowerCase();
@@ -244,8 +280,8 @@ function render(){
   (cat==="All"?cs:[cat]).forEach(c=>{
     const list=c==="__r"?S.items.filter(i=>i.t&&hit(i)).sort((a,b)=>b.t-a.t).slice(0,20):S.items.filter(i=>i.cat===c&&hit(i));
     if(!list.length)return;
-    if(cat==="All")h+=`<div class="sec">${esc(c)}</div>`;
-    h+=`<div class="grid">`+list.map(i=>{const f=full(i);return `<button class="tile" data-id="${i.id}"><span class="th" lang="th">${esc(f.th)}</span>${S.ro&&f.ro?`<small class="ro">${esc(f.ro)}</small>`:""}${S.en&&f.en?`<small>${esc(f.en)}</small>`:""}${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`}).join("")+`</div>`;
+    if(cat==="All")h+=`<div class="sec" style="--c:${colr(c)}">${esc(c)}</div>`;
+    h+=`<div class="grid">`+list.map(i=>{const f=full(i);return `<button class="tile" style="--c:${colr(i.cat)}" data-id="${i.id}"><span class="th" lang="th">${esc(f.th)}</span>${S.ro&&f.ro?`<small class="ro">${esc(f.ro)}</small>`:""}${S.en&&f.en?`<small class="en">${esc(f.en)}</small>`:""}${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`}).join("")+`</div>`;
   });
   $("main").className=edit?"edit":"";
   $("main").innerHTML=h+(/class="grid"/.test(h)?"":`<div class="empty">Nothing here. Tap + to add a phrase.</div>`);
@@ -297,7 +333,7 @@ $("pol").onchange=e=>{S.pol=e.target.value;save();render()};
 $("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
 $("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
 $("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
-$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();save();cat="All";render();$("setD").close()}};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();save();cat="All";render();$("setD").close()}};
 
 load();render();loadVoices();
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
