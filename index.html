@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ffd800">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Phil's Thai Soundboard">
 <title>Phil's Thai Soundboard</title>
@@ -93,68 +93,80 @@ textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1p
 .boardhead{padding:6px 12px 0}
 .boardhead #q{margin-top:8px;width:100%}
 
-/* ===== comic book / Ben-Day dots (pop art) ===== */
-:root{--bg:#0a0a28;--panel:#15153f;--ink:#fff;--mute:#dcdcf5;--edge:#ffd800;--sh:#e4002b;--btn:#ffd800;--line:#3b3b7a;color-scheme:dark;
---cf:Bangers,Impact,"Arial Black",system-ui,sans-serif}
-html[data-th="light"]{--bg:#fff6d6;--panel:#ffffff;--ink:#000;--mute:#333;--edge:#000;--sh:#000;--btn:#ffd800;--line:#000;--eo:#000;color-scheme:light}
-body{background-color:var(--bg);background-image:radial-gradient(circle,rgba(228,0,43,.38) 2.2px,transparent 2.7px),radial-gradient(circle,rgba(29,92,255,.38) 2.2px,transparent 2.7px);background-size:18px 18px;background-position:0 0,9px 9px;color:var(--ink)}
-html[data-th="light"] body{background-image:radial-gradient(circle,rgba(228,0,43,.30) 2.2px,transparent 2.7px);background-size:14px 14px;background-position:0 0}
-h1,.chip,.sec,.sec2,.ib,#toast,.bigbtn{font-family:var(--cf);letter-spacing:.05em;font-weight:400}
-header{background:#ffd800 radial-gradient(circle,rgba(228,0,43,.55) 2px,transparent 2.6px) 0 0/10px 10px;border-bottom:5px solid #000;color:#000}
-h1{font-size:27px;line-height:1.05;transform:rotate(-1.2deg);text-transform:uppercase}
-h1 .tt{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#e4002b;-webkit-text-fill-color:#e4002b;text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,3px 3px 0 #fff}
-header .ib{background:#fff;color:#000;border:3px solid #000;box-shadow:3px 3px 0 #000}
-header .ib.on{background:#e4002b;color:#fff}
-header #now{color:#000;font-weight:700;font-size:14px}
-header .sw{color:#000;font-weight:700}
-.trk{background:#fff;border:3px solid #000}
-.trk::after{top:0;left:0;background:#000;box-shadow:none}
-.sw input:checked+.trk{background:#e4002b}
-.sw input:checked+.trk::after{transform:translateX(18px)}
-.ib{border:3px solid #000;background:var(--btn);color:#000;box-shadow:3px 3px 0 var(--sh);font-size:19px;border-radius:8px}
-.ib:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--sh)}
-.ib.on{background:#e4002b;color:#fff;border-color:#000}
-.ib.pri{background:#1d5cff;color:#fff;border-color:#000}
+/* ===== 1980s Macintosh (System 6 style, 1-bit) ===== */
+:root{--win:#000;--ink:#f2f2f2;--mute:#f2f2f2;--line:#f2f2f2;--bg:#000;--panel:#000;--edge:#f2f2f2;--card:#000;color-scheme:dark;
+--desk:radial-gradient(#f2f2f2 .9px,transparent 1.2px) 0 0/4px 4px #000;
+--cf:VT323,"Courier New",monospace}
+html[data-th="light"]{--win:#fff;--ink:#000;--mute:#000;--line:#000;--bg:#fff;--panel:#fff;--edge:#000;--card:#fff;color-scheme:light;
+--desk:conic-gradient(#000 25%,#fff 0 50%,#000 0 75%,#fff 0) 0 0/4px 4px #fff}
+body{background:var(--desk);color:var(--ink);font-family:VT323,"Courier New",system-ui,monospace;font-size:21px;line-height:1.15}
+h1,.chip,.sec,.sec2,.ib,#toast,.bigbtn,label,.note,dialog,.sw,#now,.tile small,.tile .en,input,select,textarea,.ren,.rro{font-family:VT323,"Noto Sans Thai",system-ui,monospace;letter-spacing:.02em;font-weight:400;text-transform:none}
+.th,.rth{font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}
+header{background:var(--win);color:var(--ink);border-bottom:3px solid var(--ink);box-shadow:0 3px 0 var(--win),0 5px 0 var(--ink)}
+h1{font-size:30px;line-height:1.05}
+.fl{display:none}
+h1 .tt{display:inline;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink);-webkit-text-fill-color:var(--ink);text-shadow:none;transform:none;box-shadow:none;padding:0}
+h1 .tt::before{content:"◆ "}
+h1::after{content:"Thai Translator  v1.0";display:block;font-size:16px;margin-top:2px}
+header #now{color:var(--ink);font-size:18px}
+header .sw{color:var(--ink);font-size:20px}
+.trk{width:22px;height:22px;border:2px solid var(--ink);background:var(--win);border-radius:0}
+.trk::after{content:"";top:0;left:0;width:auto;height:auto;inset:0;position:absolute;border-radius:0;background:none;box-shadow:none;transform:none}
+.sw input:checked+.trk{background:var(--win)}
+.sw input:checked+.trk::after{content:"✕";transform:none;color:var(--ink);font-size:20px;line-height:18px;text-align:center;font-family:system-ui,sans-serif;font-weight:900}
+.ib{border:2px solid var(--ink);border-radius:9px;background:var(--win);color:var(--ink);box-shadow:none;font-size:21px;padding:5px 12px}
+header .ib{border-color:var(--ink);color:var(--ink);background:var(--win)}
+.ib:active{background:var(--ink);color:var(--win);transform:none;box-shadow:none}
+.ib.on,header .ib.on{background:var(--ink);color:var(--win);border-color:var(--ink)}
+.ib.pri{background:var(--win);color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 2px var(--win),0 0 0 4px var(--ink)}
 .ib.big{font-family:system-ui,sans-serif}
-.bigbtn{font-size:26px;min-height:58px}
-.speakbtn{flex:1 1 60%;min-height:66px;font-size:30px;background:#e4002b;color:#fff;border:4px solid #000;box-shadow:5px 5px 0 var(--sh)}
-.tool{margin:14px 12px;padding:14px;border:4px solid var(--edge);border-radius:10px;background:var(--panel) radial-gradient(circle,rgba(228,0,43,.45) 1.6px,transparent 2.1px) 0 0/9px 9px;box-shadow:6px 6px 0 var(--sh)}
-html[data-th="light"] .tool{background-image:radial-gradient(circle,rgba(29,92,255,.30) 1.6px,transparent 2.1px)}
-.tool .ib{box-shadow:3px 3px 0 #000}
-input,select,textarea{border:3px solid var(--edge);border-radius:8px;background:var(--bg);color:var(--ink)}
-#trIn{background:#fff;color:#000;border:4px solid #000}
-.bub{position:relative;background:#fff;color:#000;border:4px solid #000;border-radius:24px;padding:12px 16px;margin:18px 0 30px;box-shadow:5px 5px 0 var(--sh)}
-.bub::before{content:"";position:absolute;left:34px;bottom:-26px;border:14px solid transparent;border-top:22px solid #000;border-bottom:0}
-.bub::after{content:"";position:absolute;left:38px;bottom:-17px;border:10px solid transparent;border-top:16px solid #fff;border-bottom:0}
-.bub .rth{color:#000;margin-top:0}
-.bub .rro{color:#c1121f}
-.bub .ren{color:#222}
-.sec2{font-size:20px;color:var(--edge);text-shadow:2px 2px 0 var(--sh)}
-html[data-th="light"] .sec2{color:#000;text-shadow:2px 2px 0 #ffd800}
+.bigbtn{font-size:28px;min-height:56px}
+.speakbtn{flex:1 1 60%;min-height:72px;font-size:38px;background:var(--win);color:var(--ink);border:3px solid var(--ink);border-radius:12px;box-shadow:0 0 0 2px var(--win),0 0 0 5px var(--ink)}
+.speakbtn:active{background:var(--ink);color:var(--win)}
+.tool{position:relative;margin:16px 12px 14px;padding:0 14px 14px;border:2px solid var(--ink);border-radius:0;background:var(--win);box-shadow:4px 4px 0 var(--ink)}
+.tool::before{content:"";display:block;height:22px;margin:0 -14px 14px;border-bottom:2px solid var(--ink);background:linear-gradient(var(--win),var(--win)) 11px 5px/10px 10px no-repeat,linear-gradient(var(--ink),var(--ink)) 9px 3px/14px 14px no-repeat,repeating-linear-gradient(0deg,var(--ink) 0 1px,var(--win) 1px 3px)}
+.tool::after{content:"Translator";position:absolute;top:0;left:50%;transform:translateX(-50%);height:22px;line-height:22px;padding:0 14px;background:var(--win);font-family:VT323,monospace;font-size:21px}
+.tool .ib{box-shadow:none}
+.tool .ib.pri,.tool .speakbtn{box-shadow:0 0 0 2px var(--win),0 0 0 4px var(--ink)}
+input,select,textarea{border:2px solid var(--ink);border-radius:0;background:var(--win);color:var(--ink);font-size:21px}
+#trIn{background:var(--win);color:var(--ink);border:2px solid var(--ink);border-radius:0;font-size:24px;box-shadow:inset 2px 2px 0 var(--ink)}
+.bub{position:relative;background:var(--win);color:var(--ink);border:2px solid var(--ink);border-radius:0;padding:12px 16px;margin:16px 0 20px;box-shadow:4px 4px 0 var(--ink)}
+.bub::before,.bub::after{display:none}
+.bub .rth,.bub .ren{color:var(--ink)}
+.bub .rro{color:var(--ink);font-size:20px}
+.bub .ren{font-size:24px}
+.sec2{display:inline-block;background:var(--win);color:var(--ink);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:0 12px;font-size:22px;text-shadow:none}
 .boardhead{padding:4px 12px 0}
-.chip{border:3px solid var(--eo,var(--c,#fff));background:var(--panel);color:var(--ink);font-size:18px;box-shadow:3px 3px 0 var(--c,#fff);border-radius:8px;padding:6px 13px}
-.chip.on{background:var(--c,#fff);color:#000;box-shadow:1px 1px 0 #000;transform:translate(2px,2px)}
-.sec{font-size:24px;color:var(--c,#fff);border-bottom:4px solid var(--c,#fff);text-shadow:2px 2px 0 #000}
-html[data-th="light"] .sec{color:#000;text-shadow:2px 2px 0 var(--c)}
-.tile{position:relative;border:3px solid var(--eo,var(--c,#fff));background:var(--panel);box-shadow:4px 4px 0 var(--c,#fff);border-radius:6px;min-height:112px}
-.tile::before{content:"";position:absolute;inset:0;border-radius:3px;pointer-events:none;background:radial-gradient(circle,var(--c,#fff) 1.6px,transparent 2.1px) 0 0/8px 8px;opacity:.5;-webkit-mask-image:linear-gradient(135deg,#000 0,transparent 62%);mask-image:linear-gradient(135deg,#000 0,transparent 62%)}
-.tile>.th,.tile>small{position:relative;z-index:1}
-.tile:active,.tile.hit{background:var(--c,#ffd800);transform:translate(3px,3px);box-shadow:1px 1px 0 var(--c,#ffd800)}
-.th{color:var(--ink)}
-.tile .en{color:var(--ink)}
-.x{border:3px solid #000;background:#e4002b;color:#fff;font-family:system-ui,sans-serif;font-weight:900}
-.fab{background:#e4002b;color:#fff;border:4px solid #000;box-shadow:4px 4px 0 #ffd800;font-family:var(--cf)}
-dialog{background:var(--panel);color:var(--ink);border:4px solid var(--edge);border-radius:12px;box-shadow:6px 6px 0 var(--sh)}
-label{color:var(--mute)}
-#toast{background:#ffd800;color:#000;border:3px solid #000;border-radius:10px;box-shadow:4px 4px 0 #e4002b;font-size:22px;transform:translateX(-50%) rotate(-2deg)}
-#toast.show{transform:translateX(-50%) rotate(-2deg)}
-#toast.bad{background:#e4002b;color:#fff}
-.note{background:var(--panel);border:3px solid var(--edge);color:var(--ink)}
-html[data-th="light"] .tile .ro{color:#c1121f}
-html[data-th="light"] .tile small{color:#333}
-html[data-th="light"] .tile .en{color:#000}
+.chip{position:relative;overflow:hidden;border:2px solid var(--ink);border-radius:9px;background:var(--win);color:var(--ink);font-size:21px;box-shadow:none;padding:4px 12px 4px 28px}
+.chip::before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;background:var(--c);border-right:2px solid var(--ink)}
+.chip.on{background:var(--ink);color:var(--win);transform:none}
+.chip.on::before{filter:invert(1);border-right-color:var(--win)}
+.sec{position:relative;display:inline-block;background:var(--win);color:var(--ink);border:2px solid var(--ink);border-bottom:2px solid var(--ink);border-left:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:0 14px 0 34px;margin:14px 0 10px;font-size:24px;text-shadow:none}
+.sec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:20px;background:var(--c);border-right:2px solid var(--ink)}
+.tile{position:relative;border:2px solid var(--ink);border-left:2px solid var(--ink);border-radius:0;background:var(--win);color:var(--ink);box-shadow:3px 3px 0 var(--ink);min-height:112px;padding:12px 8px 12px 26px}
+.tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:15px;background:var(--c);border-right:2px solid var(--ink);border-top:0;border-left:0;pointer-events:none}
+.tile:active,.tile.hit{background:var(--ink);color:var(--win);transform:none;box-shadow:3px 3px 0 var(--ink)}
+.tile:active *,.tile.hit *{color:var(--win)!important}
+.tile:active::before,.tile.hit::before{filter:invert(1);border-right-color:var(--win)}
+.th{color:var(--ink);font-size:23px;font-weight:700}
+.tile .ro{font-size:19px;font-style:normal;color:var(--ink);opacity:.85}
+.tile .en{font-size:23px;color:var(--ink);line-height:1.05}
+.tile small{color:var(--ink)}
+.tile .auto{font-size:16px;color:var(--ink);text-decoration:underline}
+.x{border:2px solid var(--win);border-radius:50%;background:var(--ink);color:var(--win);font-family:system-ui,sans-serif;font-weight:900}
+.fab{background:var(--win);color:var(--ink);border:3px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);font-family:VT323,monospace;font-size:38px}
+dialog{background:var(--win);color:var(--ink);border:2px solid var(--ink);border-radius:0;box-shadow:6px 6px 0 var(--ink)}
+dialog::backdrop{background:conic-gradient(rgba(0,0,0,.6) 25%,transparent 0 50%,rgba(0,0,0,.6) 0 75%,transparent 0) 0 0/4px 4px}
+label{color:var(--ink);font-size:19px}
+#toast{background:var(--win);color:var(--ink);border:3px solid var(--ink);border-radius:0;box-shadow:0 0 0 2px var(--win),0 0 0 4px var(--ink),6px 6px 0 4px var(--ink);font-size:24px;transform:translateX(-50%)}
+#toast.show{transform:translateX(-50%)}
+#toast.bad{background:var(--ink);color:var(--win)}
+.note{background:var(--win);border:2px solid var(--ink);border-radius:0;color:var(--ink);font-size:19px}
+#trMic.rec{background:var(--ink);color:var(--win);animation:blink 1s steps(2,start) infinite}
+@keyframes blink{50%{background:var(--win);color:var(--ink)}}
+.chips{background:transparent}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -217,7 +229,7 @@ html[data-th="light"] .tile .en{color:#000}
   </select>
   <label for="voice">Thai voice</label>
   <select id="voice"></select>
-  <label class="ck"><input type="checkbox" id="sLight"> Light comic theme (day). Off = night</label>
+  <label class="ck"><input type="checkbox" id="sLight"> Classic Mac (day). Off = inverted night</label>
   <label class="ck"><input type="checkbox" id="sRo"> Show romanization</label>
   <label class="ck"><input type="checkbox" id="sEn"> Show English</label>
   <label>Backup (phrases only; import merges with what you have)</label>
@@ -357,8 +369,20 @@ function applyP8(){
   });
   S.applied.push('tosfx');save();
 }
+function applyP9(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('food1'))return;
+  [['Schedule & meals',`อาทิตย์ที่แล้ว|aa-thit thii laeo|Last week|-`],['Eating',`ไข่|khai|Egg|-`],['Eating',`ไข่เป็ด|khai pet|Duck egg|-`],['Eating',`ไก่ย่าง|gai yaang|Grilled chicken|-`],['Eating',`ไข่ต้ม|khai tom|Boiled egg|-`],['Eating',`ไข่ดาว|khai daao|Fried egg|-`],['Eating',`หวาน|waan|Sweet`],['Eating',`ไม่หวาน|mai waan|Not sweet`],['Eating',`เผ็ด|phet|Spicy`],['Eating',`ไม่เผ็ดมาก|mai phet maak|Not too spicy`],['Eating',`ปู|puu|Crab|-`],['Eating',`ปลา|plaa|Fish|-`],['Eating',`ปลาหมึก|plaa meuk|Squid|-`],['Eating',`กุ้งมังกร|gung mang-gon|Lobster|-`],['Eating',`กุ้ง|gung|Shrimp|-`]].forEach(([cat,r])=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push('food1');save();
+}
 const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
-function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8()}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return localStorage.getItem(KEY)!==null}catch(e){return false}}
 function testStore(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
 const STORE_OK=testStore();
@@ -401,9 +425,9 @@ function speak(i){
   speechSynthesis.speak(u);
 }
 
-const CMAP={"On set":"#ffb703","SFX":"#ff5d73","Film production":"#4cc9f0","Technical":"#7bd88f","Basics":"#c77dff","Eating":"#f4a261","Getting around":"#2ec4b6","Shopping":"#ff8fab","Numbers":"#e9ff70","Social":"#9d8cff","Emergency":"#ff4d4d"};
-const PAL=["#ffb703","#4cc9f0","#7bd88f","#c77dff","#ff8fab","#2ec4b6","#e9ff70","#9d8cff"];
-function colr(c){if(c==="All")return"#ffffff";if(c==="__r")return"#ffd23f";if(CMAP[c])return CMAP[c];let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]}
+const CMAP={"On set":"linear-gradient(var(--ink),var(--ink))","SFX":"repeating-linear-gradient(45deg,var(--ink) 0 2px,transparent 2px 6px)","Film production":"repeating-linear-gradient(0deg,var(--ink) 0 2px,transparent 2px 5px)","Technical":"conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/6px 6px","Schedule & meals":"repeating-linear-gradient(45deg,var(--ink) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,var(--ink) 0 1px,transparent 1px 5px)","Basics":"radial-gradient(var(--ink) 1px,transparent 1.5px) 0 0/10px 10px","Eating":"radial-gradient(var(--ink) 1.6px,transparent 2px) 0 0/6px 6px","Getting around":"repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px)","Shopping":"repeating-linear-gradient(0deg,var(--ink) 0 4px,transparent 4px 8px)","Numbers":"conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/3px 3px","Social":"repeating-linear-gradient(0deg,var(--ink) 0 2px,transparent 2px 5px)","Emergency":"linear-gradient(var(--ink),var(--ink))"};
+const PAL=["conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/6px 6px","radial-gradient(var(--ink) 1.6px,transparent 2px) 0 0/6px 6px","repeating-linear-gradient(45deg,var(--ink) 0 2px,transparent 2px 6px)","repeating-linear-gradient(45deg,var(--ink) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,var(--ink) 0 1px,transparent 1px 5px)","repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px)","repeating-linear-gradient(0deg,var(--ink) 0 4px,transparent 4px 8px)","radial-gradient(var(--ink) 1px,transparent 1.5px) 0 0/10px 10px","conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/3px 3px"];
+function colr(c){if(c==="All")return"radial-gradient(var(--ink) 1px,transparent 1.5px) 0 0/10px 10px";if(c==="__r")return"conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/3px 3px";if(CMAP[c])return CMAP[c];let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]}
 function render(){
   const cs=cats();
   const hasR=S.items.some(i=>i.t);
@@ -537,17 +561,40 @@ $("trOut").onclick=e=>{
   }
 };
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){
-  $("trMic").style.display="";
-  $("trMic").onclick=()=>{
-    try{
-      const r=new SR();r.lang=DIR==="th"?"th-TH":"en-US";r.interimResults=false;
-      r.onresult=ev=>{$("trIn").value=ev.results[0][0].transcript;doTr()};
-      r.onerror=()=>{$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b;font-weight:700">Couldn't use the microphone. Check Safari's microphone permission.</div>`};
-      r.start();$("trOut").innerHTML=`<div style="margin-top:12px">Listening…</div>`;
-    }catch(e){}
+let REC=null,RECON=false;
+function micMsg(m,bad){$("trOut").innerHTML=`<div style="margin-top:12px;font-weight:700;${bad?"color:#ff6b6b":""}">${esc(m)}</div>`}
+async function startMic(retry){
+  if(RECON){try{REC.stop()}catch(e){}return}
+  if(!SR){micMsg("Voice input isn't supported in this browser. Tap the microphone key on your keyboard to dictate instead.",false);$("trIn").focus();return}
+  try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}
+  if(!retry&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    try{const st=await navigator.mediaDevices.getUserMedia({audio:true});st.getTracks().forEach(t=>t.stop())}
+    catch(e){if(e&&(e.name==="NotAllowedError"||e.name==="SecurityError")){micMsg("The microphone is blocked. Allow it for this site: tap aA in Safari's address bar, then Website Settings, then Microphone, then Allow. Then tap 🎤 again.",true);return}}
+  }
+  const r=new SR();REC=r;
+  r.lang=DIR==="th"?"th-TH":"en-US";r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+  let got=false,err=null;const t0=Date.now();
+  r.onstart=()=>{RECON=true;$("trMic").classList.add("rec");micMsg("Listening… speak now",false)};
+  r.onresult=ev=>{
+    let txt="";for(let i=0;i<ev.results.length;i++)txt+=ev.results[i][0].transcript;
+    $("trIn").value=txt;
+    if(ev.results[ev.results.length-1].isFinal)got=true;
   };
+  r.onerror=ev=>{err=ev.error};
+  r.onend=()=>{
+    RECON=false;$("trMic").classList.remove("rec");
+    if(got&&$("trIn").value.trim()){doTr();return}
+    if(!err&&!retry&&Date.now()-t0<2000){startMic(true);return}
+    if(err==="not-allowed"||err==="service-not-allowed")micMsg("Voice input is blocked. On iPhone, check Settings > Privacy & Security > Speech Recognition, and Settings > General > Keyboard > Enable Dictation, and allow the microphone for Safari.",true);
+    else if(err==="audio-capture")micMsg("No microphone found.",true);
+    else if(err==="network")micMsg("Voice input needs an internet connection.",true);
+    else if(err==="aborted")return;
+    else micMsg("I didn't hear anything. Tap 🎤 and try again.",true);
+  };
+  try{r.start()}catch(e){micMsg("Couldn't start the microphone. Try again.",true)}
 }
+$("trMic").style.display="";
+$("trMic").onclick=()=>startMic(false);
 let EID=null;
 function fillECat(sel){
   const cs=cats();
@@ -633,7 +680,7 @@ $("sLight").onchange=e=>{S.light=e.target.checked;save();applyTheme()};
 $("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
 $("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
 $("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
-$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();save();cat="All";render();$("setD").close()}};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();save();cat="All";render();$("setD").close()}};
 
 load();applyTheme();render();loadVoices();renderHist();
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
