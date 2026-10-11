@@ -274,6 +274,9 @@ label.langrow{margin:0 0 12px}
   <label for="mmEmail">Translation email (optional)</label>
   <input id="mmEmail" type="email" placeholder="you@example.com">
   <div class="hint">Gives a bigger free daily translation limit for the translate-all feature.</div>
+  <button class="ib" id="testTr" style="width:100%;margin-top:12px">Test translation</button>
+  <div class="hint" id="testOut"></div>
+  <div class="hint">Version: 11 Oct 2026, build 14</div>
   <label>Backup (everything on this device)</label>
   <div class="row"><button class="ib" id="exp" style="flex:1">Export backup</button><button class="ib" id="imp" style="flex:1">Import backup</button></div>
   <input type="file" id="file" accept=".json,application/json" hidden>
@@ -548,7 +551,7 @@ $("main").onclick=async e=>{
   if(!getText(it,S.lang).t){
     toast("Translating…");
     try{if(!(await translateItem(it,S.lang)))throw 0;save();paintTile(it.id)}
-    catch(err){toast("Couldn't translate (are you online?)",true);return}
+    catch(err){toast("Couldn't translate: "+why(err),true);return}
   }
   speak({...it,...vw(it)});
 };
@@ -625,14 +628,14 @@ async function doTr(){
       if(!r||!r.th||!r.en)throw 0;
       showRes(r.th,r.ro||"",r.en,"",false);
     }else if(DIR==="en"){
-      let t=await mm(q,"en|"+LG().mm);
+      let t=await webTr(q,"en",LG().mm);
       if(S.lang==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw 0}
       showRes(t,"",q,"Automatic translation: please check it before relying on it.",true);
     }else{
-      const e=await mm(q,LG().mm+"|en");
+      const e=await webTr(q,LG().mm,"en");
       showRes(q,"",e,"Automatic translation: please check it before relying on it.",true);
     }
-  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b;font-weight:700">Couldn't translate (are you online?). Try again.</div>`}
+  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b;font-weight:700">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
 }
 $("dirEn").onclick=()=>setDir("en");
 $("dirTh").onclick=()=>setDir("th");
@@ -729,6 +732,32 @@ function newItem(text,ro,en,c,auto){
   setText(it,S.lang,text,ro,auto);
   return it;
 }
+let LASTERR="";
+function why(e){
+  if(e&&e.name==="AbortError")return"timed out";
+  if(e instanceof TypeError)return"couldn't connect (offline, or blocked by the browser)";
+  if(e&&e.message)return e.message;
+  return"no usable answer";
+}
+function hintHost(){return(location.hostname.indexOf("github.io")<0&&location.protocol!=="file:")?" If you're on the Claude preview, web translation is blocked there, so use your GitHub link.":""}
+async function gtx(q,from,to){
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),9000);
+  try{
+    const r=await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8&sl="+encodeURIComponent(from)+"&tl="+encodeURIComponent(to)+"&q="+encodeURIComponent(q),{signal:ac.signal});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    const t=((d&&d[0])||[]).map(x=>(x&&x[0])||"").join("").trim();
+    if(!t)throw new Error("empty answer");
+    return t;
+  }finally{clearTimeout(tm)}
+}
+async function webTr(q,from,to){
+  const errs=[];
+  try{return await gtx(q,from,to)}catch(e){errs.push("Google: "+why(e))}
+  try{return await mm(q,from+"|"+to)}catch(e){errs.push("MyMemory: "+(QUOTA?"daily free limit reached":why(e)))}
+  LASTERR=errs.join(" / ");
+  throw new Error(LASTERR);
+}
 async function translateItem(it,L){
   const s=srcFor(it);
   if(!s||s.from===L)return false;
@@ -738,7 +767,7 @@ async function translateItem(it,L){
     if(!r||!r.t)throw 0;
     t=String(r.t).trim();ro=r.ro||"";
   }else{
-    t=await mm(s.q,mmCode(s.from)+"|"+mmCode(L));
+    t=await webTr(s.q,mmCode(s.from),mmCode(L));
   }
   if(L==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw 0}
   if(!t)throw 0;
@@ -808,6 +837,15 @@ $("expCopy").onclick=async()=>{
   catch(e){$("bs").textContent="Couldn't copy."}
 };
 $("mmEmail").onchange=e=>{S.mmEmail=e.target.value.trim();save()};
+$("testTr").onclick=async()=>{
+  const o=$("testOut");o.textContent="Testing…";
+  const lines=[];
+  try{lines.push("Google: OK → "+await gtx("hello","en","th"))}catch(e){lines.push("Google: "+(e&&e.name?e.name+" "+(e.message||""):"error"))}
+  try{lines.push("MyMemory: OK → "+await mm("hello","en|th"))}catch(e){QUOTA=false;lines.push("MyMemory: "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}
+  lines.push("Page: "+(location.hostname||location.protocol));
+  lines.push(SM?"Claude translation: available":"Claude translation: not available here");
+  o.innerHTML=lines.map(esc).join("<br>");
+};
 let EID=null;
 function fillECat(sel){
   const cs=cats();
@@ -856,18 +894,9 @@ function fillCat(sel){
 }
 $("cat").onchange=()=>{const n=$("cat").value==="__new";$("catNew").style.display=n?"":"none";if(n)$("catNew").focus()};
 async function webTranslate(en){
-  const ac=new AbortController();const to=setTimeout(()=>ac.abort(),9000);
-  try{
-    const r=await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(en)+"&langpair=en|"+LG().mm,{signal:ac.signal});
-    if(!r.ok)throw 0;
-    const d=await r.json();
-    let t=d&&d.responseData&&d.responseData.translatedText;
-    if(!t)throw 0;
-    t=String(t).trim();
-    if(/MYMEMORY|QUERY LENGTH/i.test(t))throw 0;
-    if(S.lang==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw 0}
-    return t;
-  }finally{clearTimeout(to)}
+  let t=await webTr(en,"en",LG().mm);
+  if(S.lang==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw new Error("the answer wasn't Thai")}
+  return t;
 }
 async function add(){
   if(!$("th").value.trim()&&$("en").value.trim()&&SM){await translate();return}
@@ -875,7 +904,7 @@ async function add(){
   if(!th&&$("en").value.trim()){
     say("Translating…",true);
     try{th=await webTranslate($("en").value.trim());auto=true}
-    catch(e){say("Couldn't translate (are you online?). Try again, or type the Thai yourself.",false);return}
+    catch(e){say("Couldn't translate: "+why(e)+"."+hintHost()+" Try again, or type the text yourself.",false);return}
   }
   if(!th){say("Type an English word first.",false);$("en").focus();return}
   let c=$("cat").value;
