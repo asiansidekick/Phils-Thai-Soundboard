@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phil's Translator</title>
+<style>
+:root{--bg:#07070f;--card:#16162a;--ink:#ffffff;--mute:#d4d4ee;--line:#3b3b66;--acc:#ffd23f;--accink:#101010;--danger:#ff6b6b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:6px}
+h1{font-size:18px;margin:0;flex:1}
+button{font:inherit;color:inherit;cursor:pointer}
+.ib{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 11px;min-height:38px}
+.ib.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#q{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 0}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 13px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#now{min-height:20px;margin-top:6px;color:var(--mute);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+main{padding:10px 12px 96px}
+.sec{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:14px 2px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{position:relative;min-height:96px;padding:12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--card);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;touch-action:manipulation;user-select:none;-webkit-user-select:none;transition:transform .08s}
+.tile:active,.tile.hit{transform:scale(.96);background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.tile:active small,.tile.hit small{color:inherit}
+.th{font-size:21px;font-weight:600;line-height:1.35}
+.tile small{color:var(--mute);font-size:13px}
+.tile .ro{font-style:italic}
+.x{position:absolute;top:-7px;right:-7px;width:26px;height:26px;border-radius:50%;background:var(--danger);color:#fff;border:2px solid var(--bg);font-size:15px;display:grid;place-items:center}
+.edit .tile{border-style:dashed}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;border:0;background:var(--acc);color:var(--accink);font-size:30px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.empty,.note{color:var(--mute);text-align:center;padding:30px 10px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;text-align:left;font-size:14px}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);width:min(420px,92vw);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+label.ck{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:16px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
+input[type=checkbox]{width:auto}
+.act{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.pri{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.warn{color:var(--danger)}
+.ib.big{font-size:30px;line-height:1;min-height:50px;min-width:50px;padding:4px 12px}
+h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw{display:flex;align-items:center;gap:7px;flex:none;margin:0;color:var(--ink);font-size:14px;cursor:pointer;position:relative}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;padding:0;border:0;cursor:pointer}
+.trk{width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;transition:background .15s;flex:none}
+.trk::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .15s}
+.sw input:checked+.trk{background:var(--acc)}
+.sw input:checked+.trk::after{transform:translateX(18px)}
+
+/* night / high-contrast theme */
+body{font-size:17px}
+header{background:linear-gradient(180deg,#14143a,#07070f);border-bottom:2px solid #ffd23f}
+h1{white-space:normal;overflow:visible;text-overflow:clip;font-size:21px;line-height:1.15;font-weight:800}
+h1 .tt{background:linear-gradient(90deg,#ffd23f,#ff6b9d,#4cc9f0);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.ib{border:2px solid #5a5a99;background:#1f1f3d;color:#fff;font-weight:600}
+.ib.on{background:#ffd23f;color:#101010;border-color:#ffd23f}
+.chip{border:2px solid var(--c,#8a8ab5);background:transparent;color:#fff;font-weight:700;padding:7px 14px}
+.chip.on{background:var(--c,#fff);color:#101010;border-color:var(--c,#fff)}
+.sec{color:var(--c,#fff);font-size:14px;font-weight:800;letter-spacing:.1em;border-bottom:2px solid var(--c,#fff);padding-bottom:4px}
+.grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
+.tile{border:2px solid var(--c,#8a8ab5);background:var(--card);min-height:106px;gap:4px}
+.tile:active,.tile.hit{background:var(--c,#ffd23f);color:#101010;border-color:var(--c,#ffd23f)}
+.th{font-size:24px;font-weight:800;color:#fff}
+.tile small{font-size:16px;color:var(--mute)}
+.tile .ro{font-size:15px;font-weight:600;color:var(--c,#ffd23f)}
+.tile .en{font-size:19px;font-weight:700;color:#fff;line-height:1.2;font-style:normal}
+.tile:active .th,.tile.hit .th,.tile:active small,.tile.hit small{color:#101010!important}
+#now{color:#ffd23f;font-size:15px;font-weight:600}
+.fab{background:#ffd23f;color:#101010}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:50;max-width:90vw;padding:12px 18px;border-radius:14px;font-weight:700;font-size:17px;background:#7bd88f;color:#101010;box-shadow:0 6px 20px rgba(0,0,0,.5);transition:opacity .2s,transform .2s;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.bad{background:#ff6b6b}
+#trs{font-size:15px}
+dialog{max-height:88vh;overflow:auto}
+.tile .auto{font-size:12px;font-weight:600;color:#ffd23f}
+textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical}
+.rth{font-size:30px;font-weight:800;line-height:1.35;color:#fff;margin-top:14px}
+.rro{color:#ffd23f;font-weight:600;font-size:17px}
+.ren{font-size:20px;font-weight:700;margin-top:4px}
+.tool{margin:12px;padding:14px;border:2px solid #ffd23f;border-radius:18px;background:#101028}
+#trIn{font-size:22px;margin:10px 0;min-height:92px}
+.bigbtn{min-height:54px;font-size:19px;font-weight:800}
+.sec2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffd23f}
+.boardhead{padding:6px 12px 0}
+.boardhead #q{margin-top:8px;width:100%}
+
+/* ===== slick minimalist lavender look, four type sizes ===== */
+:root{--fs-s:20px;--fs-m:24px;--fs-l:31px;--fs-xl:44px;
+--page:#aeb4e8;--card:#ffffff;--pill:#eeeff7;--ink:#1c1f4f;--mute:#5a5e92;--accent:#5b61d8;--onaccent:#ffffff;--line:#c9cbe8;--hl:rgba(91,97,216,.14);--danger:#d9576b;--r:999px;
+--paper:var(--card);--bg:var(--card);--panel:var(--card);--k:var(--ink);--acc:var(--accent);--pen:var(--accent);--rule:transparent;--margin:transparent;--edge:var(--ink);--accink:var(--onaccent);
+--shadow:0 14px 36px rgba(40,46,120,.20);color-scheme:light;
+--bf:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+--ill:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20170%20104%22%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2254%22%20r%3D%2244%22%20fill%3D%22%23e6e8f7%22%2F%3E%3Cg%20fill%3D%22%23ffffff%22%20stroke%3D%22%235b61d8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2234%22%20y%3D%2222%22%20width%3D%2262%22%20height%3D%2234%22%20rx%3D%2212%22%2F%3E%3Cpath%20d%3D%22M50%2056l-4%2014%2016-14%22%2F%3E%3Crect%20x%3D%2282%22%20y%3D%2244%22%20width%3D%2256%22%20height%3D%2232%22%20rx%3D%2212%22%2F%3E%3Cpath%20d%3D%22M126%2076l6%2012-16-12%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%235b61d8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M48%2034h28M48%2044h18M96%2056h30M96%2065h18%22%2F%3E%3Ccircle%20cx%3D%22116%22%20cy%3D%2230%22%20r%3D%223.5%22%2F%3E%3Cpath%20d%3D%22M128%2020l6%206M134%2020l-6%206%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");--srch:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%235b61d8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%227%22%2F%3E%3Cpath%20d%3D%22M20%2020l-4-4%22%2F%3E%3C%2Fsvg%3E");--cur:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20800%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.75%22%20stroke-width%3D%221.6%22%3E%3Cpath%20d%3D%22M-20%20120C90%2040%20150%20150%20260%2060S380%20-10%20430%2020%22%2F%3E%3Cpath%20d%3D%22M-30%20560C80%20470%20120%20650%20250%20600S380%20470%20440%20520%22%2F%3E%3Cpath%20d%3D%22M60%20820C120%20700%20200%20740%20260%20690%22%2F%3E%3C%2Fsvg%3E")}
+html[data-th="night"]{--page:#14163a;--card:#1e2150;--pill:#2a2e66;--ink:#eef0ff;--mute:#b4b9e6;--accent:#9aa0ff;--onaccent:#0f1133;--line:#3b3f7c;--hl:rgba(154,160,255,.22);--danger:#ff8fa3;--shadow:0 14px 36px rgba(0,0,0,.40);color-scheme:dark;--ill:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20170%20104%22%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2254%22%20r%3D%2244%22%20fill%3D%22%232b2f66%22%2F%3E%3Cg%20fill%3D%22%231e2150%22%20stroke%3D%22%239aa0ff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2234%22%20y%3D%2222%22%20width%3D%2262%22%20height%3D%2234%22%20rx%3D%2212%22%2F%3E%3Cpath%20d%3D%22M50%2056l-4%2014%2016-14%22%2F%3E%3Crect%20x%3D%2282%22%20y%3D%2244%22%20width%3D%2256%22%20height%3D%2232%22%20rx%3D%2212%22%2F%3E%3Cpath%20d%3D%22M126%2076l6%2012-16-12%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%239aa0ff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M48%2034h28M48%2044h18M96%2056h30M96%2065h18%22%2F%3E%3Ccircle%20cx%3D%22116%22%20cy%3D%2230%22%20r%3D%223.5%22%2F%3E%3Cpath%20d%3D%22M128%2020l6%206M134%2020l-6%206%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");--srch:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239aa0ff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%227%22%2F%3E%3Cpath%20d%3D%22M20%2020l-4-4%22%2F%3E%3C%2Fsvg%3E");--cur:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20800%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%20fill%3D%22none%22%20stroke%3D%22%234a4fa0%22%20stroke-opacity%3D%22.8%22%20stroke-width%3D%221.6%22%3E%3Cpath%20d%3D%22M-20%20120C90%2040%20150%20150%20260%2060S380%20-10%20430%2020%22%2F%3E%3Cpath%20d%3D%22M-30%20560C80%20470%20120%20650%20250%20600S380%20470%20440%20520%22%2F%3E%3Cpath%20d%3D%22M60%20820C120%20700%20200%20740%20260%20690%22%2F%3E%3C%2Fsvg%3E")}
+html{background:var(--page)}
+body{background:var(--page);color:var(--ink);font-family:var(--bf);font-size:var(--fs-m);line-height:1.3;font-weight:400;padding-bottom:120px}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--cur) center/cover no-repeat;margin:0;width:auto;height:auto;left:0}
+h1,.sec,.sec2,.chip,.ib,#toast,.bigbtn,label,.note,.sw,#now,input,select,textarea,.tile small,.tile .en,.ren,.rro,.hint,.spd,.tabbar button,.langbar{font-family:var(--bf);letter-spacing:0;text-transform:none}
+.th,.rth{font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
+.card{margin:12px 12px 0;background:var(--card);border-radius:28px;box-shadow:var(--shadow)}
+header{position:static;background:transparent;color:var(--ink);border:0;box-shadow:none;padding:16px 18px 6px}
+h1{font-size:var(--fs-l);line-height:1.1;font-weight:700;color:var(--ink)}
+h1::after{content:none}
+.fl{display:none}
+h1 .tt{display:inline;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink);-webkit-text-fill-color:var(--ink);text-shadow:none;transform:none;box-shadow:none;padding:0;text-decoration:none}
+h1 .tt::before{content:none}
+#setBtn,.fab{display:none}
+.hrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-top:8px}
+#now{min-height:0;color:var(--accent);font-size:var(--fs-s);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#now:empty{display:none}
+.sw{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:var(--fs-s);font-weight:600;margin:0}
+.trk{width:50px;height:30px;border:0;border-radius:15px;background:var(--line)}
+.trk::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;inset:auto;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.sw input:checked+.trk{background:var(--accent)}
+.sw input:checked+.trk::after{content:"";transform:translateX(20px);font-size:0}
+.spd{display:flex;align-items:center;gap:8px;flex:1 1 150px;min-width:0;margin:0;color:var(--ink);font-size:var(--fs-s);font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:40px;height:36px;padding:0;border:0;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--line);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-11px;border-radius:50%;background:var(--accent);border:3px solid var(--card);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+input[type=range]::-moz-range-track{height:4px;background:var(--line);border-radius:2px}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid var(--card)}
+.ib{border:2px solid var(--accent);border-radius:var(--r);background:var(--card);color:var(--ink);box-shadow:none;font-size:var(--fs-m);font-weight:600;padding:8px 22px;min-height:52px}
+header .ib{min-height:44px;border-color:var(--accent);color:var(--ink);background:var(--card)}
+.ib:active{background:var(--hl);color:var(--ink);transform:none;box-shadow:none}
+.ib.on,header .ib.on{background:var(--card);color:var(--ink);border-color:var(--accent)}
+.ib.pri{background:var(--accent);color:var(--onaccent);border-color:var(--accent);box-shadow:none}
+.bigbtn{font-size:var(--fs-m);min-height:58px}
+.speakbtn{flex:0 0 auto;min-height:52px;font-size:var(--fs-m);padding:8px 22px;background:var(--card);color:var(--ink);border:2px solid var(--accent);box-shadow:none}
+.speakbtn:active{background:var(--hl);color:var(--ink)}
+.savebtn{display:block;width:100%;background:var(--accent);color:var(--onaccent);border:2px solid var(--accent);border-radius:var(--r);font-size:var(--fs-m);min-height:60px;box-shadow:0 8px 18px rgba(91,97,216,.35)}
+.savebtn.sm{display:inline-block;width:auto;min-height:52px;font-size:var(--fs-m);padding:8px 22px;box-shadow:0 6px 14px rgba(91,97,216,.30)}
+.savebtn:active{background:var(--ink);color:var(--card);border-color:var(--ink);box-shadow:none}
+.savebtn:disabled{opacity:.9}
+.micbtn{width:60px;min-height:58px;padding:0;display:grid;place-items:center;background:var(--card);color:var(--accent);border:2px solid var(--accent);border-radius:50%;box-shadow:none;flex:none}
+.micbtn svg{display:block;width:30px;height:30px}
+#trMic.rec{background:var(--accent);color:var(--onaccent);animation:blink 1s steps(2,start) infinite}
+@keyframes blink{50%{background:var(--card);color:var(--accent)}}
+.tool{position:relative;margin:0;padding:0 18px 18px;border:0;background:transparent;box-shadow:none;scroll-margin-top:20px}
+.tool::before,.tool::after{content:none}
+.langbar{position:relative;display:flex;align-items:center;gap:12px;margin:0 0 10px;padding:8px 18px;border:0;border-radius:var(--r);background:var(--pill);color:var(--ink);cursor:pointer}
+.langbar svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.langbar .lb-t{display:flex;flex-direction:column;line-height:1.1;flex:1;min-width:0}
+.langbar .lb-s{font-size:var(--fs-s);color:var(--mute)}
+.langbar .lb-n{font-size:var(--fs-l);font-weight:700;color:var(--ink)}
+.tool .langbar select#lang{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;border:0;font-size:var(--fs-m)}
+.dirrow{display:flex;gap:4px;padding:4px;background:var(--pill);border-radius:var(--r)}
+.dirrow .ib{flex:1;padding:2px 6px;font-size:var(--fs-s);min-height:42px;border:2px solid transparent;background:transparent;color:var(--mute);white-space:nowrap}
+.dirrow .ib.on{background:var(--card);color:var(--ink);border-color:var(--accent)}
+.trbtns{display:flex;gap:10px;align-items:center}
+.hint{font-size:var(--fs-s);color:var(--mute);margin:6px 0 0}
+input,select,textarea{border:0;border-radius:var(--r);background:var(--pill);color:var(--ink);font-size:var(--fs-m);padding:12px 18px;box-shadow:none}
+select{padding-right:34px}
+input[type=checkbox]{width:26px;height:26px;accent-color:var(--accent);padding:0;border:0;border-radius:6px}
+::placeholder{color:var(--mute);opacity:.75}
+#trIn{font-size:var(--fs-l);min-height:76px;margin:10px 0;border:0;border-radius:24px;background:var(--pill);color:var(--ink);padding:12px 18px}
+#trOut:empty{min-height:110px;background:var(--ill) center/auto 100% no-repeat}
+.bub{position:relative;background:var(--pill);color:var(--ink);border:0;border-radius:24px;padding:10px 18px;margin:4px 0 10px;box-shadow:none}
+.bub::before,.bub::after{display:none}
+.bub .rth{color:var(--ink);font-size:var(--fs-xl);font-weight:400;line-height:1.2;margin-top:0}
+.bub .rro{color:var(--accent);font-size:var(--fs-l);font-weight:400;font-style:normal}
+.bub .ren{color:var(--mute);font-size:var(--fs-m);font-weight:400}
+.actrow{gap:10px;margin-top:10px;flex-wrap:nowrap}
+.actrow select{padding:10px 18px}
+.sec2{display:inline-block;background:none;color:var(--ink);border:0;box-shadow:none;padding:0;font-size:var(--fs-l);font-weight:700;text-shadow:none}
+.boardhead{padding:18px 18px 0;scroll-margin-top:12px}
+.boardhead #q{width:100%;margin-top:10px;background:var(--pill) var(--srch) no-repeat right 18px center/24px;padding-right:56px}
+.chips{padding:12px 14px 0 18px;gap:8px}
+.chip{position:relative;border:0;border-radius:var(--r);background:var(--pill);color:var(--ink);font-size:var(--fs-m);font-weight:400;box-shadow:none;padding:6px 16px 6px 12px;display:inline-flex;align-items:center;gap:8px}
+.chip::before{content:"";display:inline-block;width:14px;height:14px;border-radius:50%;background:transparent;border:2px solid var(--c,#999);position:static;transform:none;box-sizing:border-box}
+.chip.on{outline:0;transform:none;background:var(--card);box-shadow:inset 0 0 0 2px var(--accent);color:var(--ink);font-weight:600}
+.sec{display:flex;align-items:center;gap:10px;background:none;color:var(--ink);border:0;box-shadow:none;padding:0;margin:18px 0 10px;font-size:var(--fs-l);font-weight:700;text-shadow:none}
+.sec::before{content:"";display:inline-block;position:static;width:16px;height:16px;border-radius:50%;border:2px solid var(--c);background:transparent;flex:none;box-sizing:border-box}
+main{padding:4px 18px 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.tile{position:relative;border:0;border-radius:24px;background:var(--pill);color:var(--ink);box-shadow:none;min-height:104px;padding:14px 16px 12px;gap:2px;text-align:left;align-items:flex-start;justify-content:flex-start;-webkit-touch-callout:none}
+.tile::before{content:"";position:absolute;top:14px;right:14px;width:16px;height:16px;border-radius:50%;border:2px solid var(--c,#999);box-sizing:border-box}
+.tile.pend .th{opacity:.45}
+.tile:active,.tile.hit{background:var(--hl);transform:none;box-shadow:inset 0 0 0 2px var(--accent)}
+.tile:active *,.tile.hit *{color:var(--ink)!important}
+.th{color:var(--ink);font-size:var(--fs-l);font-weight:600;line-height:1.25;text-align:left;padding-right:22px}
+.tile .ro{font-size:var(--fs-m);font-style:normal;font-weight:400;color:var(--accent);opacity:1}
+.tile .en{font-size:var(--fs-m);font-weight:400;color:var(--mute);line-height:1.15}
+.tile small{color:var(--ink)}
+.tile .auto{font-size:var(--fs-s);color:var(--mute);text-decoration:underline}
+.x{width:30px;height:30px;top:-8px;right:-6px;border:2px solid var(--card);border-radius:50%;background:var(--danger);color:#fff;font-family:system-ui,sans-serif;font-weight:900;font-size:var(--fs-s);line-height:1}
+.tabbar{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;background:var(--card);border:0;border-radius:28px;box-shadow:var(--shadow);padding:8px 4px}
+.tabbar button{flex:1;background:none;border:0;color:var(--mute);font-size:var(--fs-s);font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0;cursor:pointer}
+.tabbar svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabbar button:active{opacity:.6}
+dialog{background:var(--card);color:var(--ink);border:0;border-radius:28px;box-shadow:0 20px 50px rgba(20,24,80,.45);width:min(460px,94vw);padding:20px;max-height:90vh;overflow:auto}
+dialog::backdrop{background:rgba(18,20,60,.55)}
+label{color:var(--mute);font-size:var(--fs-s);font-weight:600;margin:12px 0 4px}
+label.ck{color:var(--ink);font-size:var(--fs-m);font-weight:400}
+label.sw,label.spd{margin:0}
+label.langbar{margin:0 0 10px}
+#toast{bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--accent);color:var(--onaccent);border:0;border-radius:var(--r);box-shadow:0 10px 24px rgba(30,34,110,.40);font-size:var(--fs-m);font-weight:600;transform:translateX(-50%)}
+#toast.show{transform:translateX(-50%)}
+#toast.bad{background:var(--danger);color:#fff}
+.note{background:var(--pill);border:0;border-radius:20px;color:var(--ink);font-size:var(--fs-s);margin:8px 0;padding:10px 16px}
+.note .ib{min-height:44px;font-size:var(--fs-s);margin-top:8px}
+#hist{margin-top:6px}
+#hist .sec2{display:none}
+#hist .chips{flex-wrap:nowrap;overflow-x:auto;padding:2px 0 0;gap:8px;scrollbar-width:none}
+#hist .chip{flex:none;font-size:var(--fs-s)}
+@media (max-height:900px){
+:root{--fs-xl:38px;--fs-l:28px}
+.card{margin-top:8px}
+header{padding:10px 16px 2px}
+.hrow{margin-top:4px;gap:2px 14px}
+.tool{padding:0 16px 12px}
+.langbar{margin-bottom:6px;padding:4px 16px}
+.dirrow .ib{min-height:36px}
+#trIn{min-height:48px;margin:6px 0;padding:6px 16px;border-radius:20px}
+.bigbtn{min-height:48px}
+.micbtn{width:50px;min-height:48px}
+#trOut:empty{min-height:70px}
+.bub{margin:4px 0 6px;padding:4px 16px}
+.bub .rth,.bub .rro{line-height:1.1}
+.actrow{margin-top:6px}
+.speakbtn,.savebtn.sm{min-height:42px;padding:4px 18px}
+.actrow select{padding:4px 18px}
+.note{margin:2px 0;padding:6px 14px}
+#hist{display:none}
+.tabbar{padding:4px 4px}
+.tabbar svg{width:24px;height:24px}
+}
+@media (max-height:900px){
+.card{margin-top:6px}
+header{padding:6px 16px 0}
+.hrow{margin-top:2px;gap:0 14px}
+.tool{padding:0 16px 10px}
+.langbar{margin-bottom:4px;padding:2px 16px}
+.dirrow{padding:3px}
+.dirrow .ib{min-height:34px}
+#trIn{min-height:44px;margin:4px 0}
+.bigbtn{min-height:44px}
+.micbtn{width:46px;min-height:44px}
+.micbtn svg{width:26px;height:26px}
+.bub{margin:2px 0 4px;padding:2px 16px}
+.actrow{margin-top:4px}
+.speakbtn,.savebtn.sm{min-height:38px;padding:2px 16px}
+.actrow select{padding:2px 16px;min-height:38px}
+.tabbar{bottom:calc(6px + env(safe-area-inset-bottom,0px));padding:2px 4px;border-radius:24px}
+.tabbar svg{width:22px;height:22px}
+.tabbar button{gap:0}
+.note{margin:0;padding:4px 12px}
+}
+.dirrow .ib{min-width:0;overflow:hidden;text-overflow:ellipsis;padding:2px 4px}
+.tabbar button{min-width:0;overflow:hidden;text-overflow:ellipsis;padding:2px 0}
+/* single weight, smaller categories, no status line */
+*,*::before,*::after{font-weight:500!important;font-style:normal}
+#now{display:none!important}
+.chips{gap:6px;padding:10px 14px 0 18px}
+.chip{font-size:var(--fs-s);padding:3px 14px 3px 10px;gap:6px}
+.chip::before{width:12px;height:12px}
+.sec{font-size:var(--fs-m);margin:16px 0 8px}
+.sec::before{width:14px;height:14px}
+.tabbar button{padding:2px 0;letter-spacing:0}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="card top">
+<header>
+  <div class="row">
+    <h1><span class="fl">🇹🇭</span> <span class="tt">Phil's Translator</span></h1>
+    <button class="ib big" id="setBtn" aria-label="Settings">⚙︎</button>
+    <button class="ib" id="editBtn">Edit</button>
+  </div>
+  <div class="hrow">
+    <label class="sw" aria-label="Polite ending"><input type="checkbox" id="polT"><span class="trk"></span><span id="polTxt">Polite: off</span></label>
+    <label class="spd" for="spd"><span>Speed</span><span aria-hidden="true">🐢</span><input type="range" id="spd" min="0.4" max="1.2" step="0.05" value="0.9"></label>
+  </div>
+  <div id="now"></div>
+</header>
+<section class="tool" id="tool">
+  <label class="langbar" for="lang">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>
+    <span class="lb-t"><span class="lb-s">Choose from <b id="lbCount">19</b> languages</span><span id="lbName" class="lb-n">Thai</span></span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    <select id="lang" aria-label="Language"></select>
+  </label>
+  <div class="dirrow"><button class="ib on" id="dirEn">English → Thai</button><button class="ib" id="dirTh">Thai → English</button></div>
+  <textarea id="trIn" rows="2" maxlength="400" placeholder="Type English, or tap the mic…"></textarea>
+  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div id="trOut"></div>
+  <div id="hist"></div>
+</section>
+</div>
+<div class="card board">
+<div class="boardhead"><div class="sec2">Phrase board</div><input id="q" type="search" placeholder="Search phrases">
+  <div class="hint">Press and hold a tile to edit, move or delete it.</div></div>
+<div class="chips" id="chips"></div>
+<main id="main"></main>
+</div>
+<button class="fab" id="fab" aria-label="Add phrase">+</button>
+<nav class="tabbar" id="tabbar" aria-label="Main">
+  <button data-go="tr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4"/></svg>Translate</button>
+  <button data-go="board"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>Phrases</button>
+  <button data-go="add"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Add</button>
+  <button data-go="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Settings</button>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="addD">
+  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0">Add a phrase</h3><div class="row"><button class="ib" id="addCancel">Close</button><button class="ib savebtn sm" id="addGo">Save</button></div></div>
+  <label for="en">English (type this and tap Translate)</label>
+  <input id="en" placeholder="Coffee, please">
+  <button class="ib" id="tr" style="margin-top:8px;display:none">✨ Translate to Thai</button>
+  <button class="ib savebtn" id="addGo2" style="margin-top:12px">💾 Save phrase</button>
+  <div id="trs" style="font-size:var(--fs-s);color:var(--mute);min-height:18px;margin-top:6px"></div>
+  <label for="th" id="thLbl">Thai text (leave empty to translate automatically)</label>
+  <input id="th" lang="th" placeholder="เช่น ขอกาแฟหน่อย">
+  <label for="ro">Romanization (optional)</label>
+  <input id="ro" placeholder="khor gaa-fae noi">
+  <label for="cat">Category</label>
+  <select id="cat"></select>
+  <input id="catNew" placeholder="New category name" style="display:none;margin-top:8px">
+  <datalist id="cats"></datalist>
+</dialog>
+
+<dialog id="edD">
+  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0">Edit phrase</h3><div class="row"><button class="ib" id="edCancel">Close</button><button class="ib savebtn sm" id="edSave">Save</button></div></div>
+  <label for="eth" id="edLbl">Thai text (spoken aloud)</label>
+  <input id="eth" lang="th">
+  <label for="ero">Romanization</label>
+  <input id="ero">
+  <label for="eph">Sounds like (English letters)</label>
+  <input id="eph" autocomplete="off">
+  <label for="een">English meaning</label>
+  <input id="een">
+  <label for="ecat">Move to category</label>
+  <select id="ecat"></select>
+  <input id="ecatNew" placeholder="New category name" style="display:none;margin-top:8px">
+  <button class="ib savebtn" id="edSave2" style="margin-top:12px">💾 Save changes</button>
+  <button class="ib" id="edDel" style="margin-top:10px;width:100%;color:#ef8f8a;border-color:#ef8f8a">🗑 Delete this phrase</button>
+  <div id="eds" style="min-height:18px;margin-top:8px;font-size:var(--fs-s);font-weight:700"></div>
+</dialog>
+
+<dialog id="setD">
+  <h3 style="margin:0">Settings</h3>
+  <label for="pol">Speaker (sets which polite ending to use; turn it on or off with the Polite switch at the top)</label>
+  <select id="pol">
+    <option value="m">ครับ khrap: male speaker</option>
+    <option value="f">ค่ะ / คะ kha: female speaker</option>
+  </select>
+  <label for="voice">Thai voice</label>
+  <select id="voice"></select>
+  <label class="ck"><input type="checkbox" id="sLight"> Light theme. Off = dark theme</label>
+  <label class="ck"><input type="checkbox" id="sRo"> Show phonetics (how it sounds)</label>
+  <label class="ck"><input type="checkbox" id="sEn"> Show English</label>
+  <label>Changes for the next release</label>
+  <div class="row" style="gap:8px"><button class="ib" id="expChg" style="flex:1">Export my changes</button><button class="ib" id="expCopy">Copy</button></div>
+  <div class="hint">Your added phrases, edits, deletions and translations. Send me the file and I'll build them into the next version.</div>
+  <label for="mmEmail">Translation email (optional)</label>
+  <input id="mmEmail" type="email" placeholder="you@example.com">
+  <div class="hint">Gives a bigger free daily translation limit for the translate-all feature.</div>
+  <label for="aiKey">Claude API key (optional)</label>
+  <input id="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
+  <div class="hint">Gives better translations plus English phonetics for any phrase. Stored only on this device. Get one at console.anthropic.com.</div>
+  <label>Save my edits into the app</label>
+  <button class="ib" id="bakeDl" style="width:100%">Download new index.html with my edits</button>
+  <label for="ghRepo">GitHub repository (owner/name)</label>
+  <input id="ghRepo" placeholder="owner/repository" autocomplete="off">
+  <label for="ghToken">GitHub token</label>
+  <input id="ghToken" type="password" placeholder="github_pat_…" autocomplete="off">
+  <button class="ib savebtn sm" id="ghPub" style="margin-top:10px;width:100%">Publish my edits to GitHub</button>
+  <label class="ck"><input type="checkbox" id="ghAuto"> Publish automatically 30 seconds after I make a change</label>
+  <div class="hint" id="pubOut">Needs a fine-grained token with Contents: read and write for this repository only. Stored only on this device.</div>
+  <button class="ib" id="testTr" style="width:100%;margin-top:12px">Test translation</button>
+  <div class="hint" id="testOut"></div>
+  <div class="hint">Version: 11 Oct 2026, build 15</div>
+  <label>Backup (everything on this device)</label>
+  <div class="row"><button class="ib" id="exp" style="flex:1">Export backup</button><button class="ib" id="imp" style="flex:1">Import backup</button></div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+  <div id="bs" style="font-size:var(--fs-s);color:var(--mute);min-height:18px;margin-top:6px"></div>
+  <div class="act" style="justify-content:space-between">
+    <button class="ib warn" id="reset">Reset phrases</button>
+    <button class="ib pri" id="setClose">Done</button>
+  </div>
+</dialog>
+
+<script>
+const BAKED=/*B*/null/*E*/;
+const D={
+"Basics":["สวัสดี|sa-wat-dee|Hello","ขอบคุณ|khop khun|Thank you","ไม่เป็นไร|mai pen rai|You're welcome / no problem","ขอโทษ|khor thot|Sorry / excuse me","ใช่|chai|Yes (that's right)","ไม่|mai|No","ได้|dai|OK / can do","ไม่ได้|mai dai|Can't / not allowed","ลาก่อน|laa gon|Goodbye","เข้าใจแล้ว|khao jai laeo|I understand","ไม่เข้าใจ|mai khao jai|I don't understand","พูดช้าๆ ได้ไหม|phuut chaa-chaa dai mai|Can you speak slowly?","พูดอีกครั้งได้ไหม|phuut eek khrang dai mai|Can you say it again?","พูดภาษาไทยได้นิดหน่อย|phuut phaa-saa thai dai nit noi|I speak a little Thai","พูดภาษาอังกฤษได้ไหม|phuut phaa-saa ang-grit dai mai|Do you speak English?"],
+"Eating":["ขอเมนูหน่อย|khor may-nuu noi|Menu, please","ขอน้ำเปล่า|khor nam plao|Water, please","ขอเช็คบิลหน่อย|khor chek bin noi|Check, please","อร่อยมาก|a-roi maak|Delicious","ไม่เผ็ด|mai phet|Not spicy","เผ็ดนิดหน่อย|phet nit noi|A little spicy","ไม่ใส่ผักชี|mai sai phak chee|No coriander","กินมังสวิรัติ|gin mang-sa-wi-rat|I'm vegetarian","แพ้ถั่วลิสง|phae thua li-song|I'm allergic to peanuts","ขออีกหนึ่ง|khor eek neung|One more, please","ห่อกลับบ้าน|hor glap baan|Takeaway, please"],
+"Getting around":["ห้องน้ำอยู่ที่ไหน|hong nam yuu thi nai|Where's the toilet?","ไปสนามบิน|pai sa-naam bin|To the airport","ไปโรงแรม|pai rong raem|To the hotel","เปิดมิเตอร์ได้ไหม|poet mi-tter dai mai|Can you use the meter?","จอดที่นี่|jort thi nii|Stop here","เลี้ยวซ้าย|liao saai|Turn left","เลี้ยวขวา|liao khwaa|Turn right","ตรงไป|trong pai|Straight ahead","ไกลไหม|glai mai|Is it far?","สถานีรถไฟฟ้าอยู่ที่ไหน|sa-thaa-nii rot fai faa yuu thi nai|Where's the skytrain station?"],
+"Shopping":["ราคาเท่าไหร่|raa-khaa thao rai|How much?","แพงไป|phaeng pai|Too expensive","ลดได้ไหม|lot dai mai|Can you discount it?","ขอดูอันนี้หน่อย|khor duu an nii noi|Can I see this one?","เอาอันนี้|ao an nii|I'll take this","จ่ายด้วยบัตรได้ไหม|jaai duay bat dai mai|Can I pay by card?","มีไซส์ใหญ่กว่านี้ไหม|mii sai yai gwaa nii mai|Do you have a bigger size?"],
+"Numbers":["หนึ่ง|neung|1","สอง|song|2","สาม|saam|3","สี่|sii|4","ห้า|haa|5","หก|hok|6","เจ็ด|jet|7","แปด|paet|8","เก้า|gao|9","สิบ|sip|10","ร้อย|roi|100","พัน|phan|1,000"],
+"Social":["สบายดีไหม|sa-baai dii mai|How are you?","สบายดี|sa-baai dii|I'm fine","ยินดีที่ได้รู้จัก|yin dii thii dai ruu jak|Nice to meet you","คุณชื่ออะไร|khun cheu a-rai|What's your name?","สนุกมาก|sa-nuk maak|Really fun","สวยมาก|suay maak|Beautiful","เจอกันใหม่|jer gan mai|See you again"],
+"Emergency":["ช่วยด้วย|chuay duay|Help!","เรียกตำรวจ|riak tam-ruat|Call the police","เรียกรถพยาบาล|riak rot pha-yaa-baan|Call an ambulance","โรงพยาบาลอยู่ที่ไหน|rong pha-yaa-baan yuu thi nai|Where's the hospital?","ไม่สบาย|mai sa-baai|I feel unwell","หลงทาง|long thaang|I'm lost"],
+"Film production":["แอคชั่น|aek-chan|Action!|-","คัท|khat|Cut!|-","ผ่าน|phaan|Good, approved","อีกเทค|eek thek|One more take","เงียบ|ngiap|Quiet, please|-","พร้อม|phrom|Ready|-","ทุกคนเข้าตำแหน่ง|thuk khon khao tam-naeng|Everyone to your positions|-","ฉากต่อไป|chaak tor pai|Next scene|-","พักก่อน|phak gon|Take a break","เลิกกอง|loek gong|That's a wrap|-","กองถ่าย|gong thaai|Film set|-","ถ่ายทำ|thaai tham|Filming / shooting|-","ตารางถ่ายทำ|taa-raang thaai tham|Shooting schedule|-","บท|bot|Script|-","ผู้กำกับ|phuu gam-gap|Director|-","ผู้กำกับภาพ|phuu gam-gap phaap|Cinematographer (DP)|-","ผู้ช่วยผู้กำกับ|phuu chuay phuu gam-gap|Assistant director|-","ผู้อำนวยการสร้าง|phuu am-nuay-gaan sang|Producer|-","นักแสดง|nak sa-daeng|Actor|-","ทีมงาน|thiim ngaan|Crew|-","กล้อง|klong|Camera|-","ย้ายกล้อง|yaai klong|Move the camera|-","ไฟ|fai|Light|-","ไฟสว่างไป|fai sa-waang pai|The light is too bright","ไมค์|mai|Microphone|-","เสียงดังไป|siang dang pai|Too loud","ขอดูมอนิเตอร์หน่อย|khor duu mon-ni-toe noi|Can I see the monitor?","เครื่องแต่งกาย|khrueang taeng gaai|Costume|-","แต่งหน้า|taeng naa|Makeup|-","อุปกรณ์ประกอบฉาก|up-pa-gon pra-gop chaak|Props|-","ตัดต่อ|tat tor|Editing|-"],
+"On set":["เซ็ตต่อไป|set tor pai|Next set-up|-","ไปต่อ|pai tor|Moving on|-","เริ่มถ่าย|roem thaai|Start shooting|-","ฉากที่หนึ่ง เทคสอง|chaak thii neung thek song|Scene one, take two|-","ซ้อมก่อน|sorm gon|Rehearse first|-","ถ่ายซ้ำ|thaai sam|Reshoot / retake|-","ตั้งกล้อง|tang klong|Set up the camera|-","ตั้งไฟ|tang fai|Set up the lights|-","มุมกล้อง|mum klong|Camera angle|-","ภาพมุมกว้าง|phaap mum gwaang|Wide shot|-","แพนกล้อง|phaen klong|Pan the camera|-","ซูมเข้า|suum khao|Zoom in|-","ซูมออก|suum ok|Zoom out|-","โฟกัส|foh-gat|Focus|-","ภาพเบลอ|phaap bler|Out of focus|-","ไมค์บูม|mai buum|Boom mic|-","เช็คเสียงหน่อย|chek siang noi|Sound check, please","ปิดเสียงโทรศัพท์|pit siang thoo-ra-sap|Silence your phones|-","ห้ามเข้า|haam khao|Do not enter|-","ยืนตรงนี้|yuen trong nii|Stand here|-","มองกล้อง|mong klong|Look at the camera|-","อย่ามองกล้อง|yaa mong klong|Don't look at the camera|-","พูดเสียงดังขึ้น|phuut siang dang khuen|Speak louder|-","ช้ากว่านี้|chaa gwaa nii|Slower|-","เร็วกว่านี้|reo gwaa nii|Faster|-","ทำอีกครั้ง|tham eek khrang|Do it again|-","ดีมาก|dii maak|Very good","พักกินข้าว|phak gin khaao|Lunch break","เวลาเรียกตัว|we-laa riak tua|Call time|-","ขอเวลาเตรียมฉากหน่อย|khor we-laa triam chaak noi|I need a moment to set up the scene","ขออนุญาตถ่ายทำที่นี่ได้ไหม|khor a-nu-yaat thaai tham thii nii dai mai|May we film here?","ต้องขอใบอนุญาตถ่ายทำไหม|tong khor bai a-nu-yaat thaai tham mai|Do we need a filming permit?","ขอบคุณทุกคน|khop khun thuk khon|Thanks, everyone"]
+};
+const KEY="thaisb.v2",Q=/(ไหม|ไหน|อะไร|เท่าไหร่|เหรอ|หรือเปล่า)$/;
+let S={items:[],pol:"m",polite:false,rate:0.9,slow:false,voice:"",ro:true,en:true,lang:"th",light:false,deleted:[]},cat="All",edit=false,qs="";
+const $=id=>document.getElementById(id);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function defaults(){const a=[];for(const c in D)D[c].forEach(r=>{const[t,ro,en,f]=r.split("|");a.push({id:uid(),th:t,ro,en,cat:c,np:f==="-"?1:0})});return a}
+const PATCHES={onset2:{cat:"On set",items:["เซ็ตต่อไป|set tor pai|Next set-up|-","ไปต่อ|pai tor|Moving on|-"]}};
+function applyPatches(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  let ch=false;
+  for(const k in PATCHES){
+    if(S.applied.includes(k))continue;
+    const P=PATCHES[k],at=S.items.findIndex(i=>i.cat===P.cat);
+    P.items.forEach((r,n)=>{
+      const[t,ro,en,f]=r.split("|");
+      if(S.items.some(i=>i.th===t&&i.cat===P.cat))return;
+      const it={id:uid(),th:t,ro,en,cat:P.cat,np:f==="-"?1:0};
+      if(at<0)S.items.push(it);else S.items.splice(at+n,0,it);
+    });
+    S.applied.push(k);ch=true;
+  }
+  if(ch)save();
+}
+const P2={key:'crew2',rm:['aek-chan','khat','phaan','eek thek','thuk khon khao tam-naeng','chaak tor pai','sorm gon','thaai sam','yuen trong nii','mong klong','yaa mong klong','phuut siang dang khuen','chaa gwaa nii','reo gwaa nii','tham eek khrang','dii maak','roem thaai'],add:[
+['Film production',[`ฝ่ายกล้อง|faai klong|Camera department|-`,`ฝ่ายไฟ|faai fai|Lighting department|-`,`ฝ่ายเสียง|faai siang|Sound department|-`,`ฝ่ายกริป|faai grip|Grip department|-`,`ฝ่ายศิลป์|faai sin|Art department|-`,`ฝ่ายเครื่องแต่งกาย|faai khrueang taeng gaai|Costume department|-`,`ฝ่ายแต่งหน้า|faai taeng naa|Makeup department|-`,`ฝ่ายสร้างฉาก|faai sang chaak|Set construction|-`,`ฝ่ายโปรดักชัน|faai pro-dak-chan|Production department|-`,`ฝ่ายตัดต่อ|faai tat tor|Editing department|-`,`ตากล้อง|taa klong|Camera operator|-`,`ผู้ช่วยตากล้อง|phuu chuay taa klong|Camera assistant|-`,`หัวหน้าช่างไฟ|hua-naa chaang fai|Gaffer (head electrician)|-`,`ช่างไฟ|chaang fai|Electrician|-`,`กริป|grip|Grip|-`,`ช่างบันทึกเสียง|chaang ban-thuek siang|Sound recordist|-`,`คนถือไมค์บูม|khon thue mai buum|Boom operator|-`,`ผู้ออกแบบงานสร้าง|phuu ok-baep ngaan sang|Production designer|-`,`ผู้กำกับศิลป์|phuu gam-gap sin|Art director|-`,`ผู้ออกแบบเครื่องแต่งกาย|phuu ok-baep khrueang taeng gaai|Costume designer|-`,`ช่างแต่งหน้า|chaang taeng naa|Makeup artist|-`,`ผู้ดูแลความต่อเนื่อง|phuu duu-lae khwaam tor-nuang|Script supervisor (continuity)|-`,`ผู้จัดการกองถ่าย|phuu jat-gaan gong thaai|Production manager|-`,`ผู้ประสานงาน|phuu pra-saan ngaan|Production coordinator|-`,`พีเอ|phii-ee|Production assistant (PA)|-`,`ผู้ตัดต่อ|phuu tat tor|Editor|-`,`ช่างภาพนิ่ง|chaang phaap ning|Still photographer|-`,`คุณอยู่ฝ่ายไหน|khun yuu faai nai|Which department are you in?`,`อยู่ฝ่ายกล้อง|yuu faai klong|I'm in the camera department`,`ใครเป็นหัวหน้าฝ่ายนี้|khrai pen hua-naa faai nii|Who's the head of this department?`,`ขอคุยกับผู้ช่วยผู้กำกับหน่อย|khor khui gap phuu chuay phuu gam-gap noi|Can I talk to the assistant director?`]],
+['Technical',[`เลนส์|len|Lens|-`,`ขาตั้งกล้อง|khaa tang klong|Tripod|-`,`ดอลลี่|don-lii|Dolly|-`,`เครน|khreen|Crane|-`,`สเตดิแคม|sa-te-dii-khaem|Steadicam|-`,`ขาตั้งไฟ|khaa tang fai|Light stand|-`,`ไฟแอลอีดี|fai ael-ii-dii|LED light|-`,`ฟิลเตอร์|fin-ter|Filter|-`,`เครื่องปั่นไฟ|khrueang pan fai|Generator|-`,`สายไฟ|saai fai|Power cable|-`,`ปลั๊กพ่วง|plak phuang|Extension cord|-`,`แบตเตอรี่|baet-toe-rii|Battery|-`,`การ์ดความจำ|gaat khwaam jam|Memory card|-`,`หูฟัง|huu fang|Headphones|-`,`วอล์กกี้ทอล์กกี้|wok-gii thok-gii|Walkie-talkie|-`,`ไมค์ไร้สาย|mai rai-saai|Wireless mic|-`,`ไมค์ปกเสื้อ|mai pok-seua|Lavalier mic|-`,`รูรับแสง|ruu rap saeng|Aperture|-`,`ความไวแสง|khwaam wai saeng|ISO|-`,`ความเร็วชัตเตอร์|khwaam reo chat-toe|Shutter speed|-`,`เฟรมเรต|frem-ret|Frame rate|-`,`ไวต์บาลานซ์|wai-baa-laan|White balance|-`,`ความชัดลึก|khwaam chat leuk|Depth of field|-`,`ระดับเสียง|ra-dap siang|Audio level|-`,`ใช้เลนส์อะไร|chai len a-rai|Which lens are you using?`,`ตั้งเฟรมเรตเท่าไหร่|tang frem-ret thao rai|What's the frame rate set to?`,`แบตหมด|baet mot|The battery's dead`,`ขอแบตเพิ่ม|khor baet phoem|I need more batteries`,`มีเสียงรบกวน|mii siang rop-guan|There's background noise`,`มีเสียงสะท้อน|mii siang sa-thon|There's an echo`,`สัญญาณขาด|san-yaan khaat|The signal dropped`,`ไฟดับ|fai dap|The power's out`]]
+]};
+function applyPatches2(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P2.key))return;
+  S.items=S.items.filter(i=>i.t||!P2.rm.includes(i.ro));
+  P2.add.forEach(([cat,rows])=>rows.forEach(r=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }));
+  S.applied.push(P2.key);save();
+}
+const P3={key:'sfx1',add:[['SFX',[`เพิ่มควันหน่อย|phoem khwan noi|More smoke, please`,`ลดควันหน่อย|lot khwan noi|Less smoke, please`,`ซ่อนตัว|son tua|Hide|-`,`เคลียร์เฟรม|khliia frem|Clear the frame|-`,`ตรงนั้นปลอดภัย|trong nan plot-phai|It's safe there`,`ออกจากเฟรม|ok jaak frem|Get out of shot|-`,`ควันหนาไป|khwan naa pai|Too much smoke`,`ควันบางไป|khwan baang pai|Not enough smoke`,`ปลอดภัยแล้ว|plot-phai laeo|All clear, it's safe now`,`ถอยหลัง|thoi lang|Stand back|-`,`ทุกคนถอยหลัง|thuk khon thoi lang|Everyone stand back|-`,`ระวัง|ra-wang|Careful!|-`,`ระวังร้อน|ra-wang ron|Careful, hot|-`,`ระวังลื่น|ra-wang luen|Careful, slippery|-`,`อันตราย|an-ta-raai|Danger|-`,`หยุดเดี๋ยวนี้|yut diao nii|Stop right now|-`,`รอก่อน|ror gon|Wait|-`,`เตรียมพร้อม|triam phrom|Standing by|-`,`เปิดเครื่อง|poet khrueang|Turn it on|-`,`ปิดเครื่อง|pit khrueang|Turn it off|-`,`เปิดพัดลมไล่ควัน|poet phat lom lai khwan|Turn on the fan to clear the smoke|-`,`ควัน|khwan|Smoke|-`,`หมอก|mok|Fog / haze|-`,`เครื่องควัน|khrueang khwan|Smoke machine|-`,`เครื่องทำหมอก|khrueang tham mok|Fog machine|-`,`ฝนเทียม|fon thiam|Rain effect|-`,`น้ำยาควัน|nam-yaa khwan|Smoke fluid|-`,`ขอเวลาเติมน้ำยาหน่อย|khor we-laa term nam-yaa noi|I need a moment to refill the fluid`,`ถังดับเพลิง|thang dap phloeng|Fire extinguisher|-`,`เจ้าหน้าที่ความปลอดภัย|chao-naa-thii khwaam plot-phai|Safety officer|-`,`ฝ่ายเอฟเฟกต์พิเศษ|faai e-fek phi-set|Special effects department|-`,`ช่างเอฟเฟกต์พิเศษ|chaang e-fek phi-set|SFX technician|-`]]]};
+function applyP3(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P3.key))return;
+  P3.add.forEach(([cat,rows])=>rows.forEach(r=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }));
+  S.applied.push(P3.key);save();
+}
+function applyP4(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('sfx2'))return;
+  const t='ขอบเฟรม';
+  if(!S.items.some(i=>i.th===t&&i.cat==='SFX')){
+    const it={id:uid(),th:t,ro:'khop frem',en:'Edge of frame',cat:'SFX',np:1};
+    let at=S.items.findIndex(i=>i.cat==='SFX'&&i.ro==='ok jaak frem');
+    if(at<0)S.items.forEach((x,n)=>{if(x.cat==='SFX')at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }
+  S.applied.push('sfx2');save();
+}
+function applyP5(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('crafty1'))return;
+  const rows=[`คราฟต์เซอร์วิสอยู่ที่ไหน|khraap-soe-wit yuu thii nai|Where's craft services (crafty)?`,`โต๊ะอาหารว่างอยู่ที่ไหน|to aa-haan waang yuu thii nai|Where's the snack table?`];
+  let at=S.items.findIndex(i=>i.cat==='On set'&&i.ro==='phak gin khaao');
+  if(at<0)S.items.forEach((x,n)=>{if(x.cat==='On set')at=n});
+  rows.forEach((r,k)=>{
+    const[t,ro,en]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat==='On set'))return;
+    const it={id:uid(),th:t,ro,en,cat:'On set',np:0};
+    if(at<0)S.items.push(it);else S.items.splice(at+1+k,0,it);
+  });
+  S.applied.push('crafty1');save();
+}
+function applyP6(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('sched1'))return;
+  const cat='Schedule & meals';
+  const rows=[`กาแฟอยู่ที่ไหน|gaa-fae yuu thii nai|Where's the coffee?`,`ขอกาแฟหนึ่งแก้ว|khor gaa-fae neung gaeo|One coffee, please`,`น้ำดื่มอยู่ที่ไหน|nam duem yuu thii nai|Where's the drinking water?`,`มื้อเช้าอยู่ที่ไหน|meu chao yuu thii nai|Where's breakfast?`,`พักกินข้าวกี่โมง|phak gin khaao gii mohng|When's lunch?`,`พักกี่นาที|phak gii naa-thii|How long is the break?`,`คอลไทม์กี่โมง|khon-thaim gii mohng|What's my call time?`,`ต้องมากี่โมง|tong maa gii mohng|What time do I need to arrive?`,`พรุ่งนี้คอลไทม์กี่โมง|phrung-nii khon-thaim gii mohng|What's tomorrow's call time?`,`วันนี้เลิกกองกี่โมง|wan-nii loek gong gii mohng|What time do we wrap today?`,`เมื่อวานเลิกกองกี่โมง|meua-waan loek gong gii mohng|What time did we wrap yesterday?`,`ถ่ายเสร็จกี่โมง|thaai set gii mohng|What time do we finish filming?`,`ตอนนี้กี่โมง|ton-nii gii mohng|What time is it now?`,`วันนี้มีกี่ฉาก|wan-nii mii gii chaak|How many scenes are there today?`,`พรุ่งนี้ถ่ายที่ไหน|phrung-nii thaai thii nai|Where are we filming tomorrow?`,`จุดนัดพบอยู่ที่ไหน|jut nat-phop yuu thii nai|Where's the meeting point?`,`ที่จอดรถอยู่ที่ไหน|thii jot rot yuu thii nai|Where's the parking?`,`ห้องแต่งตัวอยู่ที่ไหน|hong taeng tua yuu thii nai|Where's the dressing room?`,`ใครเป็นผู้ช่วยผู้กำกับ|khrai pen phuu chuay phuu gam-gap|Who's the assistant director?`,`ขอดูตารางถ่ายทำหน่อย|khor duu taa-raang thaai tham noi|Can I see the shooting schedule?`,`ต้องใส่ชุดอะไร|tong sai chut a-rai|What should I wear?`];
+  rows.forEach(r=>{
+    const[t,ro,en]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    S.items.push({id:uid(),th:t,ro,en,cat,np:0});
+  });
+  S.applied.push('sched1');save();
+}
+function applyP7(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('items7'))return;
+  [['Technical',`รถโฟล์คลิฟท์|rot fohk-lif|Forklift|-`],['Technical',`ไฟสามเฟส|fai saam fet|3-phase power|-`],['Technical',`เก้าสิบองศา|gao-sip ong-saa|90 degrees|-`],['SFX',`เปิดฝน|poet fon|Rain on|-`],['SFX',`ปิดฝน|pit fon|Rain off|-`],['SFX',`แฟลมบาร์|flaem baa|Flame bar|-`],['SFX',`เจลติดไฟ|jen tit fai|Flame gel|-`],['SFX',`ไฟแช็ก|fai chaek|Lighter|-`],['SFX',`ถุงมือ|thung mue|Gloves|-`],['SFX',`แว่นตานิรภัย|waen taa ni-ra-phai|Safety glasses|-`],['Emergency',`ชุดปฐมพยาบาล|chut pa-thom pha-yaa-baan|First aid kit|-`],['Eating',`เบียร์|bia|Beer|-`],['Getting around',`มอเตอร์ไซค์|mo-toe-sai|Motorcycle|-`],['On set',`อีกหนึ่ง|eek neung|One more|-`],['On set',`หันซ้าย|han saai|Turn left|-`],['On set',`หันขวา|han khwaa|Turn right|-`],['On set',`เอาออกไป|ao ok pai|Take away (remove it)|-`]].forEach(([cat,r])=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push('items7');save();
+}
+function applyP8(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('tosfx'))return;
+  [`รถโฟล์คลิฟท์`,`เครน`,`เปิดฝน`,`ปิดฝน`,`ไฟสามเฟส`,`เอาออกไป`,`เบียร์`,`มอเตอร์ไซค์`,`ชุดปฐมพยาบาล`,`แฟลมบาร์`,`เจลติดไฟ`,`ไฟแช็ก`,`อีกหนึ่ง`,`เก้าสิบองศา`,`หันซ้าย`,`หันขวา`,`ถุงมือ`,`แว่นตานิรภัย`].forEach(th=>{
+    const k=S.items.findIndex(i=>i.th===th);
+    if(k<0)return;
+    const it=S.items.splice(k,1)[0];it.cat='SFX';
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat==='SFX')at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push('tosfx');save();
+}
+function applyP9(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('food1'))return;
+  [['Schedule & meals',`อาทิตย์ที่แล้ว|aa-thit thii laeo|Last week|-`],['Eating',`ไข่|khai|Egg|-`],['Eating',`ไข่เป็ด|khai pet|Duck egg|-`],['Eating',`ไก่ย่าง|gai yaang|Grilled chicken|-`],['Eating',`ไข่ต้ม|khai tom|Boiled egg|-`],['Eating',`ไข่ดาว|khai daao|Fried egg|-`],['Eating',`หวาน|waan|Sweet`],['Eating',`ไม่หวาน|mai waan|Not sweet`],['Eating',`เผ็ด|phet|Spicy`],['Eating',`ไม่เผ็ดมาก|mai phet maak|Not too spicy`],['Eating',`ปู|puu|Crab|-`],['Eating',`ปลา|plaa|Fish|-`],['Eating',`ปลาหมึก|plaa meuk|Squid|-`],['Eating',`กุ้งมังกร|gung mang-gon|Lobster|-`],['Eating',`กุ้ง|gung|Shrimp|-`]].forEach(([cat,r])=>{
+    const[t,ro,en,f]=r.split('|');
+    if(S.items.some(i=>i.th===t&&i.cat===cat))return;
+    const it={id:uid(),th:t,ro,en,cat,np:f==='-'?1:0};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push('food1');save();
+}
+function applyP10(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('polite0'))return;
+  S.polite=false;S.applied.push('polite0');save();
+}
+function applyP11(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('look2'))return;
+  S.light=true;S.applied.push('look2');save();
+}
+function applyP12(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes('neutral3'))return;
+  S.items.forEach(it=>{
+    if(it.lang&&it.lang!=="th"){it.tr=it.tr||{};it.tr[it.lang]={t:it.th,ro:it.ro||"",auto:it.auto?1:0};it.th="";it.ro="";it.auto=0}
+    delete it.lang;
+  });
+  S.light=false;S.applied.push('neutral3');save();
+}
+const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const bkey=i=>i.cat+"|"+(i.th||i.en);
+function fromBaked(){
+  S.items=JSON.parse(JSON.stringify(BAKED.items));
+  S.deleted=(BAKED.deleted||[]).slice();
+  S.applied=(BAKED.applied||[]).slice();
+  S.seen=Object.keys(D);
+}
+function bakedMerge(){
+  if(!(BAKED&&BAKED.items&&BAKED.v))return;
+  if((S.bakedV||0)>=BAKED.v)return;
+  const have=new Set(BAKED.items.map(bkey));
+  const mine=S.items.filter(i=>i.t&&!have.has(bkey(i)));
+  fromBaked();mine.forEach(i=>S.items.push(i));
+  S.bakedV=BAKED.v;save();
+}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("rate" in d))S.rate=d.slow?0.55:0.9;if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}bakedMerge();applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return localStorage.getItem(KEY)!==null}catch(e){return false}}
+function testStore(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
+const STORE_OK=testStore();
+let toastT;
+function toast(msg,bad){const t=$("toast");t.textContent=msg;t.className="show"+(bad?" bad":"");clearTimeout(toastT);toastT=setTimeout(()=>{t.className=""},2600)}
+function say(msg,ok){const t=$("trs");t.textContent=msg;t.style.color=ok?"#7bd88f":"#ff6b6b";t.style.fontWeight="700"}
+const LANGS=[
+{c:"th",n:"Thai",tts:"th-TH",mm:"th"},{c:"vi",n:"Vietnamese",tts:"vi-VN",mm:"vi"},{c:"lo",n:"Lao",tts:"lo-LA",mm:"lo"},{c:"km",n:"Khmer",tts:"km-KH",mm:"km"},
+{c:"zh",n:"Chinese (Mandarin)",tts:"zh-CN",mm:"zh-CN"},{c:"ja",n:"Japanese",tts:"ja-JP",mm:"ja"},{c:"ko",n:"Korean",tts:"ko-KR",mm:"ko"},
+{c:"id",n:"Indonesian",tts:"id-ID",mm:"id"},{c:"ms",n:"Malay",tts:"ms-MY",mm:"ms"},{c:"tl",n:"Filipino",tts:"fil-PH",mm:"tl"},{c:"hi",n:"Hindi",tts:"hi-IN",mm:"hi"},
+{c:"es",n:"Spanish",tts:"es-ES",mm:"es"},{c:"fr",n:"French",tts:"fr-FR",mm:"fr"},{c:"de",n:"German",tts:"de-DE",mm:"de"},{c:"it",n:"Italian",tts:"it-IT",mm:"it"},
+{c:"pt",n:"Portuguese",tts:"pt-BR",mm:"pt"},{c:"ru",n:"Russian",tts:"ru-RU",mm:"ru"},{c:"ar",n:"Arabic",tts:"ar-SA",mm:"ar"},{c:"uz",n:"Uzbek",tts:"uz-UZ",mm:"uz"}];
+const NAT={th:"ไทย",vi:"Tiếng Việt",lo:"ລາວ",km:"ខ្មែរ",zh:"中文",ja:"日本語",ko:"한국어",id:"Bahasa Indonesia",ms:"Bahasa Melayu",tl:"Filipino",hi:"हिन्दी",es:"Español",fr:"Français",de:"Deutsch",it:"Italiano",pt:"Português",ru:"Русский",ar:"العربية",uz:"Oʻzbekcha"};
+function LG(){return LANGS.find(l=>l.c===S.lang)||LANGS[0]}
+const ORDER=["On set","Schedule & meals","SFX","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const r=c=>{const k=ORDER.indexOf(c);return k<0?99:k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
+
+// Polite particle: ครับ (male) / ค่ะ statements, คะ questions (female)
+function phonFromRo(ro){
+  if(!ro)return"";
+  const V={a:"a",aa:"ah",ai:"y",aai:"y",ao:"ow",aao:"ow",aeo:"ehow",ae:"eh",e:"eh",ee:"ee",eo:"ehoo",eu:"uh",eua:"uha",uea:"uha",i:"i",ia:"eea",iao:"yow",ii:"ee",o:"oh",oe:"er",oi:"oy",oo:"oo",u:"oo",ua:"ooa",uay:"ooay",ue:"uh",uu:"oo",ui:"ooey",oa:"wah"};
+  return ro.toLowerCase().split(/[\s\-]+/).filter(Boolean).map(sy=>{
+    let x=sy.replace(/[^a-z]/g,"");
+    if(!x)return"";
+    if(x==="thi")return"tee";
+    if(/([bcdfghjklmnprstwy])\1/.test(x)||(/er$/.test(x)&&x.length>3))return x;
+    x=x.replace(/^khr/,"kr").replace(/^kh/,"k").replace(/^ph/,"p").replace(/^th/,"t");
+    const m=x.match(/^([^aeiou]*)([aeiou]+)(.*)$/);
+    if(!m)return x;
+    const ini=m[1],fin=m[3];let v=m[2];
+    if(v==="o"&&/^r/.test(fin))return ini+"or"+fin.slice(1);
+    if(v==="o"&&fin==="h")return ini+"oh";
+    if(v==="ai"&&!ini)v="eye";
+    return ini+(Object.prototype.hasOwnProperty.call(V,v)?V[v]:v)+fin;
+  }).filter(Boolean).join(" ");
+}
+function sx(r){return r.ph||(r.ro?(S.lang==="th"?phonFromRo(r.ro):r.ro):"")}
+function full(i){
+  let th=i.th,ro=i.ro||"";
+  if(S.polite&&S.pol&&(i.lang||S.lang)==="th"&&i.cat!=="Numbers"&&!i.np){
+    const q=Q.test(i.th);
+    th+=S.pol==="m"?"ครับ":(q?"คะ":"ค่ะ");
+    if(ro)ro+=S.pol==="m"?" krap":" ka";
+  }
+  return{th,ro,en:i.en||""};
+}
+
+let thV=[],allV=[],voicesLoaded=false;
+function pickVoice(){
+  const code=LG().tts.split("-")[0].toLowerCase();
+  const list=allV.filter(v=>v.lang.toLowerCase().replace("_","-").startsWith(code));
+  if(S.lang==="th"&&S.voice){const v=list.find(v=>v.voiceURI===S.voice);if(v)return v}
+  return list[0];
+}
+function loadVoices(){
+  if(!("speechSynthesis" in window))return;
+  const all=speechSynthesis.getVoices();
+  if(all.length)voicesLoaded=true;
+  allV=all;thV=all.filter(v=>/^th/i.test(v.lang));
+  $("voice").innerHTML=thV.map(v=>`<option value="${esc(v.voiceURI)}">${esc(v.name)}</option>`).join("")||"<option value=''>None found</option>";
+  if(S.voice)$("voice").value=S.voice;
+  render();
+}
+function speak(i){
+  const f=full(i);
+  if(!("speechSynthesis" in window)){toast("Speech isn't supported in this browser.",true);return}
+  const ss=window.speechSynthesis;
+  const u=new SpeechSynthesisUtterance(f.th);
+  u.lang=LG().tts;u.rate=S.rate||0.9;
+  const v=pickVoice();
+  if(v){u.voice=v;u.lang=v.lang}
+  u.onerror=e=>{if(e&&e.error&&e.error!=="canceled"&&e.error!=="interrupted")toast("Speech error: "+e.error,true)};
+  const go=()=>{try{ss.resume()}catch(e){}ss.speak(u)};
+  if(ss.speaking||ss.pending){ss.cancel();setTimeout(go,150)}else go();
+  if(!v&&voicesLoaded)toast("No "+LG().n+" voice found on this phone. Add one in Settings > Accessibility > Spoken Content > Voices.",true);
+}
+
+const CMAP={"On set":"#f0d58c","SFX":"#f2a99b","Film production":"#8db4e6","Technical":"#9fcfae","Schedule & meals":"#f4c7a1","Basics":"#d8cdea","Eating":"#f0a8c0","Getting around":"#7cc7c4","Shopping":"#b9a7e0","Numbers":"#c9dc9a","Social":"#f4b8a0","Emergency":"#ef8f8a"};
+const PAL=["#f0d58c","#8db4e6","#9fcfae","#b9a7e0","#f0a8c0","#7cc7c4","#c9dc9a","#f4b8a0"];
+function colr(c){if(c==="All")return"#e9e5f4";if(c==="__r")return"#f3d27a";if(CMAP[c])return CMAP[c];let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]}
+function render(){
+  const cs=cats();
+  const hasR=S.items.some(i=>i.t);
+  if(cat!=="All"&&cat!=="__r"&&!cs.includes(cat))cat="All";
+  if(cat==="__r"&&!hasR)cat="All";
+  $("chips").innerHTML=["All",...(hasR?["__r"]:[]),...cs].map(c=>`<button class="chip${c===cat?" on":""}" style="--c:${colr(c)}" data-c="${esc(c)}">${c==="__r"?"Recently added":esc(c)}</button>`).join("");
+  $("cats").innerHTML=cs.map(c=>`<option value="${esc(c)}">`).join("");
+  const ql=qs.toLowerCase();
+  const hit=i=>{if(!ql)return true;const v=vw(i);return (v.th+" "+v.ro+" "+v.en).toLowerCase().includes(ql)};
+  let h="";
+  if(!STORE_OK)h+=`<div class="note" style="border-color:#ff6b6b;color:#fff">⚠ This browser is blocking storage (private browsing?), so your added phrases will be lost when you close the page.</div>`;
+  if(voicesLoaded&&!pickVoice())h+=`<div class="note">No ${LG().n} voice found on this device, so phrases may sound wrong. Add one in your device's text-to-speech or accessibility settings.</div>`;
+  {const miss=missingCount();if(miss>0)h+=`<div class="note"><span id="trLeft">${miss}</span> phrases still to translate. They load as you scroll and need internet. Tiles marked auto are machine translated. <button class="ib" id="trAll">Translate all now</button></div>`}
+  if(edit)h+=`<div class="note">Edit mode: tap a phrase to change it or move it to another category. Tap the red × to delete.</div>`;
+  (cat==="All"?cs:[cat]).forEach(c=>{
+    const list=c==="__r"?S.items.filter(i=>i.t&&hit(i)).sort((a,b)=>b.t-a.t).slice(0,20):S.items.filter(i=>i.cat===c&&hit(i));
+    if(!list.length)return;
+    if(cat==="All")h+=`<div class="sec" style="--c:${colr(c)}">${esc(c)}</div>`;
+    h+=`<div class="grid">`+list.map(tileHTML).join("")+`</div>`;
+  });
+  $("main").className=edit?"edit":"";
+  $("main").innerHTML=h+(/class="grid"/.test(h)?"":`<div class="empty">Nothing here. Tap + to add a phrase.</div>`);
+  $("editBtn").classList.toggle("on",edit);
+  $("editBtn").textContent=edit?"Done":"Edit";
+  observeTiles();
+}
+
+$("chips").onclick=e=>{const b=e.target.closest(".chip");if(b){cat=b.dataset.c;render();window.scrollTo(0,0)}};
+$("q").oninput=e=>{qs=e.target.value.trim();render()};
+function deleteItem(id){
+  const it0=S.items.find(i=>i.id===id);if(!it0)return;
+  if(!it0.t){S.deleted=S.deleted||[];S.deleted.push({th:(it0.orig&&it0.orig.th)||it0.th,cat:(it0.orig&&it0.orig.cat)||it0.cat,en:it0.en||""})}
+  S.items=S.items.filter(i=>i.id!==id);
+  const ok=save();render();toast(ok?"Deleted":"⚠ Deleted, but not saved",!ok);markChanged();
+}
+let LPT=null,LONG=false,LX=0,LY=0;
+const mainEl=$("main");
+mainEl.addEventListener("pointerdown",e=>{
+  const t=e.target.closest(".tile");if(!t||edit)return;
+  LONG=false;LX=e.clientX;LY=e.clientY;clearTimeout(LPT);
+  LPT=setTimeout(()=>{LONG=true;if(navigator.vibrate)navigator.vibrate(15);openEdit(t.dataset.id)},550);
+});
+mainEl.addEventListener("pointermove",e=>{if(Math.abs(e.clientX-LX)>10||Math.abs(e.clientY-LY)>10)clearTimeout(LPT)});
+["pointerup","pointercancel","pointerleave"].forEach(ev=>mainEl.addEventListener(ev,()=>clearTimeout(LPT)));
+mainEl.addEventListener("contextmenu",e=>{if(e.target.closest(".tile"))e.preventDefault()});
+$("main").onclick=async e=>{
+  if(LONG){LONG=false;return}
+  if(e.target.closest("#trAll")){translateAll();return}
+  const d=e.target.closest("[data-del]");
+  if(d){e.stopPropagation();deleteItem(d.dataset.del);return}
+  const t=e.target.closest(".tile");
+  if(!t)return;
+  if(edit){openEdit(t.dataset.id);return}
+  const it=S.items.find(i=>i.id===t.dataset.id);
+  if(!it)return;
+  t.classList.add("hit");setTimeout(()=>t.classList.remove("hit"),180);
+  if(!getText(it,S.lang).t){
+    toast("Translating…");
+    try{if(!(await translateItem(it,S.lang)))throw 0;save();paintTile(it.id)}
+    catch(err){toast("Couldn't translate: "+why(err),true);return}
+  }
+  speak({...it,...vw(it)});
+};
+$("editBtn").onclick=()=>{edit=!edit;render()};
+$("fab").onclick=()=>{["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("catNew").value="";fillCat();$("addD").showModal();$("en").focus()};
+$("addCancel").onclick=()=>$("addD").close();
+let SM=null;
+async function translate(){
+  const en=$("en").value.trim();
+  if(!en||!SM)return false;
+  $("trs").textContent="Translating…";
+  try{
+    const r=await SM.json(`Translate this English phrase into natural, polite ${LG().n} for a traveler. Do not add a politeness particle at the end. Reply with ONLY JSON: {"th":"${LG().n} text","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
+    if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(r.cat&&cats().includes(r.cat))$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Save.";return true}
+  }catch(e){}
+  $("trs").textContent="Couldn't translate. You can type the translation yourself.";
+  return false;
+}
+let DIR="en",RES=null;
+function setDir(d){
+  DIR=d;$("dirEn").classList.toggle("on",d==="en");$("dirTh").classList.toggle("on",d==="th");
+  $("trIn").placeholder=d==="en"?"Type English…":"Type or paste "+LG().n+"…";
+  $("trIn").lang=d==="th"?S.lang:"en";$("trIn").value="";$("trOut").innerHTML="";
+}
+async function mm(q,pair){
+  const ac=new AbortController();const to=setTimeout(()=>ac.abort(),9000);
+  try{
+    const r=await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(q)+"&langpair="+pair+(S.mmEmail?"&de="+encodeURIComponent(S.mmEmail):""),{signal:ac.signal});
+    if(!r.ok)throw 0;
+    const d=await r.json();
+    const t=d&&d.responseData&&d.responseData.translatedText;
+    if(t&&/USED ALL AVAILABLE/i.test(String(t))){QUOTA=true;throw 0}
+    if(!t||/MYMEMORY|QUERY LENGTH/i.test(String(t)))throw 0;
+    return String(t).trim();
+  }finally{clearTimeout(to)}
+}
+function updatePol(){$("polTxt").textContent="Polite: "+(S.polite?"on":"off")}
+function shown(r){return r.dir==="en"?full({th:r.th,ro:sx(r),en:r.en,cat:"x"}):{th:r.th,ro:sx(r),en:r.en}}
+function reshow(){if(RES)showRes(RES.th,RES.ro,RES.en,RES.note,RES.auto,true,RES.ph)}
+function showRes(th,ro,en,note,auto,nohist,ph){
+  RES={th,ro,en,ph:ph||"",auto:auto?1:0,note:note||"",dir:DIR};
+  if(DIR==="en"&&S.lang==="th"&&!sx(RES)&&!SM&&!S.aiKey)note=(note?note+" ":"")+"No English sounds for this phrase yet. Add a Claude key in Settings, or save it and tap Edit to type them.";
+  const f=shown(RES);
+  const cs=cats();
+  const opts=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="th">${esc(f.th)}</div>${f.ro?`<div class="rro">${esc(f.ro)}</div>`:""}<div class="ren">${esc(en)}</div></div>`+
+   `<div class="row actrow"><button class="ib speakbtn" data-a="sp">🔊 Speak</button><button class="ib" data-a="cp">Copy</button></div>`+
+   `<div class="row actrow"><select id="rcat" aria-label="Save to category" style="flex:1;min-width:0">${opts}<option value="__new">＋ New category…</option></select><button class="ib savebtn sm" data-a="save">💾 Save</button></div><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px">`+
+   (note?`<div style="margin-top:10px;font-size:var(--fs-s);font-weight:600">${esc(note)}</div>`:"");
+  $("rcat").value=(cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:cs[0];
+  $("rcat").onchange=()=>{const n=$("rcat").value==="__new";$("rcatNew").style.display=n?"":"none";if(n)$("rcatNew").focus()};
+  if(!nohist)addHist({th,ro,en,ph});
+}
+function addHist(h){
+  S.hist=(S.hist||[]).filter(x=>!(x.th===h.th&&x.en===h.en));
+  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",lang:S.lang});
+  S.hist=S.hist.slice(0,12);save();renderHist();
+}
+function renderHist(){
+  const h=(S.hist||[]).map((x,i)=>[x,i]).filter(([x])=>(x.lang||"th")===S.lang);
+  $("hist").innerHTML=h.length?`<div class="sec2" style="margin-top:16px">Recent translations</div><div class="chips" style="padding:8px 0 0">${h.map(([x,i])=>`<button class="chip" data-h="${i}" style="--c:#8a8ab5">${esc(x.en.length>28?x.en.slice(0,26)+"…":x.en)}</button>`).join("")}<button class="chip" data-h="clear" style="--c:#ff6b6b">Clear</button></div>`:"";
+}
+$("hist").onclick=e=>{
+  const b=e.target.closest("[data-h]");if(!b)return;
+  if(b.dataset.h==="clear"){S.hist=[];save();renderHist();return}
+  const x=S.hist[+b.dataset.h];if(x)showRes(x.th,x.ro,x.en,"",false,true,x.ph||"");
+};
+async function doTr(){
+  const q=$("trIn").value.trim();
+  if(!q)return;
+  $("trOut").innerHTML=`<div style="margin-top:12px">Translating…</div>`;
+  try{
+    const from=DIR==="en"?"en":S.lang,to=DIR==="en"?S.lang:"en";
+    const r=await aiTr(q,from,to);
+    if(r){
+      if(DIR==="en")showRes(r.t,r.ro,q,"",false,false,r.ph);
+      else showRes(q,"",r.t,"",false);
+    }else if(DIR==="en"){
+      LASTRM="";
+      let t=await webTr(q,"en",LG().mm);
+      let ro="",ph="";
+      if(S.lang==="th"){
+        t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();
+        if(!/[\u0e00-\u0e7f]/.test(t))throw 0;
+        const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));
+        if(k){ro=k.ro||"";ph=k.ph||""}
+      }else ph=LASTRM;
+      showRes(t,ro,q,"Automatic translation: please check it before relying on it.",true,false,ph);
+    }else{
+      const e=await webTr(q,LG().mm,"en");
+      showRes(q,"",e,"Automatic translation: please check it before relying on it.",true);
+    }
+  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b;font-weight:700">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
+}
+$("dirEn").onclick=()=>setDir("en");
+$("dirTh").onclick=()=>setDir("th");
+$("trGo").onclick=doTr;
+$("trOut").onclick=e=>{
+  const b=e.target.closest("[data-a]");if(!b||!RES)return;
+  if(b.dataset.a==="sp")speak({th:RES.th,ro:RES.ro,en:RES.en,cat:"x",np:RES.dir==="en"?0:1});
+  else if(b.dataset.a==="cp"){navigator.clipboard.writeText(shown(RES).th).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true))}
+  else if(b.dataset.a==="save"){
+    let c=$("rcat").value;
+    if(c==="__new"){c=$("rcatNew").value.trim();if(!c){$("rcatNew").focus();toast("Type a category name",true);return}}
+    S.items.push(newItem(RES.th,RES.ro||"",RES.en,c,RES.auto,RES.ph||""));markChanged();
+    const ok=save();render();
+    toast(ok?"✓ Saved to "+c:"⚠ Not saved permanently",!ok);
+    b.textContent="✓ Saved";b.disabled=true;
+  }
+};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let REC=null,RECON=false;
+function micMsg(m,bad){$("trOut").innerHTML=`<div style="margin-top:12px;font-weight:700;${bad?"color:#e5745f":""}">${esc(m)}</div>`}
+function startMic(){
+  if(RECON){try{REC.stop()}catch(e){}return}
+  if(!SR){micMsg("Voice input isn't supported in this browser. Tap the microphone key on your keyboard to dictate instead.",false);$("trIn").focus();return}
+  try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}
+  let r;
+  try{r=new SR()}catch(e){micMsg("Couldn't start voice input. Use the microphone key on your keyboard instead.",true);$("trIn").focus();return}
+  REC=r;
+  r.lang=DIR==="th"?LG().tts:"en-US";r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+  let got=false,err=null;const t0=Date.now();
+  r.onstart=()=>{RECON=true;$("trMic").classList.add("rec");micMsg("Listening… speak now",false)};
+  r.onresult=ev=>{
+    let txt="";for(let i=0;i<ev.results.length;i++)txt+=ev.results[i][0].transcript;
+    $("trIn").value=txt;
+    if(ev.results[ev.results.length-1].isFinal)got=true;
+  };
+  r.onerror=ev=>{err=ev&&ev.error?ev.error:"unknown"};
+  r.onend=()=>{
+    RECON=false;$("trMic").classList.remove("rec");
+    const txt=$("trIn").value.trim();
+    if(txt&&(got||!err)){doTr();return}
+    if(err==="not-allowed"||err==="service-not-allowed")micMsg("Voice input is blocked ("+err+"). On iPhone check Settings > Privacy & Security > Speech Recognition, Settings > General > Keyboard > Enable Dictation, and Safari's microphone permission (aA > Website Settings). The keyboard's microphone key also works.",true);
+    else if(err==="audio-capture")micMsg("No microphone found.",true);
+    else if(err==="network")micMsg("Voice input needs an internet connection.",true);
+    else if(err==="no-speech")micMsg("I didn't hear anything. Tap the mic, wait for Listening…, then speak.",true);
+    else if(!err||err==="aborted")micMsg(Date.now()-t0<3000?"If you just allowed the microphone, tap the mic again and speak.":"Voice input stopped. Tap the mic to try again.",false);
+    else micMsg("Voice input error: "+err+". The keyboard's microphone key also works.",true);
+  };
+  micMsg("Starting microphone…",false);
+  try{r.start()}catch(e){RECON=false;micMsg("Couldn't start the microphone ("+(e&&e.name?e.name:"error")+"). Use the microphone key on your keyboard instead.",true);$("trIn").focus()}
+}
+$("trMic").style.display="";
+$("trMic").onclick=startMic;
+function refreshLang(){
+  const L=LG();
+  const ordered=LANGS.slice().sort((a,b)=>a.c==="th"?-1:b.c==="th"?1:a.n.localeCompare(b.n));
+  $("lang").innerHTML=ordered.map(l=>`<option value="${l.c}">${l.n} · ${NAT[l.c]||""}</option>`).join("");$("lang").value=S.lang;
+  $("lbName").textContent=L.n+" · "+(NAT[L.c]||"");$("lbCount").textContent=LANGS.length;
+  $("dirEn").textContent="English → "+L.n;$("dirTh").textContent=L.n+" → English";
+  $("thLbl").textContent=L.n+" text (leave empty to translate automatically)";
+  $("edLbl").textContent=L.n+" text (spoken aloud)";
+  $("th").placeholder=S.lang==="th"?"เช่น ขอกาแฟหน่อย":"";
+  $("trIn").placeholder=DIR==="en"?"Type English…":"Type or paste "+L.n+"…";
+  const sw=$("polT").parentElement;if(sw)sw.style.display=S.lang==="th"?"":"none";
+}
+$("lang").onchange=e=>{S.lang=e.target.value;save();cat="All";qs="";$("q").value="";setDir("en");refreshLang();render();renderHist()};
+$("tabbar").onclick=e=>{
+  const b=e.target.closest("[data-go]");if(!b)return;
+  const g=b.dataset.go;
+  if(g==="tr"){$("tool").scrollIntoView({behavior:"smooth",block:"start"});$("trIn").focus({preventScroll:true})}
+  else if(g==="board"){document.querySelector(".boardhead").scrollIntoView({behavior:"smooth",block:"start"})}
+  else if(g==="add")$("fab").click();
+  else if(g==="set")$("setBtn").click();
+};
+let QUOTA=false,PUMP=false,DIRTY=0,TIO=null;const TQ=[],FAIL={};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function nm(c){if(c==="en")return"English";const l=LANGS.find(x=>x.c===c);return l?l.n:c}
+function mmCode(c){if(c==="en")return"en";const l=LANGS.find(x=>x.c===c);return l?l.mm:c}
+function getText(i,L){
+  if(L==="th")return{t:i.th||"",ro:i.ro||"",ph:i.ph||"",auto:i.auto?1:0};
+  const x=i.tr&&i.tr[L];
+  return x?{t:x.t||"",ro:x.ro||"",ph:x.ph||"",auto:x.auto?1:0}:{t:"",ro:"",ph:"",auto:0};
+}
+function setText(i,L,t,ro,auto,ph){
+  if(L==="th"){i.th=t;i.ro=ro||"";i.ph=ph||"";i.auto=auto?1:0}
+  else{if(!t){if(i.tr)delete i.tr[L];return}i.tr=i.tr||{};i.tr[L]={t,ro:ro||"",ph:ph||"",auto:auto?1:0}}
+}
+function vw(i){const x=getText(i,S.lang);return{th:x.t,ro:sx(x),auto:x.auto,en:i.en||""}}
+function srcFor(i){
+  if(i.en)return{q:i.en,from:"en"};
+  if(i.th)return{q:i.th,from:"th"};
+  if(i.tr)for(const L in i.tr)if(i.tr[L].t)return{q:i.tr[L].t,from:L};
+  return null;
+}
+function newItem(text,ro,en,c,auto,ph){
+  const it={id:uid(),th:"",ro:"",ph:"",en:en||"",cat:c,t:Date.now(),np:0};
+  setText(it,S.lang,text,ro,auto,ph);
+  return it;
+}
+let LASTERR="",LASTRM="";
+function why(e){
+  if(e&&e.name==="AbortError")return"timed out";
+  if(e instanceof TypeError)return"couldn't connect (offline, or blocked by the browser)";
+  if(e&&e.message)return e.message;
+  return"no usable answer";
+}
+function hintHost(){return(location.hostname.indexOf("github.io")<0&&location.protocol!=="file:")?" If you're on the Claude preview, web translation is blocked there, so use your GitHub link.":""}
+async function gtx(q,from,to){
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),9000);
+  try{
+    const r=await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=rm&ie=UTF-8&oe=UTF-8&sl="+encodeURIComponent(from)+"&tl="+encodeURIComponent(to)+"&q="+encodeURIComponent(q),{signal:ac.signal});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    const t=((d&&d[0])||[]).map(x=>(x&&x[0])||"").join("").trim();
+    if(!t)throw new Error("empty answer");
+    const rmE=((d&&d[0])||[]).find(x=>x&&x[0]==null&&typeof x[2]==="string");
+    LASTRM=rmE?rmE[2].normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z ]/g," ").replace(/\s+/g," ").trim().toLowerCase():"";
+    return t;
+  }finally{clearTimeout(tm)}
+}
+async function webTr(q,from,to){
+  const errs=[];
+  try{return await gtx(q,from,to)}catch(e){errs.push("Google: "+why(e))}
+  try{return await mm(q,from+"|"+to)}catch(e){errs.push("MyMemory: "+(QUOTA?"daily free limit reached":why(e)))}
+  LASTERR=errs.join(" / ");
+  throw new Error(LASTERR);
+}
+async function aiTr(q,from,to){
+  const prompt=`Translate this ${nm(from)} text into ${nm(to)} for a film crew or traveler. Use natural wording and no politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","ro":"standard romanization if the translation is not written in Latin letters, otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English"}\nText: ${q}`;
+  let r=null;
+  if(SM){r=await SM.json(prompt)}
+  else if(S.aiKey){
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":S.aiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:400,messages:[{role:"user",content:prompt}]})});
+    if(!resp.ok){let m="";try{const e=await resp.json();m=e.error&&e.error.message?": "+e.error.message:""}catch(x){}throw new Error("Claude "+resp.status+m)}
+    const j=await resp.json();
+    const txt=(j.content||[]).map(c=>c.text||"").join("");
+    r=JSON.parse(txt.replace(/```json|```/g,"").trim());
+  }else return null;
+  if(!r||!r.t)throw new Error("Claude gave no translation");
+  return{t:String(r.t).trim(),ro:r.ro||"",ph:r.ph||""};
+}
+async function translateItem(it,L){
+  const s=srcFor(it);
+  if(!s||s.from===L)return false;
+  let t="",ro="",ph="";
+  const r=await aiTr(s.q,s.from,L);
+  if(r){t=r.t;ro=r.ro;ph=r.ph}
+  else{
+    LASTRM="";
+    t=await webTr(s.q,mmCode(s.from),mmCode(L));
+    if(L!=="th"&&LASTRM)ph=LASTRM;
+  }
+  if(L==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw 0}
+  if(!t)throw 0;
+  setText(it,L,t,ro,1,ph);
+  return true;
+}
+function missingCount(){let n=0;S.items.forEach(i=>{const s=srcFor(i);if(!getText(i,S.lang).t&&s&&s.from!==S.lang)n++});return n}
+function enqueueTr(id,L){if(TQ.some(x=>x.id===id&&x.lang===L))return;TQ.push({id,lang:L});pumpTr()}
+async function pumpTr(){
+  if(PUMP)return;PUMP=true;
+  while(TQ.length){
+    const job=TQ.shift();
+    const it=S.items.find(i=>i.id===job.id);
+    if(!it||getText(it,job.lang).t)continue;
+    if((FAIL[job.id+job.lang]||0)>Date.now())continue;
+    try{
+      if(await translateItem(it,job.lang)){DIRTY++;if(job.lang===S.lang)paintTile(it.id);if(DIRTY>=10){save();DIRTY=0}}
+    }catch(e){
+      FAIL[job.id+job.lang]=Date.now()+60000;
+      if(QUOTA){TQ.length=0;QUOTA=false;toast("Daily free translation limit reached. Try again tomorrow, or add an email in Settings.",true)}
+    }
+    const el=$("trLeft");if(el)el.textContent=missingCount();
+    await sleep(250);
+  }
+  PUMP=false;if(DIRTY){save();DIRTY=0}
+}
+function tileHTML(i){
+  const v=vw(i),f=full({th:v.th,ro:v.ro,en:v.en,cat:i.cat,np:i.np,lang:S.lang});
+  const need=!v.th;
+  return `<button class="tile${need?" pend":""}"${need?' data-need="1"':""} style="--c:${colr(i.cat)}" data-id="${i.id}"><span class="th" lang="${S.lang}" dir="auto">${need?"…":esc(f.th)}</span>${S.ro&&f.ro?`<small class="ro">${esc(f.ro)}</small>`:""}${S.en&&f.en?`<small class="en">${esc(f.en)}</small>`:""}${v.auto&&!need?`<small class="auto">⚠ auto</small>`:""}${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`;
+}
+function paintTile(id){
+  const el=document.querySelector('.tile[data-id="'+id+'"]');
+  const it=S.items.find(i=>i.id===id);
+  if(el&&it)el.outerHTML=tileHTML(it);
+}
+function observeTiles(){
+  if(TIO){TIO.disconnect();TIO=null}
+  const need=document.querySelectorAll(".tile[data-need]");
+  if(!need.length)return;
+  if(!("IntersectionObserver" in window)){need.forEach((el,n)=>{if(n<40)enqueueTr(el.dataset.id,S.lang)});return}
+  TIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){TIO.unobserve(e.target);enqueueTr(e.target.dataset.id,S.lang)}})},{rootMargin:"400px"});
+  need.forEach(el=>TIO.observe(el));
+}
+function translateAll(){S.items.forEach(i=>{if(!getText(i,S.lang).t&&srcFor(i))enqueueTr(i.id,S.lang)});toast("Translating everything…")}
+
+function changesData(){
+  const added=S.items.filter(i=>i.t).map(i=>({th:i.th||"",ro:i.ro||"",ph:i.ph||"",en:i.en||"",cat:i.cat,np:i.np||0,tr:i.tr||undefined}));
+  const edited=S.items.filter(i=>!i.t&&i.edited).map(i=>({from:i.orig||{th:i.th,cat:i.cat},now:{th:i.th||"",ro:i.ro||"",ph:i.ph||"",en:i.en||"",cat:i.cat}}));
+  const translations=[];
+  S.items.forEach(i=>{if(i.t||!i.tr)return;for(const L in i.tr){const x=i.tr[L];translations.push({th:(i.orig&&i.orig.th)||i.th,cat:(i.orig&&i.orig.cat)||i.cat,en:i.en||"",lang:L,text:x.t,ro:x.ro||"",auto:x.auto?1:0})}});
+  return{app:"thai-soundboard-changes",version:1,exportedAt:new Date().toISOString(),added,edited,deleted:S.deleted||[],translations};
+}
+async function saveFile(name,text,mime){
+  if(window.__dlsave){await window.__dlsave.save({filename:name,data:text});return}
+  const blob=new Blob([text],{type:mime||"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+$("expChg").onclick=async()=>{
+  const d=changesData();const n=d.added.length+d.edited.length+d.deleted.length+d.translations.length;
+  try{await saveFile("my-soundboard-changes.json",JSON.stringify(d,null,1));$("bs").textContent="Saved "+n+" change"+(n===1?"":"s")+". Send me the file and I'll build them into the next release."}
+  catch(e){$("bs").textContent="Couldn't save the file. Try Copy instead."}
+};
+$("expCopy").onclick=async()=>{
+  try{await navigator.clipboard.writeText(JSON.stringify(changesData()));$("bs").textContent="Changes copied. Paste them into a message to me."}
+  catch(e){$("bs").textContent="Couldn't copy."}
+};
+$("mmEmail").onchange=e=>{S.mmEmail=e.target.value.trim();save()};
+$("testTr").onclick=async()=>{
+  const o=$("testOut");o.textContent="Testing…";
+  const lines=[];
+  try{lines.push("Google: OK → "+await gtx("hello","en","th"))}catch(e){lines.push("Google: "+(e&&e.name?e.name+" "+(e.message||""):"error"))}
+  try{lines.push("MyMemory: OK → "+await mm("hello","en|th"))}catch(e){QUOTA=false;lines.push("MyMemory: "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}
+  lines.push("Page: "+(location.hostname||location.protocol));
+  lines.push(SM?"Claude translation: available":"Claude translation: not available here");
+  o.innerHTML=lines.map(esc).join("<br>");
+};
+
+let PT=null;
+function markChanged(){
+  if(S.ghAuto&&S.ghToken&&S.ghRepo){clearTimeout(PT);PT=setTimeout(async()=>{try{await ghPublish();toast("✓ Published to GitHub")}catch(e){toast("Auto-publish failed: "+why(e),true)}},30000)}
+}
+function bakePayload(){return{v:Date.now(),items:S.items,deleted:S.deleted||[],applied:S.applied||[]}}
+function bakeInto(src,pl){
+  const slot=/\/\*B\*\/[\s\S]*?\/\*E\*\//;
+  if(!slot.test(src))throw new Error("this file has no update slot, so upload the latest index.html first");
+  const json=JSON.stringify(pl).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029").replace(/\*\//g,"*\\/");
+  return src.replace(slot,()=>"/*B*/"+json+"/*E*/");
+}
+async function getSource(){
+  const u=location.href.split("#")[0].split("?")[0];
+  const r=await fetch(u,{cache:"no-store"});
+  if(!r.ok)throw new Error("couldn't read this page ("+r.status+")");
+  return await r.text();
+}
+function ghB64(str){
+  const bytes=new TextEncoder().encode(str);let bin="";const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+async function ghPublish(){
+  const tok=(S.ghToken||"").trim(),repo=(S.ghRepo||"").trim();
+  if(!tok||!repo)throw new Error("add your GitHub repository and token in Settings first");
+  const api="https://api.github.com/repos/"+repo+"/contents/index.html";
+  const H={Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"};
+  const m=await fetch(api,{headers:H,cache:"no-store"});
+  if(!m.ok)throw new Error("GitHub "+m.status+(m.status===401?" (token not accepted)":m.status===404?" (repository or file not found)":""));
+  const mj=await m.json();
+  const raw=await fetch(api,{headers:{...H,Accept:"application/vnd.github.raw+json"},cache:"no-store"});
+  if(!raw.ok)throw new Error("GitHub "+raw.status+" while reading the file");
+  const src=await raw.text();
+  const pl=bakePayload();
+  const out=bakeInto(src,pl);
+  const put=await fetch(api,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify({message:"Update phrases from the app",content:ghB64(out),sha:mj.sha})});
+  if(!put.ok){let msg="";try{msg=(await put.json()).message}catch(e){}throw new Error("GitHub "+put.status+(msg?": "+msg:""))}
+  S.bakedV=pl.v;save();
+}
+$("aiKey").onchange=e=>{S.aiKey=e.target.value.trim();save()};
+$("ghRepo").onchange=e=>{S.ghRepo=e.target.value.trim();save()};
+$("ghToken").onchange=e=>{S.ghToken=e.target.value.trim();save()};
+$("ghAuto").onchange=e=>{S.ghAuto=e.target.checked;save()};
+$("bakeDl").onclick=async()=>{
+  const o=$("pubOut");
+  if(window.__preview){o.textContent="Open your GitHub page (not the Claude preview) to build the file.";return}
+  o.textContent="Building…";
+  try{
+    const src=await getSource();const pl=bakePayload();const out=bakeInto(src,pl);
+    await saveFile("index.html",out,"text/html");
+    S.bakedV=pl.v;save();
+    o.textContent="Saved index.html with your edits. Upload it to GitHub to update the page for everyone.";
+  }catch(e){o.textContent="Couldn't build the file: "+why(e)+". Open the page from your GitHub link and try again."}
+};
+$("ghPub").onclick=async()=>{
+  const o=$("pubOut");o.textContent="Publishing…";
+  try{await ghPublish();o.textContent="Published. GitHub updates the page in about a minute."}
+  catch(e){o.textContent="Couldn't publish: "+why(e)}
+};
+let EID=null;
+function fillECat(sel){
+  const cs=cats();
+  $("ecat").innerHTML=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")+`<option value="__new">＋ New category…</option>`;
+  $("ecat").value=sel;
+  if($("ecat").value!==sel)$("ecat").value=cs[0]||"__new";
+  $("ecatNew").style.display=$("ecat").value==="__new"?"":"none";
+}
+$("ecat").onchange=()=>{const n=$("ecat").value==="__new";$("ecatNew").style.display=n?"":"none";if(n)$("ecatNew").focus()};
+function openEdit(id){
+  const it=S.items.find(i=>i.id===id);if(!it)return;
+  const x=getText(it,S.lang);
+  EID=id;$("eth").value=x.t;$("ero").value=x.ro;$("eph").value=x.ph||"";$("eph").placeholder=sx({ph:"",ro:x.ro})||"e.g. sa wat dee";$("een").value=it.en||"";
+  $("ecatNew").value="";$("eds").textContent="";fillECat(it.cat);$("edD").showModal();
+}
+$("edCancel").onclick=()=>$("edD").close();
+$("edSave").onclick=()=>{
+  const k=S.items.findIndex(i=>i.id===EID);if(k<0)return;
+  const bad=m=>{$("eds").style.color="#ff6b6b";$("eds").textContent=m};
+  const th=$("eth").value.trim(),en=$("een").value.trim();
+  if(!th&&!en)return bad("Type the text or its English meaning.");
+  let c=$("ecat").value;
+  if(c==="__new"){c=$("ecatNew").value.trim();if(!c){$("ecatNew").focus();return bad("Type a name for the new category.")}}
+  const it=S.items[k],moved=it.cat!==c;
+  if(!it.t&&!it.orig)it.orig={th:it.th,cat:it.cat,ro:it.ro||"",ph:it.ph||"",en:it.en||""};
+  setText(it,S.lang,th,$("ero").value.trim(),0,$("eph").value.trim());
+  it.en=en;
+  if(moved){
+    it.cat=c;S.items.splice(k,1);
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===c)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  }
+  if(it.orig){const o=it.orig;it.edited=(it.th!==o.th||it.en!==o.en||it.cat!==o.cat||(it.ro||"")!==(o.ro||"")||(it.ph||"")!==(o.ph||""))?1:0}
+  const ok=save();markChanged();
+  $("edD").close();render();
+  toast(ok?(moved?"✓ Moved to "+c:"✓ Saved"):"⚠ Not saved permanently",!ok);
+};
+$("edSave2").onclick=()=>$("edSave").click();
+$("edDel").onclick=()=>{if(confirm("Delete this phrase?")){const id=EID;$("edD").close();deleteItem(id)}};
+$("edD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();$("edSave").click()}};
+function fillCat(sel){
+  const cs=cats();
+  const pick=sel||((cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:(cs[0]||"__new"));
+  $("cat").innerHTML=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")+`<option value="__new">＋ New category…</option>`;
+  $("cat").value=pick;
+  $("catNew").style.display=$("cat").value==="__new"?"":"none";
+}
+$("cat").onchange=()=>{const n=$("cat").value==="__new";$("catNew").style.display=n?"":"none";if(n)$("catNew").focus()};
+async function webTranslate(en){
+  let t=await webTr(en,"en",LG().mm);
+  if(S.lang==="th"){t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(t))throw new Error("the answer wasn't Thai")}
+  return t;
+}
+async function add(){
+  if(!$("th").value.trim()&&$("en").value.trim()&&SM){await translate();return}
+  let th=$("th").value.trim(),auto=false;
+  if(!th&&$("en").value.trim()){
+    say("Translating…",true);
+    try{th=await webTranslate($("en").value.trim());auto=true}
+    catch(e){say("Couldn't translate: "+why(e)+"."+hintHost()+" Try again, or type the text yourself.",false);return}
+  }
+  if(!th){say("Type an English word first.",false);$("en").focus();return}
+  let c=$("cat").value;
+  if(c==="__new"){c=$("catNew").value.trim();if(!c){say("Type a name for the new category.",false);$("catNew").focus();return}}
+  S.items.push(newItem(th,$("ro").value.trim(),$("en").value.trim(),c,auto));
+  const ok=save();markChanged();cat=c;qs="";$("q").value="";render();
+  $("now").textContent="Added: "+th;
+  ["th","ro","en","catNew"].forEach(k=>$(k).value="");
+  fillCat(c);
+  if(ok){say("✓ Saved "+th+" to "+c+(auto?". Auto-translated, so please check it.":". Add another, or tap Close."),true);toast("✓ Saved: "+th)}
+  else{say("⚠ Added, but this browser can't keep it after you close the page (private browsing?).",false);toast("⚠ Not saved permanently",true)}
+  $("en").focus();
+}
+$("addGo").onclick=add;
+$("addGo2").onclick=add;
+$("addD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName!=="BUTTON"&&e.target.tagName!=="SELECT"){e.preventDefault();add()}};
+$("setBtn").onclick=()=>{
+  if(!S.ghRepo&&/github\.io$/.test(location.hostname)){const rp=location.pathname.split("/")[1];if(rp)S.ghRepo=location.hostname.split(".")[0]+"/"+rp}
+  $("aiKey").value=S.aiKey||"";$("ghToken").value=S.ghToken||"";$("ghRepo").value=S.ghRepo||"";$("ghAuto").checked=!!S.ghAuto;
+  $("mmEmail").value=S.mmEmail||"";$("sLight").checked=!!S.light;$("pol").value=S.pol;$("sRo").checked=S.ro;$("sEn").checked=S.en;$("setD").showModal()};
+$("setClose").onclick=()=>$("setD").close();
+$("pol").onchange=e=>{S.pol=e.target.value;save();render()};
+function applyTheme(){document.documentElement.setAttribute("data-th",S.light?"light":"night")}
+$("sLight").onchange=e=>{S.light=e.target.checked;save();applyTheme()};
+$("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
+$("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
+$("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();save();cat="All";render();$("setD").close()}};
+
+load();applyTheme();refreshLang();render();loadVoices();renderHist();
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
+$("tr").onclick=translate;
+$("polT").checked=S.polite;updatePol();
+$("polT").onchange=e=>{S.polite=e.target.checked;save();updatePol();render();reshow()};
+$("spd").value=S.rate||0.9;
+$("spd").oninput=e=>{S.rate=+e.target.value;save()};
+try{if(window.claude&&claude.use)claude.use("sample").then(s=>{if(s){SM=s;$("tr").style.display=""}}).catch(()=>{})}catch(e){}
+let DL=null;window.__preview=1;
+try{claude.use("downloads").then(d=>{DL=d;window.__dlsave=d}).catch(()=>{})}catch(e){}
+$("exp").onclick=async()=>{
+  if(!DL){$("bs").textContent="Export isn't available here.";return}
+  try{
+    await DL.save({filename:"thai-soundboard-backup.json",data:JSON.stringify({app:"thai-soundboard",v:2,items:S.items},null,1)});
+    $("bs").textContent="Backup saved.";
+  }catch(e){$("bs").textContent=(e&&e.code==="declined")?"Export cancelled.":"Couldn't export a backup."}
+};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";
+  if(!f)return;
+  try{
+    const d=JSON.parse(await f.text());
+    if(!d||!Array.isArray(d.items))throw 0;
+    const have=new Set(S.items.map(i=>i.cat+"|"+(i.th||i.en)));
+    let n=0;
+    d.items.forEach(i=>{
+      if(!i||!(i.th||i.en))return;
+      const c=i.cat||"Custom";
+      if(have.has(c+"|"+(i.th||i.en)))return;
+      S.items.push({id:uid(),th:i.th||"",ro:i.ro||"",en:i.en||"",cat:c,t:i.t,np:i.np,tr:i.tr,edited:i.edited,orig:i.orig,auto:i.auto});n++;
+    });
+    save();render();
+    $("bs").textContent=n+" new phrase"+(n===1?"":"s")+" imported.";
+  }catch(x){$("bs").textContent="That file isn't a valid backup."}
+};
+</script>
+</body>
+</html>
