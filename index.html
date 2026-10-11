@@ -188,6 +188,63 @@ label.langrow{margin:0 0 12px}
 #toast.bad{background:#ef8f8a;border-color:#ef8f8a;color:#2a0d0c}
 .note{background:var(--panel);border:2px solid var(--line);border-radius:16px;color:var(--ink);font-size:19px;margin:8px 0}
 .note .ib{min-height:46px;font-size:19px;margin-top:8px}
+/* ===== compact translator: every control visible on one screen ===== */
+header{padding:6px 12px}
+h1{font-size:21px}
+.hrow{gap:4px 14px;margin-top:6px}
+.sw{font-size:18px;gap:6px}
+.trk{width:50px;height:30px}
+.trk::after{width:20px;height:20px;top:3px;left:3px}
+.sw input:checked+.trk::after{transform:translateX(20px)}
+.spd{flex:1 1 150px;min-width:150px;font-size:18px;gap:6px}
+input[type=range]{min-width:60px;height:36px}
+.ib{min-height:50px;font-size:20px;padding:6px 16px}
+header .ib{min-height:46px}
+.tool{margin:8px;padding:10px}
+.tool select#lang{width:100%;margin-bottom:8px;padding:8px 12px}
+.dirrow{display:flex;gap:8px}
+.dirrow .ib{flex:1;padding:6px 6px;font-size:19px;min-height:48px}
+#trIn{min-height:84px;margin:8px 0;font-size:30px;padding:8px 12px}
+.trbtns{display:flex;gap:8px;align-items:center}
+.bigbtn{min-height:62px;font-size:24px}
+.micbtn{width:66px;min-height:62px;border-radius:50%;flex:none}
+.micbtn svg{width:36px;height:36px}
+.bub{margin:10px 0 0;padding:8px 14px}
+.bub .rth{font-size:40px}
+.bub .rro{font-size:23px}
+.bub .ren{font-size:25px}
+.actrow{gap:8px;margin-top:8px;flex-wrap:nowrap}
+.speakbtn{flex:0 0 auto;min-height:54px;font-size:22px;padding:8px 20px;box-shadow:none}
+.savebtn.sm{min-height:54px;font-size:21px;padding:8px 18px}
+#hist{margin-top:6px}
+#hist .sec2{display:none}
+#hist .chips{flex-wrap:nowrap;overflow-x:auto;padding:4px 0 0;gap:8px;scrollbar-width:none}
+#hist .chip{flex:none;font-size:18px;padding:6px 12px}
+.tabbar{padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+@media (max-height:780px){
+header{padding:4px 12px}
+h1{font-size:19px}
+.hrow{margin-top:2px}
+.ib{min-height:44px;font-size:19px}
+header .ib{min-height:40px}
+.tool{margin:6px;padding:8px}
+.tool select#lang{margin-bottom:6px;padding:4px 12px;font-size:20px}
+.dirrow .ib{min-height:42px;font-size:18px}
+#trIn{min-height:58px;margin:6px 0;font-size:26px;padding:6px 10px}
+.bigbtn{min-height:52px;font-size:22px}
+.micbtn{width:56px;min-height:52px}
+.micbtn svg{width:30px;height:30px}
+.bub{margin-top:6px;padding:4px 12px}
+.bub .rth{font-size:34px}
+.bub .rro{font-size:20px}
+.bub .ren{font-size:22px}
+.actrow{margin-top:6px}
+.speakbtn,.savebtn.sm{min-height:46px;font-size:20px;padding:4px 16px}
+#hist{display:none}
+.tabbar{padding:3px 4px calc(3px + env(safe-area-inset-bottom,0px))}
+.tabbar svg{width:26px;height:26px}
+.tabbar button{font-size:14px}
+}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -205,11 +262,10 @@ label.langrow{margin:0 0 12px}
   <div id="now"></div>
 </header>
 <section class="tool" id="tool">
-  <label class="langrow" for="lang">Language <select id="lang"></select></label>
-  <div class="row" style="gap:8px"><button class="ib on" id="dirEn" style="flex:1">English → Thai</button><button class="ib" id="dirTh" style="flex:1">Thai → English</button></div>
-  <textarea id="trIn" rows="3" maxlength="400" placeholder="Type English…"></textarea>
-  <div class="row" style="gap:8px"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
-  <div class="hint">Tap the mic, wait for "Listening…", then speak. The microphone key on your keyboard works too.</div>
+  <select id="lang" aria-label="Language"></select>
+  <div class="dirrow"><button class="ib on" id="dirEn">English → Thai</button><button class="ib" id="dirTh">Thai → English</button></div>
+  <textarea id="trIn" rows="2" maxlength="400" placeholder="Type English, or tap the mic…"></textarea>
+  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <div id="trOut"></div>
   <div id="hist"></div>
 </section>
@@ -494,12 +550,15 @@ function speak(i){
   const f=full(i);
   $("now").textContent="🔊 "+f.th+(f.ro?"  ·  "+f.ro:"")+(f.en?"  ·  "+f.en:"");
   if(!("speechSynthesis" in window)){$("now").textContent="Speech isn't supported in this browser.";return}
-  speechSynthesis.cancel();
+  const ss=window.speechSynthesis;
   const u=new SpeechSynthesisUtterance(f.th);
   u.lang=LG().tts;u.rate=S.rate||0.9;
   const v=pickVoice();
-  if(v)u.voice=v;
-  speechSynthesis.speak(u);
+  if(v){u.voice=v;u.lang=v.lang}
+  u.onerror=e=>{if(e&&e.error&&e.error!=="canceled"&&e.error!=="interrupted")$("now").textContent="Speech error: "+e.error};
+  const go=()=>{try{ss.resume()}catch(e){}ss.speak(u)};
+  if(ss.speaking||ss.pending){ss.cancel();setTimeout(go,150)}else go();
+  if(!v&&voicesLoaded)toast("No "+LG().n+" voice found on this phone. Add one in Settings > Accessibility > Spoken Content > Voices.",true);
 }
 
 const CMAP={"On set":"#f0d58c","SFX":"#f2a99b","Film production":"#8db4e6","Technical":"#9fcfae","Schedule & meals":"#f4c7a1","Basics":"#d8cdea","Eating":"#f0a8c0","Getting around":"#7cc7c4","Shopping":"#b9a7e0","Numbers":"#c9dc9a","Social":"#f4b8a0","Emergency":"#ef8f8a"};
@@ -597,8 +656,8 @@ function showRes(th,ro,en,note,auto,nohist){
   const cs=cats();
   const opts=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
   $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="th">${esc(f.th)}</div>${f.ro?`<div class="rro">${esc(f.ro)}</div>`:""}<div class="ren">${esc(en)}</div></div>`+
-   `<div class="row" style="margin-top:0;gap:8px;flex-wrap:wrap"><button class="ib speakbtn" data-a="sp">🔊 SPEAK</button><button class="ib" data-a="cp">Copy text</button></div>`+
-   `<label for="rcat" style="margin:14px 0 6px">Save to category</label><select id="rcat" style="width:100%">${opts}<option value="__new">＋ New category…</option></select><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px"><button class="ib savebtn" data-a="save" style="margin-top:12px">💾 Save to board</button>`+
+   `<div class="row actrow"><button class="ib speakbtn" data-a="sp">🔊 Speak</button><button class="ib" data-a="cp">Copy</button></div>`+
+   `<div class="row actrow"><select id="rcat" aria-label="Save to category" style="flex:1;min-width:0">${opts}<option value="__new">＋ New category…</option></select><button class="ib savebtn sm" data-a="save">💾 Save</button></div><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px">`+
    (note?`<div style="margin-top:10px;font-size:16px;font-weight:700">${esc(note)}</div>`:"");
   $("rcat").value=(cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:cs[0];
   $("rcat").onchange=()=>{const n=$("rcat").value==="__new";$("rcatNew").style.display=n?"":"none";if(n)$("rcatNew").focus()};
