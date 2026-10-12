@@ -305,6 +305,9 @@ html,body{overflow-x:hidden;max-width:100%}
 .tile .en{padding-right:0}
 .fav{top:2px;right:2px;bottom:auto}
 .tile:active,.tile.hit{box-shadow:inset 0 0 0 2px var(--accent)}
+#offBar{margin:0 0 8px;padding:6px 16px;border-radius:999px;background:var(--hl);color:var(--ink);font-size:var(--fs-s)}
+#offBar[hidden]{display:none}
+#moreBack[hidden],#moreFresh[hidden]{display:none}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&display=swap" rel="stylesheet">
 </head>
@@ -323,6 +326,7 @@ html,body{overflow-x:hidden;max-width:100%}
   <div id="now"></div>
 </header>
 <section class="tool" id="tool">
+  <div id="offBar" hidden>Offline: saved phrases still work. New translations need internet.</div>
   <label class="langbar" for="lang">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>
     <span class="lb-t"><span class="lb-s">Choose language<span id="lbCount" hidden>19</span></span><span id="lbName" class="lb-n">Thai</span></span>
@@ -387,6 +391,7 @@ html,body{overflow-x:hidden;max-width:100%}
   <select id="ecat"></select>
   <input id="ecatNew" placeholder="New category name" style="display:none;margin-top:8px">
   <button class="ib savebtn" id="edSave2" style="margin-top:12px">💾 Save changes</button>
+  <button class="ib" id="edVerify" style="width:100%;margin-top:10px">✓ Mark as checked by a native speaker</button>
   <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="ib" id="edUp">↑ Up</button><button class="ib" id="edDown">↓ Down</button><button class="ib" id="edTop">Top</button><button class="ib" id="edShow">Show</button></div>
   <label for="ecopy">Copy to another category</label>
   <div class="row" style="gap:8px"><select id="ecopy" style="flex:1;min-width:0"></select><button class="ib" id="edCopy">Copy</button></div>
@@ -398,6 +403,9 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0;font-size:var(--fs-l)">More</h3><button class="ib" id="moreClose">Close</button></div>
   <button class="ib" id="moreCopy" style="width:100%;margin-top:12px">Copy text</button>
   <button class="ib" id="moreEdit" style="width:100%;margin-top:10px">Edit before saving</button>
+  <button class="ib" id="moreBack" style="width:100%;margin-top:10px">Check the meaning (translate back)</button>
+  <div id="moreBackOut"></div>
+  <button class="ib" id="moreFresh" style="width:100%;margin-top:10px" hidden>Translate again online</button>
   <div id="moreAlts"></div>
 </dialog>
 
@@ -681,10 +689,10 @@ function full(i){
 }
 
 let thV=[],allV=[],voicesLoaded=false;
-function pickVoice(){
-  const code=LG().tts.split("-")[0].toLowerCase();
+function pickVoice(tts){
+  const code=(tts||LG().tts).split("-")[0].toLowerCase();
   const list=allV.filter(v=>v.lang.toLowerCase().replace("_","-").startsWith(code));
-  if(S.lang==="th"&&S.voice){const v=list.find(v=>v.voiceURI===S.voice);if(v)return v}
+  if(!tts&&S.lang==="th"&&S.voice){const v=list.find(v=>v.voiceURI===S.voice);if(v)return v}
   return list[0];
 }
 function loadVoices(){
@@ -696,18 +704,18 @@ function loadVoices(){
   if(S.voice)$("voice").value=S.voice;
   render();
 }
-function speak(i){
+function speak(i,tts){
   const f=full(i);
   if(!("speechSynthesis" in window)){toast("Speech isn't supported in this browser.",true);return}
   const ss=window.speechSynthesis;
   const u=new SpeechSynthesisUtterance(f.th);
-  u.lang=LG().tts;u.rate=S.rate||0.9;
-  const v=pickVoice();
+  u.lang=tts||LG().tts;u.rate=S.rate||0.9;
+  const v=pickVoice(tts);
   if(v){u.voice=v;u.lang=v.lang}
   u.onerror=e=>{if(e&&e.error&&e.error!=="canceled"&&e.error!=="interrupted")toast("Speech error: "+e.error,true)};
   const go=()=>{try{ss.resume()}catch(e){}ss.speak(u)};
   if(ss.speaking||ss.pending){ss.cancel();setTimeout(go,150)}else go();
-  if(!v&&voicesLoaded)toast("No "+LG().n+" voice found on this phone. Add one in Settings > Accessibility > Spoken Content > Voices.",true);
+  if(!v&&voicesLoaded)toast("No "+(tts?"English":LG().n)+" voice found on this phone. Add one in Settings > Accessibility > Spoken Content > Voices.",true);
 }
 
 const CMAP={"On set":"#f0d58c","SFX":"#f2a99b","Film production":"#8db4e6","Technical":"#9fcfae","Schedule & meals":"#f4c7a1","Basics":"#d8cdea","Eating":"#f0a8c0","Getting around":"#7cc7c4","Shopping":"#b9a7e0","Numbers":"#c9dc9a","Social":"#f4b8a0","Emergency":"#ef8f8a"};
@@ -732,7 +740,7 @@ function render(){
   let h="";
   if(!STORE_OK)h+=`<div class="note">⚠ This browser is blocking storage (private browsing?), so your added phrases will be lost when you close the page.</div>`;
   if(voicesLoaded&&!pickVoice())h+=`<div class="note">No ${LG().n} voice found on this device, so phrases may sound wrong. Add one in your device's text-to-speech or accessibility settings.</div>`;
-  {const miss=missingCount();if(miss>0)h+=`<div class="note"><span id="trLeft">${miss}</span> phrases still to translate. They load as you scroll and need internet. Tiles marked auto are machine translated. <button class="ib" id="trAll">Translate all now</button></div>`}
+  {const miss=missingCount();if(miss>0)h+=`<div class="note"><span id="trLeft">${miss}</span> phrases still to translate. They load as you scroll and need internet, then work offline. Tiles marked auto are machine translated. <button class="ib" id="trAll">Save all for offline</button></div>`}
   if(edit)h+=`<div class="note">Edit mode: tap a phrase to edit, move or delete it. Use the arrows to reorder categories.</div>`+selBarHTML();
   const everywhere=cat==="All"||!!ql;
   (everywhere?cs:[cat]).forEach(c=>{
@@ -908,7 +916,8 @@ function showRes(th,ro,en,note,auto,nohist,ph,alts){
   const f=shown(RES);
   const cs=cats();
   const opts=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
-  $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="${S.lang}" dir="auto">${esc(f.th)}</div>${f.ro?`<div class="rro">${esc(f.ro)}</div>`:""}<div class="ren">${esc(en)}</div></div>`+
+  const rev=DIR!=="en";
+  $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="${rev?"en":S.lang}" dir="auto">${esc(rev?en:f.th)}</div>${(!rev&&f.ro)?`<div class="rro">${esc(f.ro)}</div>`:""}<div class="ren" lang="${rev?S.lang:"en"}" dir="auto">${esc(rev?th:en)}</div></div>`+
    `<div class="row actrow"><button class="ib speakbtn" data-a="sp">🔊 Speak</button><button class="ib" data-a="show">Show</button><button class="ib" data-a="more" aria-label="More options">⋯</button></div>`+
    `<div class="row actrow"><select id="rcat" aria-label="Save to category" style="flex:1;min-width:0">${opts}<option value="__new">＋ New category…</option></select><button class="ib savebtn sm" data-a="save">💾 Save</button></div><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px">`+
    (note?`<div style="margin-top:10px;font-size:var(--fs-s)">${esc(note)}</div>`:"");
@@ -919,7 +928,7 @@ function showRes(th,ro,en,note,auto,nohist,ph,alts){
 }
 function addHist(h){
   S.hist=(S.hist||[]).filter(x=>!(x.th===h.th&&x.en===h.en));
-  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",lang:S.lang});
+  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",lang:S.lang,dir:DIR});
   S.hist=S.hist.slice(0,12);save();renderHist();
 }
 function renderHist(){
@@ -929,44 +938,58 @@ function renderHist(){
 $("hist").onclick=e=>{
   const b=e.target.closest("[data-h]");if(!b)return;
   if(b.dataset.h==="clear"){S.hist=[];save();renderHist();return}
-  const x=S.hist[+b.dataset.h];if(x)showRes(x.th,x.ro,x.en,"",false,true,x.ph||"");
+  const x=S.hist[+b.dataset.h];if(x){if(x.dir&&x.dir!==DIR)setDir(x.dir);showRes(x.th,x.ro,x.en,"",false,true,x.ph||"")}
 };
-async function doTr(){
+async function doTr(depth){
   const q=$("trIn").value.trim();
   if(!q)return;
+  if(!SKIPSAVED){
+    if(DIR==="en"){
+      const m=savedFor(q);
+      if(m){const x=getText(m,S.lang);showRes(x.t,x.ro,m.en,"From your saved phrases, so it works offline and isn't machine translated"+(x.auto?" (still marked auto)":"")+".",false,false,x.ph);RES.saved=true;return}
+    }else{
+      const m=savedRev(q);
+      if(m){showRes(q,"",m.en,"From your saved phrases.",false);RES.saved=true;return}
+    }
+  }
   $("trOut").innerHTML=`<div style="margin-top:12px">Translating…</div>`;
   try{
-    const from=DIR==="en"?"en":S.lang,to=DIR==="en"?S.lang:"en";
-    const r=await aiTr(q,from,to);
-    if(r){
-      if(DIR==="en")showRes(r.t,r.ro,q,"",false,false,r.ph,r.alts);
-      else showRes(q,"",r.t,"",false);
-    }else if(DIR==="en"){
-      LASTRM="";
-      let t=await webTr(q,"en",LG().mm);
+    if(DIR==="en"){
+      const r=await aiTr(q,"en",S.lang);
+      if(r){showRes(r.t,r.ro,q,"",false,false,r.ph,r.alts);return}
+      const b=await webTrBoth(q,"en",LG().mm,S.lang,"en");
+      const clean=x=>{if(S.lang==="th"){x=x.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(x))return""}return x};
+      const t=clean(b.t);if(!t)throw new Error("the answer wasn't in "+LG().n);
+      const alt=b.alt?clean(b.alt):"";
       let ro="",ph="";
-      if(S.lang==="th"){
-        t=t.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();
-        if(!/[\u0e00-\u0e7f]/.test(t))throw 0;
-        const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));
-        if(k){ro=k.ro||"";ph=k.ph||""}
-      }else ph=LASTRM;
-      showRes(t,ro,q,"Automatic translation: please check it before relying on it.",true,false,ph);
+      if(S.lang==="th"){const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));if(k){ro=k.ro||"";ph=k.ph||""}}else ph=b.rm;
+      const alts=alt&&alt.toLowerCase()!==t.toLowerCase()?[{label:"Second opinion",t:alt,ro:"",ph:""}]:[];
+      showRes(t,ro,q,"Automatic translation: please check it before relying on it.",true,false,ph,alts);
     }else{
-      const e=await webTr(q,LG().mm,"en");
-      showRes(q,"",e,"Automatic translation: please check it before relying on it.",true);
+      const r=await aiTr(q,S.lang,"en");
+      if(r){showRes(q,"",r.t,"",false);return}
+      const b=await webTrBoth(q,"auto","en","en",LG().mm);
+      if(b.sameLang){
+        if(depth!==1){toast("That's already English. Translating it into "+LG().n+" instead.");setDir("en");$("trIn").value=q;await doTr(1);return}
+        throw new Error("the text looks like English");
+      }
+      let note="Automatic translation: please check it before relying on it.";
+      let det=(b.src||"").split("-")[0].toLowerCase();if(det==="iw")det="he";
+      const mine=LG().mm.split("-")[0].toLowerCase();
+      if(det&&det!==mine){const dl=LANGS.find(l=>l.mm.split("-")[0].toLowerCase()===det||l.c===det);note="Detected "+(dl?dl.n:det.toUpperCase())+" (you had "+LG().n+" selected). "+note}
+      showRes(q,"",b.t,note,true);
     }
-  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b;font-weight:700">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
+  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
 }
 $("dirEn").onclick=()=>setDir("en");
 $("dirTh").onclick=()=>setDir("th");
 $("trGo").onclick=doTr;
 $("trOut").onclick=e=>{
   const b=e.target.closest("[data-a]");if(!b||!RES)return;
-  if(b.dataset.a==="show"){showBig(shown(RES));return}
+  if(b.dataset.a==="show"){showBig(RES.dir==="en"?shown(RES):{th:RES.en,ro:"",en:RES.th,lang:"en",tts:"en-US"});return}
   if(b.dataset.a==="more"){openMore();return}
-  if(b.dataset.a==="sp")speak({th:RES.th,ro:RES.ro,en:RES.en,cat:"x",np:RES.dir==="en"?0:1});
-  else if(b.dataset.a==="cp"){navigator.clipboard.writeText(shown(RES).th).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true))}
+  if(b.dataset.a==="sp"){if(RES.dir==="en")speak({th:RES.th,ro:RES.ro,en:RES.en,cat:"x",np:0});else speak({th:RES.en,ro:"",en:RES.th,cat:"x",np:1,lang:"en"},"en-US")}
+  else if(b.dataset.a==="cp"){navigator.clipboard.writeText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true))}
   else if(b.dataset.a==="save"){
     let c=$("rcat").value;
     if(c==="__new"){c=$("rcatNew").value.trim();if(!c){$("rcatNew").focus();toast("Type a category name",true);return}}
@@ -1057,14 +1080,31 @@ function newItem(text,ro,en,c,auto,ph){
   setText(it,S.lang,text,ro,auto,ph);
   return it;
 }
-let LASTERR="",LASTRM="";
+let LASTERR="",LASTRM="",LASTSRC="";
 function why(e){
+  if(typeof navigator!=="undefined"&&navigator.onLine===false)return"you're offline";
   if(e&&e.name==="AbortError")return"timed out";
   if(e instanceof TypeError)return"couldn't connect (offline, or blocked by the browser)";
   if(e&&e.message)return e.message;
   return"no usable answer";
 }
 function hintHost(){return(location.hostname.indexOf("github.io")<0&&location.protocol!=="file:")?" If you're on the Claude preview, web translation is blocked there, so use your GitHub link.":""}
+const SCRIPT={th:/[\u0e00-\u0e7f]/,lo:/[\u0e80-\u0eff]/,km:/[\u1780-\u17ff]/,my:/[\u1000-\u109f]/,hi:/[\u0900-\u097f]/,ne:/[\u0900-\u097f]/,bn:/[\u0980-\u09ff]/,ta:/[\u0b80-\u0bff]/,si:/[\u0d80-\u0dff]/,zh:/[\u4e00-\u9fff]/,zt:/[\u4e00-\u9fff]/,ja:/[\u3040-\u30ff\u4e00-\u9fff]/,ko:/[\uac00-\ud7af]/,ar:/[\u0600-\u06ff]/,fa:/[\u0600-\u06ff]/,ur:/[\u0600-\u06ff]/,he:/[\u0590-\u05ff]/,ru:/[\u0400-\u04ff]/,uk:/[\u0400-\u04ff]/,mn:/[\u0400-\u04ff]/,kk:/[\u0400-\u04ff]/,el:/[\u0370-\u03ff]/};
+const wordCount=x=>(String(x).trim().match(/\S+/g)||[]).length;
+function codeFromMM(m){return m==="en"?"en":((LANGS.find(l=>l.mm===m)||{}).c||"")}
+function plausible(t,src,toCode){
+  t=String(t||"").trim();if(!t)return false;
+  const n=x=>String(x).toLowerCase().replace(/\s+/g," ").trim();
+  if(n(t)===n(src)&&wordCount(src)>=3)return false;
+  if(toCode==="en"){const L=t.match(/\p{L}/gu)||[],A=t.match(/[A-Za-z]/g)||[];return L.length===0||A.length/L.length>0.6}
+  const re=SCRIPT[toCode];return re?re.test(t):true;
+}
+function cget(k){return S.trc&&S.trc[k]}
+function cset(k,v){S.trc=S.trc||{};S.trc[k]=v;const ks=Object.keys(S.trc);if(ks.length>150)delete S.trc[ks[0]];saveSoon()}
+async function tryTwice(fn){
+  try{return await fn()}
+  catch(e){if(e&&(e.name==="AbortError"||/HTTP (5\d\d|429)/.test(e.message||""))){await sleep(700);return await fn()}throw e}
+}
 async function gtx(q,from,to){
   const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),9000);
   try{
@@ -1073,20 +1113,22 @@ async function gtx(q,from,to){
     const d=await r.json();
     const t=((d&&d[0])||[]).map(x=>(x&&x[0])||"").join("").trim();
     if(!t)throw new Error("empty answer");
+    LASTSRC=(d&&typeof d[2]==="string")?d[2]:"";
     const rmE=((d&&d[0])||[]).find(x=>x&&x[0]==null&&typeof x[2]==="string");
     LASTRM=rmE?rmE[2].normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z ]/g," ").replace(/\s+/g," ").trim().toLowerCase():"";
     return t;
   }finally{clearTimeout(tm)}
 }
 async function webTr(q,from,to){
-  const errs=[];
-  try{return await gtx(q,from,to)}catch(e){errs.push("Google: "+why(e))}
-  try{return await mm(q,from+"|"+to)}catch(e){errs.push("MyMemory: "+(QUOTA?"daily free limit reached":why(e)))}
-  LASTERR=errs.join(" / ");
+  const toCode=codeFromMM(to);
+  let gErr="",mErr="";
+  try{const gt=await tryTwice(()=>gtx(q,from,to));if(plausible(gt,q,toCode))return gt;gErr="the answer didn't look like "+nm(toCode)}catch(e){gErr=why(e)}
+  try{const mt=await mm(q,from+"|"+to);if(plausible(mt,q,toCode))return mt;mErr="the answer didn't look like "+nm(toCode)}catch(e){mErr=QUOTA?"daily free limit reached":why(e)}
+  LASTERR="Google: "+gErr+" / MyMemory: "+mErr;
   throw new Error(LASTERR);
 }
 async function aiTr(q,from,to){
-  const prompt=`Translate this ${nm(from)} text into ${nm(to)} for a film crew or traveler. Use natural wording and no politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","ro":"standard romanization if the translation is not written in Latin letters, otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"Formal or Casual or similar","t":"another natural way to say it","ro":"","ph":""}]}\nGive 0 to 2 alternatives, such as formal versus casual speech, and an empty alts array if there is no useful alternative.\nText: ${q}`;
+  const prompt=`Translate this ${to==="en"?"text (probably "+nm(from)+", but detect the language if it is different)":nm(from)+" text"} into ${nm(to)} for a film crew or traveler. Use natural wording and no politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","ro":"standard romanization if the translation is not written in Latin letters, otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"Formal or Casual or similar","t":"another natural way to say it","ro":"","ph":""}]}\nGive 0 to 2 alternatives, such as formal versus casual speech, and an empty alts array if there is no useful alternative.\nText: ${q}`;
   let r=null;
   if(SM){r=await SM.json(prompt)}
   else if(S.aiKey){
@@ -1182,12 +1224,16 @@ $("mmEmail").onchange=e=>{S.mmEmail=e.target.value.trim();save()};
 $("testTr").onclick=async()=>{
   const o=$("testOut");o.textContent="Testing…";
   const lines=[];
-  try{lines.push("Google: OK → "+await gtx("hello","en","th"))}catch(e){lines.push("Google: "+(e&&e.name?e.name+" "+(e.message||""):"error"))}
-  try{lines.push("MyMemory: OK → "+await mm("hello","en|th"))}catch(e){QUOTA=false;lines.push("MyMemory: "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}
+  const t=async(label,fn)=>{try{lines.push(label+": OK → "+await fn())}catch(e){QUOTA=false;lines.push(label+": "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}};
+  await t("English to Thai, Google",()=>gtx("hello","en","th"));
+  await t("English to Thai, MyMemory",()=>mm("hello","en|th"));
+  await t("Thai to English, Google",()=>gtx("สวัสดี","auto","en"));
+  await t("Thai to English, MyMemory",()=>mm("สวัสดี","th|en"));
   lines.push("Page: "+(location.hostname||location.protocol));
   lines.push(SM?"Claude translation: available":"Claude translation: not available here");
   o.innerHTML=lines.map(esc).join("<br>");
 };
+
 
 let PT=null;
 function markChanged(){
@@ -1251,12 +1297,13 @@ $("ghPub").onclick=async()=>{
 let ADDPH="";
 function openMore(){
   if(!RES)return;
+  $("moreBackOut").innerHTML="";$("moreBack").hidden=RES.dir!=="en";$("moreFresh").hidden=!RES.saved;
   const alts=RES.alts||[];
   $("moreAlts").innerHTML=alts.length?`<label>Other ways to say it</label>`+alts.map((a,i)=>`<button class="ib" data-alt="${i}" style="width:100%;margin-top:8px;text-align:left"><small style="display:block;color:var(--mute)">${esc(a.label)}</small>${esc(a.t)}</button>`).join(""):"";
   $("moreD").showModal();
 }
 $("moreClose").onclick=()=>$("moreD").close();
-$("moreCopy").onclick=()=>{navigator.clipboard.writeText(shown(RES).th).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true));$("moreD").close()};
+$("moreCopy").onclick=()=>{navigator.clipboard.writeText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true));$("moreD").close()};
 $("moreEdit").onclick=()=>{
   $("moreD").close();
   ["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("catNew").value="";fillCat($("rcat")?$("rcat").value:undefined);
@@ -1273,9 +1320,9 @@ $("moreAlts").onclick=e=>{
 };
 
 let BIG={th:"",ro:"",en:"",sub:false,rot:false};
-function showBig(v){BIG.th=v.th;BIG.ro=v.ro||"";BIG.en=v.en||"";$("big").hidden=false;paintBig()}
+function showBig(v){BIG.th=v.th;BIG.ro=v.ro||"";BIG.en=v.en||"";BIG.lang=v.lang||S.lang;BIG.tts=v.tts||"";$("big").hidden=false;paintBig()}
 function paintBig(){
-  const t=$("bigTxt");t.textContent=BIG.th;t.lang=S.lang;
+  const t=$("bigTxt");t.textContent=BIG.th;t.lang=BIG.lang||S.lang;
   $("bigSub").innerHTML=BIG.sub?`<div class="bsr">${esc(BIG.ro)}</div><div class="bse">${esc(BIG.en)}</div>`:"";
   t.style.transform=BIG.rot?"rotate(180deg)":"";
   $("bigSnd").textContent=BIG.sub?"Thai only":"Sounds";
@@ -1294,7 +1341,7 @@ $("bigPlus").onclick=()=>{S.bigScale=Math.min(1,(S.bigScale||0.85)+0.1);save();f
 $("bigMinus").onclick=()=>{S.bigScale=Math.max(0.3,(S.bigScale||0.85)-0.1);save();fitBig()};
 $("bigSnd").onclick=()=>{BIG.sub=!BIG.sub;paintBig()};
 $("bigRot").onclick=()=>{BIG.rot=!BIG.rot;paintBig()};
-$("bigSpk").onclick=()=>speak({th:BIG.th,ro:BIG.ro,en:BIG.en,cat:"x",np:1});
+$("bigSpk").onclick=()=>speak({th:BIG.th,ro:BIG.ro,en:BIG.en,cat:"x",np:1},BIG.tts||undefined);
 window.addEventListener("resize",()=>{if(!$("big").hidden)fitBig()});
 
 // ---- sentence builder (Thai) ----
@@ -1366,6 +1413,47 @@ $("catExp").onclick=async()=>{
   const items=S.items.filter(i=>i.cat===c);
   try{await saveFile("category-"+c.replace(/[^A-Za-z0-9]+/g,"-")+".json",JSON.stringify({app:"thai-soundboard",v:3,items},null,1));$("pubOut").textContent="Saved "+items.length+" phrases from "+c+". Use Import backup to add them to another copy of the app."}
   catch(e){$("pubOut").textContent="Couldn't save the file."}
+};
+let SKIPSAVED=false;
+function normQ(x){return String(x||"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim()}
+function savedFor(q){const n=normQ(q);if(!n)return null;return S.items.find(i=>normQ(i.en)===n&&getText(i,S.lang).t)||null}
+function savedRev(q){const n=normQ(q);if(!n)return null;return S.items.find(i=>{const x=getText(i,S.lang);return i.en&&x.t&&normQ(x.t)===n})||null}
+async function webTrBoth(q,from,to,toCode,mmFrom){
+  const key=from+"|"+to+"|"+q;
+  if(!SKIPSAVED){const c=cget(key);if(c){LASTSRC=c.src||"";return c}}
+  LASTRM="";LASTSRC="";
+  const [g,m]=await Promise.allSettled([tryTwice(()=>gtx(q,from,to)),tryTwice(()=>mm(q,(mmFrom||from)+"|"+to))]);
+  const rm=LASTRM,src=LASTSRC;
+  const gt=g.status==="fulfilled"?g.value:"",mt=m.status==="fulfilled"?m.value:"";
+  if(toCode==="en"&&gt&&src.split("-")[0].toLowerCase()==="en")return{sameLang:true,t:gt,src};
+  const gOK=!!gt&&plausible(gt,q,toCode),mOK=!!mt&&plausible(mt,q,toCode);
+  if(!gOK&&!mOK){
+    const w1=g.status==="rejected"?why(g.reason):(gt?"the answer didn't look like "+nm(toCode):"no answer");
+    const w2=m.status==="rejected"?(QUOTA?"daily free limit reached":why(m.reason)):(mt?"the answer didn't look like "+nm(toCode):"no answer");
+    LASTERR="Google: "+w1+" / MyMemory: "+w2;throw new Error(LASTERR);
+  }
+  const t=gOK?gt:mt;
+  const other=(gOK&&mOK)?mt:"";
+  const res={t,alt:(other&&other.toLowerCase()!==t.toLowerCase())?other:"",rm:gOK?rm:"",src};
+  cset(key,res);
+  return res;
+}
+function updOnline(){const b=$("offBar");if(b)b.hidden=navigator.onLine!==false}
+window.addEventListener("online",updOnline);window.addEventListener("offline",updOnline);
+$("moreBack").onclick=async()=>{
+  const o=$("moreBackOut");o.textContent="Checking…";
+  try{
+    let t;const r=await aiTr(RES.th,S.lang,"en");
+    if(r)t=r.t;else t=await webTr(RES.th,LG().mm,"en");
+    o.innerHTML=`<label>Translated back to English</label><div class="note" style="margin:4px 0">${esc(t)}</div><div class="hint">Compare this with "${esc(RES.en)}". If the meaning has drifted, try Other ways to say it or reword your English.</div>`;
+  }catch(e){o.textContent="Couldn't check: "+why(e)}
+};
+$("moreFresh").onclick=async()=>{$("moreD").close();SKIPSAVED=true;try{await doTr()}finally{SKIPSAVED=false}};
+$("edVerify").onclick=()=>{
+  const it=S.items.find(i=>i.id===EID);if(!it)return;
+  const x=getText(it,S.lang);if(!x.t){toast("Nothing to mark yet",true);return}
+  if(S.lang==="th")it.auto=0;else if(it.tr&&it.tr[S.lang])it.tr[S.lang].auto=0;
+  save();render();markChanged();toast("✓ Marked as checked");
 };
 let EID=null;
 function fillECat(sel){
@@ -1497,6 +1585,8 @@ $("file").onchange=async e=>{
     $("bs").textContent=n+" new phrase"+(n===1?"":"s")+" imported.";
   }catch(x){$("bs").textContent="That file isn't a valid backup."}
 };
+updOnline();
+if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&!window.__preview)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 </body>
 </html>
