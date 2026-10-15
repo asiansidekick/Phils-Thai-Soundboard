@@ -308,12 +308,44 @@ html,body{overflow-x:hidden;max-width:100%}
 #offBar{margin:0 0 8px;padding:6px 16px;border-radius:999px;background:var(--hl);color:var(--ink);font-size:var(--fs-s)}
 #offBar[hidden]{display:none}
 #moreBack[hidden],#moreFresh[hidden]{display:none}
+/* conversation, update bar */
+#toast{z-index:120}
+#updBar{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:130;display:flex;align-items:center;gap:8px;background:var(--accent);color:var(--onaccent);border-radius:999px;padding:6px 8px 6px 18px;font-size:var(--fs-s);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+#updBar[hidden]{display:none}
+#updBar span{flex:1}
+#updBar .ib{min-height:40px;padding:2px 16px;font-size:var(--fs-s);background:var(--card);color:var(--ink);border-color:var(--card)}
+#conv{position:fixed;inset:0;z-index:90;background:var(--page);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#conv[hidden]{display:none}
+#convTop{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px}
+#convTop .ib{min-height:42px;padding:2px 16px;font-size:var(--fs-s)}
+#convTop label{margin:0;display:flex;align-items:center;gap:8px;font-size:var(--fs-s);color:var(--ink)}
+#convLog{flex:1;min-height:0;overflow:auto;padding:6px 14px;display:flex;flex-direction:column;gap:10px}
+.cmsg{max-width:90%;padding:10px 16px;border-radius:24px;background:var(--card);box-shadow:var(--shadow);align-self:flex-start}
+.cmsg.me{align-self:flex-end;background:var(--pill)}
+.cwho{font-size:var(--fs-s);color:var(--mute)}
+.cout{font-size:var(--fs-l);line-height:1.25;overflow-wrap:anywhere;font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
+.cph{font-size:var(--fs-m);color:var(--accent)}
+.csrc{font-size:var(--fs-s);color:var(--mute);overflow-wrap:anywhere}
+.cerr{font-size:var(--fs-s);color:var(--danger)}
+.cbtn{display:flex;gap:8px;margin-top:6px}
+.cbtn .ib{min-height:38px;padding:2px 14px;font-size:var(--fs-s)}
+.cempty{margin:auto;text-align:center;color:var(--mute);font-size:var(--fs-m);padding:0 20px}
+#convStat{min-height:28px;padding:0 16px;font-size:var(--fs-s);color:var(--accent)}
+#convTypeRow{display:flex;gap:8px;padding:6px 12px}
+#convTypeRow[hidden]{display:none}
+#convTypeRow input{flex:1;min-width:0}
+#convTypeRow .ib{min-height:46px;padding:2px 14px;font-size:var(--fs-s)}
+#convBar{display:flex;gap:8px;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+.convmic{flex:1;min-height:78px;font-size:var(--fs-m);border-radius:999px}
+.convmic.rec{background:var(--accent);color:var(--onaccent);animation:blink 1s steps(2,start) infinite}
+#convType{min-height:78px;min-width:64px;padding:0 14px}
 .tn{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px 7px}
 .ts{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1}
 .ts svg,.tlg svg{width:1.5em;height:.85em;min-width:20px;min-height:11px;margin-bottom:3px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
 .ts svg .tg,.tlg svg .tg{stroke-width:1;opacity:.3}
-.tlg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:2px 0 10px 28px;font-size:13px;color:var(--mute)}
+.tlg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:2px 0 10px 28px;font-size:var(--fs-s);color:var(--mute)}
 .tlg span{display:inline-flex;align-items:center;gap:4px}
+#moreStyle[hidden]{display:none}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&display=swap" rel="stylesheet">
 </head>
@@ -341,7 +373,7 @@ html,body{overflow-x:hidden;max-width:100%}
   </label>
   <div class="dirrow"><button class="ib on" id="dirEn">English → Thai</button><button class="ib" id="dirTh">Thai → English</button></div>
   <textarea id="trIn" rows="2" maxlength="400" placeholder="Type English, or tap the mic…"></textarea>
-  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="ib micbtn" id="convBtn" aria-label="Conversation mode"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 4h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M19 9h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v3l-4-3h-4"/></svg></button></div>
   <div id="trOut"></div>
   <div id="hist"></div>
 </section>
@@ -361,6 +393,14 @@ html,body{overflow-x:hidden;max-width:100%}
   <button data-go="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Settings</button>
 </nav>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="updBar" hidden><span>A new version is ready.</span><button class="ib" id="updNow">Update now</button><button class="ib" id="updLater" aria-label="Later">✕</button></div>
+<div id="conv" hidden>
+  <div id="convTop"><button class="ib" id="convClose">Close</button><label class="ck"><input type="checkbox" id="convAloud"> Read replies aloud</label><button class="ib" id="convClear">Clear</button></div>
+  <div id="convLog"></div>
+  <div id="convStat"></div>
+  <div id="convTypeRow" hidden><input id="convIn" placeholder="Type here…" autocomplete="off"><button class="ib" id="convSendMe">As me</button><button class="ib" id="convSendThem">As them</button></div>
+  <div id="convBar"><button class="ib convmic" id="convMeMic"><span id="convMeLbl">Me · English</span></button><button class="ib convmic" id="convThemMic"><span id="convThemLbl">Them</span></button><button class="ib" id="convType" aria-label="Type instead">Aa</button></div>
+</div>
 <div id="undoBar" hidden><span id="undoMsg"></span><button class="ib" id="undoBtn">Undo</button></div>
 <div id="big" hidden>
   <div id="bigBox"><div id="bigTxt" dir="auto"></div><div id="bigSub"></div></div>
@@ -411,6 +451,7 @@ html,body{overflow-x:hidden;max-width:100%}
   <button class="ib" id="moreEdit" style="width:100%;margin-top:10px">Edit before saving</button>
   <button class="ib" id="moreBack" style="width:100%;margin-top:10px">Check the meaning (translate back)</button>
   <div id="moreBackOut"></div>
+  <div id="moreStyle"><label>Say it in another style</label><div class="row" style="gap:8px;flex-wrap:wrap"><button class="ib" data-style="everyday">Everyday</button><button class="ib" data-style="polite">Polite</button><button class="ib" data-style="literal">Literal</button></div><div class="hint" id="moreStyleHint"></div></div>
   <button class="ib" id="moreFresh" style="width:100%;margin-top:10px" hidden>Translate again online</button>
   <div id="moreAlts"></div>
 </dialog>
@@ -424,6 +465,13 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="row actrow"><select id="bldCat" aria-label="Save to category" style="flex:1;min-width:0"></select><button class="ib savebtn sm" id="bldSave">💾 Save</button></div>
 </dialog>
 
+<dialog id="repD">
+  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0;font-size:var(--fs-l)">Report</h3><button class="ib" id="repClose">Close</button></div>
+  <div class="hint">Copy this and send it to me.</div>
+  <textarea id="repTxt" readonly rows="10" style="width:100%;margin-top:10px;font-size:var(--fs-s);border-radius:20px"></textarea>
+  <button class="ib savebtn" id="repCopy" style="margin-top:12px">Copy report</button>
+</dialog>
+
 <dialog id="setD">
   <h3 style="margin:0">Settings</h3>
   <label for="pol">Speaker (sets which polite ending to use; turn it on or off with the Polite switch at the top)</label>
@@ -431,6 +479,9 @@ html,body{overflow-x:hidden;max-width:100%}
     <option value="m">ครับ khrap: male speaker</option>
     <option value="f">ค่ะ / คะ kha: female speaker</option>
   </select>
+  <label for="styleSel">Translation style</label>
+  <select id="styleSel"><option value="everyday">Everyday (how people really talk)</option><option value="polite">Polite and careful</option><option value="literal">Literal (close to the English)</option></select>
+  <label class="ck"><input type="checkbox" id="sCas"> Make free Thai translations more casual</label>
   <label for="voice">Thai voice</label>
   <select id="voice"></select>
   <label class="ck"><input type="checkbox" id="sLight"> Light theme. Off = dark theme</label>
@@ -445,6 +496,12 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="hint">Gives a bigger free daily translation limit for the translate-all feature.</div>
   <label for="catExpSel">Export one category</label>
   <div class="row" style="gap:8px"><select id="catExpSel" style="flex:1;min-width:0"></select><button class="ib" id="catExp">Export</button></div>
+  <label for="srvUrl">Translation server (optional)</label>
+  <input id="srvUrl" placeholder="https://your-name.workers.dev" autocomplete="off" autocapitalize="off">
+  <label for="srvCode">App code (only if your server uses one)</label>
+  <input id="srvCode" type="password" autocomplete="off">
+  <button class="ib" id="srvTest" style="width:100%;margin-top:10px">Test server</button>
+  <div class="hint" id="srvOut">A small server keeps the translation key off the phones, so everyone gets reliable, high-quality translation.</div>
   <label for="aiKey">Claude API key (optional)</label>
   <input id="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
   <div class="hint">Gives better translations plus English phonetics for any phrase. Stored only on this device. Get one at console.anthropic.com.</div>
@@ -457,9 +514,12 @@ html,body{overflow-x:hidden;max-width:100%}
   <button class="ib savebtn sm" id="ghPub" style="margin-top:10px;width:100%">Publish my edits to GitHub</button>
   <label class="ck"><input type="checkbox" id="ghAuto"> Publish automatically 30 seconds after I make a change</label>
   <div class="hint" id="pubOut">Needs a fine-grained token with Contents: read and write for this repository only. Stored only on this device.</div>
+  <button class="ib" id="updChk" style="width:100%;margin-top:12px">Check for updates</button>
+  <button class="ib" id="sendRep" style="width:100%;margin-top:10px">Send diagnostics</button>
+  <div class="hint" id="verTxt"></div>
   <button class="ib" id="testTr" style="width:100%;margin-top:12px">Test translation</button>
   <div class="hint" id="testOut"></div>
-  <div class="hint">Version: 11 Oct 2026, build 15</div>
+  <div class="hint"></div>
   <label>Backup (everything on this device)</label>
   <div class="row"><button class="ib" id="exp" style="flex:1">Export backup</button><button class="ib" id="imp" style="flex:1">Import backup</button></div>
   <input type="file" id="file" accept=".json,application/json" hidden>
@@ -471,6 +531,7 @@ html,body{overflow-x:hidden;max-width:100%}
 </dialog>
 
 <script>
+const APPVER="2026-10-14-1";
 const BAKED=/*B*/null/*E*/;
 const D={
 "Basics":["สวัสดี|sa-wat-dee|Hello","ขอบคุณ|khop khun|Thank you","ไม่เป็นไร|mai pen rai|You're welcome / no problem","ขอโทษ|khor thot|Sorry / excuse me","ใช่|chai|Yes (that's right)","ไม่ใช่|mai chai|No (that's not it)","ได้|dai|OK / can do","ไม่ได้|mai dai|Can't / not allowed","ไปก่อนนะ|pai gon na|Bye, I'm off","เข้าใจแล้ว|khao jai laeo|I understand","ไม่เข้าใจ|mai khao jai|I don't understand","พูดช้าๆ หน่อยได้ไหม|phuut chaa-chaa noi dai mai|Can you speak slowly?","พูดอีกทีได้ไหม|phuut eek thii dai mai|Can you say it again?","พูดไทยได้นิดหน่อย|phuut thai dai nit noi|I speak a little Thai","พูดอังกฤษได้ไหม|phuut ang-grit dai mai|Do you speak English?"],
@@ -696,7 +757,7 @@ function applyP13(){
   if(S.applied.includes(P13.key))return;
   P13.fix.forEach(([o,n,ro,en])=>S.items.forEach(i=>{
     if(i.t||i.th!==o)return;
-    i.th=n;i.ro=ro;i.ph="";i.auto=0;if(en)i.en=en;
+    i.th=n;i.ro=ro;i.ph="";i.auto=0;i.chk=1;if(en)i.en=en;
   }));
   P13.add.forEach(([cat,t,ro,en])=>{
     if(S.items.some(i=>i.th===t))return;
@@ -706,6 +767,7 @@ function applyP13(){
   });
   S.applied.push(P13.key);save();
 }
+const NATURAL=new Set(P13.fix.map(f=>f[1]).concat(P13.add.map(a=>a[1])));
 const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 const bkey=i=>i.cat+"|"+(i.th||i.en);
 function fromBaked(){
@@ -723,6 +785,16 @@ function bakedMerge(){
   fromBaked();mine.forEach(i=>S.items.push(i));
   S.bakedV=BAKED.v;save();
 }
+function logErr(where,e){
+  try{
+    S.errs=S.errs||[];
+    S.errs.push({ts:Date.now(),where,msg:String(e&&e.message?e.message:e).slice(0,200)});
+    if(S.errs.length>40)S.errs.shift();
+    saveSoon();
+  }catch(x){}
+}
+window.addEventListener("error",ev=>logErr("js",(ev.message||"error")+" line "+(ev.lineno||"?")));
+window.addEventListener("unhandledrejection",ev=>logErr("promise",ev.reason));
 function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("rate" in d))S.rate=d.slow?0.55:0.9;if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}bakedMerge();applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return localStorage.getItem(KEY)!==null}catch(e){return false}}
 function testStore(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
@@ -1093,7 +1165,7 @@ async function translate(){
   if(!en||!SM)return false;
   $("trs").textContent="Translating…";
   try{
-    const r=await SM.json(`Translate this English phrase into ${LG().n} the way a local would actually say it out loud to a coworker on a film set: everyday spoken register, not textbook or written style. Drop pronouns when obvious, use loanwords crews really use, and add softeners (like หน่อย, ด้วย, นะ in Thai) where a native speaker would. Do not add a politeness particle at the end. Reply with ONLY JSON: {"th":"${LG().n} text","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
+    const r=await SM.json(`Translate this English phrase into natural, polite ${LG().n} for a traveler. Do not add a politeness particle at the end. Reply with ONLY JSON: {"th":"${LG().n} text","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
     if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(r.cat&&cats().includes(r.cat))$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Save.";return true}
   }catch(e){}
   $("trs").textContent="Couldn't translate. You can type the translation yourself.";
@@ -1119,7 +1191,7 @@ async function mm(q,pair){
 }
 function updatePol(){$("polTxt").textContent="Polite: "+(S.polite?"on":"off")}
 function shown(r){return r.dir==="en"?full({th:r.th,ro:sx(r),en:r.en,cat:"x"}):{th:r.th,ro:sx(r),en:r.en}}
-function reshow(){if(RES)showRes(RES.th,RES.ro,RES.en,RES.note,RES.auto,true,RES.ph,RES.alts)}
+function reshow(){if(RES)showRes(RES.th,RES.ro,RES.en,RES.note,RES.auto,true,RES.ph,RES.alts,RES.tn)}
 const SUG=[["Emergency",/\b(help|police|ambulance|hospital|doctor|emergency|danger|lost|sick|medic)/i],["Eating",/\b(eat|food|drink|menu|water|coffee|tea|beer|rice|noodle|chicken|egg|fish|crab|shrimp|squid|lobster|spicy|sweet|the bill|hungry|thirsty|vegetarian|allerg)/i],["Getting around",/\b(where|toilet|bathroom|airport|hotel|taxi|bus|train|station|turn left|turn right|straight|stop here|how far|road|street|direction)/i],["Shopping",/\b(price|how much|cost|expensive|cheap|discount|buy|pay|card|cash|size|receipt)/i],["Schedule & meals",/\b(what time|when|call time|wrap|schedule|lunch|breakfast|tomorrow|today|yesterday|early|late)/i],["SFX",/\b(smoke|fog|rain|flame|spark|safe|safety|hide|clear the frame|get out of shot|extinguisher|glove|glasses|lighter|stand back)/i],["Technical",/\b(camera|lens|lighting|light|mic|microphone|battery|cable|generator|tripod|dolly|crane|focus|frame rate|iso|aperture|monitor|sound|audio)/i],["Film production",/\b(director|producer|crew|department|actor|script|editor|gaffer|grip|assistant)/i],["On set",/\b(scene|take|shot|rehears|quiet|set up|standing by|moving on|reset)/i],["Numbers",/^\s*\d+([.,]\d+)?\s*$|\b(one|two|three|four|five|six|seven|eight|nine|ten|hundred|thousand)\b/i],["Social",/\b(hello|hi there|goodbye|thank|sorry|please|nice to meet|how are you|good morning|good night|welcome)/i]];
 function suggestCat(en){for(const [c,re] of SUG)if(re.test(en||""))return c;return""}
 function showRes(th,ro,en,note,auto,nohist,ph,alts,tn){
@@ -1141,11 +1213,11 @@ function showRes(th,ro,en,note,auto,nohist,ph,alts,tn){
   const sg=suggestCat(en);
   $("rcat").value=cs.includes(sg)?sg:(cs.includes(cat)?cat:cs[0]);
   $("rcat").onchange=()=>{const n=$("rcat").value==="__new";$("rcatNew").style.display=n?"":"none";if(n)$("rcatNew").focus()};
-  if(!nohist)addHist({th,ro,en,ph});
+  if(!nohist)addHist({th,ro,en,ph,tn});
 }
 function addHist(h){
   S.hist=(S.hist||[]).filter(x=>!(x.th===h.th&&x.en===h.en));
-  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",lang:S.lang,dir:DIR});
+  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",tn:h.tn||"",lang:S.lang,dir:DIR});
   S.hist=S.hist.slice(0,12);save();renderHist();
 }
 function renderHist(){
@@ -1155,53 +1227,72 @@ function renderHist(){
 $("hist").onclick=e=>{
   const b=e.target.closest("[data-h]");if(!b)return;
   if(b.dataset.h==="clear"){S.hist=[];save();renderHist();return}
-  const x=S.hist[+b.dataset.h];if(x){if(x.dir&&x.dir!==DIR)setDir(x.dir);showRes(x.th,x.ro,x.en,"",false,true,x.ph||"")}
+  const x=S.hist[+b.dataset.h];if(x){if(x.dir&&x.dir!==DIR)setDir(x.dir);showRes(x.th,x.ro,x.en,"",false,true,x.ph||"",[],x.tn||"")}
 };
+async function translateCore(q,dirEn,opt){
+  opt=opt||{};
+  if(!opt.fresh){
+    if(dirEn){
+      const m=savedFor(q);
+      if(m){const x=getText(m,S.lang);return{saved:true,t:x.t,ro:x.ro,ph:x.ph,tn:"",en:m.en,auto:!!x.auto,alts:[],note:"From your saved phrases, so it works offline and isn't machine translated"+(x.auto?" (still marked auto)":"")+"."}}
+    }else{
+      const m=savedRev(q);
+      if(m)return{saved:true,t:m.en,en:m.en,auto:false,alts:[],note:"From your saved phrases."};
+    }
+  }
+  let ai=null,aiErr="";
+  const style=opt.style||TMPSTYLE||STY();
+  try{ai=await aiTr(q,dirEn?"en":S.lang,dirEn?S.lang:"en",style)}catch(e){aiErr=why(e);logErr("ai",e)}
+  const why1=SRVERR||aiErr;
+  const fb=why1?"The "+(SRVERR&&!aiErr?"translation server":"AI")+" didn't answer ("+why1+"), so the free services were used. ":"";
+  if(ai){
+    if(!dirEn&&ai.src==="en")return{sameLang:true};
+    return{t:ai.t,ro:ai.ro,ph:ai.ph,tn:ai.tn,alts:ai.alts,en:q,auto:false,note:dirEn&&S.lang==="th"?"Style: "+STYLES[style]+(ai.exN?", guided by "+ai.exN+" approved phrases":"")+".":""};
+  }
+  const base="Automatic translation: please check it before relying on it.";
+  if(dirEn){
+    const b=await webTrBoth(q,"en",LG().mm,S.lang,"en");
+    const clean=x=>{if(S.lang==="th"){x=x.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(x))return""}return x};
+    let t=clean(b.t);if(!t)throw new Error("the answer wasn't in "+LG().n);
+    let alt=b.alt?clean(b.alt):"";
+    let casual="";
+    if(S.lang==="th"&&style==="everyday"&&S.casual!==false){const c=casualizeTh(t);if(c&&c!==t){casual=" Made more casual, like everyday speech.";t=c}if(alt)alt=casualizeTh(alt)}
+    let ro="",ph="";
+    if(S.lang==="th"){const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));if(k){ro=k.ro||"";ph=k.ph||""}}else ph=b.rm;
+    const alts=alt&&alt.toLowerCase()!==t.toLowerCase()?[{label:"Second opinion",t:alt,ro:"",ph:""}]:[];
+    return{t,ro,ph,alts,en:q,auto:true,note:fb+base+casual};
+  }
+  const b=await webTrBoth(q,"auto","en","en",LG().mm);
+  if(b.sameLang)return{sameLang:true};
+  let note=fb+base;
+  let det=(b.src||"").split("-")[0].toLowerCase();if(det==="iw")det="he";
+  const mine=LG().mm.split("-")[0].toLowerCase();
+  if(det&&det!==mine){const dl=LANGS.find(l=>l.mm.split("-")[0].toLowerCase()===det||l.c===det);note="Detected "+(dl?dl.n:det.toUpperCase())+" (you had "+LG().n+" selected). "+note}
+  return{t:b.t,auto:true,note,alts:[]};
+}
 async function doTr(depth){
   const q=$("trIn").value.trim();
   if(!q)return;
-  if(!SKIPSAVED){
-    if(DIR==="en"){
-      const m=savedFor(q);
-      if(m){const x=getText(m,S.lang);showRes(x.t,x.ro,m.en,"From your saved phrases, so it works offline and isn't machine translated"+(x.auto?" (still marked auto)":"")+".",false,false,x.ph);RES.saved=true;return}
-    }else{
-      const m=savedRev(q);
-      if(m){showRes(q,"",m.en,"From your saved phrases.",false);RES.saved=true;return}
-    }
-  }
   $("trOut").innerHTML=`<div style="margin-top:12px">Translating…</div>`;
   try{
-    if(DIR==="en"){
-      const r=await aiTr(q,"en",S.lang);
-      if(r){showRes(r.t,r.ro,q,"",false,false,r.ph,r.alts,r.tn);return}
-      const b=await webTrBoth(q,"en",LG().mm,S.lang,"en");
-      const clean=x=>{if(S.lang==="th"){x=x.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(x))return""}return x};
-      const t=clean(b.t);if(!t)throw new Error("the answer wasn't in "+LG().n);
-      const alt=b.alt?clean(b.alt):"";
-      let ro="",ph="";
-      if(S.lang==="th"){const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));if(k){ro=k.ro||"";ph=k.ph||""}}else ph=b.rm;
-      const alts=alt&&alt.toLowerCase()!==t.toLowerCase()?[{label:"Second opinion",t:alt,ro:"",ph:""}]:[];
-      showRes(t,ro,q,"Automatic translation: please check it before relying on it.",true,false,ph,alts);
-    }else{
-      const r=await aiTr(q,S.lang,"en");
-      if(r){showRes(q,"",r.t,"",false);return}
-      const b=await webTrBoth(q,"auto","en","en",LG().mm);
-      if(b.sameLang){
-        if(depth!==1){toast("That's already English. Translating it into "+LG().n+" instead.");setDir("en");$("trIn").value=q;await doTr(1);return}
-        throw new Error("the text looks like English");
-      }
-      let note="Automatic translation: please check it before relying on it.";
-      let det=(b.src||"").split("-")[0].toLowerCase();if(det==="iw")det="he";
-      const mine=LG().mm.split("-")[0].toLowerCase();
-      if(det&&det!==mine){const dl=LANGS.find(l=>l.mm.split("-")[0].toLowerCase()===det||l.c===det);note="Detected "+(dl?dl.n:det.toUpperCase())+" (you had "+LG().n+" selected). "+note}
-      showRes(q,"",b.t,note,true);
+    const r=await translateCore(q,DIR==="en",{fresh:SKIPSAVED});
+    if(r.sameLang){
+      if(depth!==1){toast("That's already English. Translating it into "+LG().n+" instead.");setDir("en");$("trIn").value=q;await doTr(1);return}
+      throw new Error("the text looks like English");
     }
-  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
+    if(DIR==="en"){showRes(r.t,r.ro,r.en||q,r.note,r.auto,false,r.ph,r.alts,r.tn)}
+    else{showRes(q,"",r.t,r.note,r.auto)}
+    RES.saved=!!r.saved;
+  }catch(e){
+    logErr("translate",e);
+    $("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself. <button class="ib" id="errRep" style="margin-top:8px">Send report</button></div>`;
+  }
 }
 $("dirEn").onclick=()=>setDir("en");
 $("dirTh").onclick=()=>setDir("th");
 $("trGo").onclick=doTr;
 $("trOut").onclick=e=>{
+  if(e.target.closest("#errRep")){sendReport(true);return}
   const b=e.target.closest("[data-a]");if(!b||!RES)return;
   if(b.dataset.a==="show"){showBig(RES.dir==="en"?shown(RES):{th:RES.en,ro:"",en:RES.th,lang:"en",tts:"en-US"});return}
   if(b.dataset.a==="more"){openMore();return}
@@ -1219,37 +1310,49 @@ $("trOut").onclick=e=>{
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let REC=null,RECON=false;
 function micMsg(m,bad){$("trOut").innerHTML=`<div style="margin-top:12px;font-weight:700;${bad?"color:#e5745f":""}">${esc(m)}</div>`}
-function startMic(){
+function listen(o){
   if(RECON){try{REC.stop()}catch(e){}return}
-  if(!SR){micMsg("Voice input isn't supported in this browser. Tap the microphone key on your keyboard to dictate instead.",false);$("trIn").focus();return}
+  if(!SR){o.onFail("unsupported","Voice input isn't supported in this browser. Use the microphone key on your keyboard to dictate instead.");return}
   try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}
   let r;
-  try{r=new SR()}catch(e){micMsg("Couldn't start voice input. Use the microphone key on your keyboard instead.",true);$("trIn").focus();return}
+  try{r=new SR()}catch(e){o.onFail("start","Couldn't start voice input. Use the microphone key on your keyboard instead.");return}
   REC=r;
-  r.lang=DIR==="th"?LG().tts:"en-US";r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
-  let got=false,err=null;const t0=Date.now();
-  r.onstart=()=>{RECON=true;$("trMic").classList.add("rec");micMsg("Listening… speak now",false)};
+  r.lang=o.lang;r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+  let got=false,err=null,txt="";const t0=Date.now();
+  r.onstart=()=>{RECON=true;if(o.onStart)o.onStart()};
   r.onresult=ev=>{
-    let txt="";for(let i=0;i<ev.results.length;i++)txt+=ev.results[i][0].transcript;
-    $("trIn").value=txt;
+    let t="";for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;
+    txt=t;if(o.onInterim)o.onInterim(t);
     if(ev.results[ev.results.length-1].isFinal)got=true;
   };
   r.onerror=ev=>{err=ev&&ev.error?ev.error:"unknown"};
   r.onend=()=>{
-    RECON=false;$("trMic").classList.remove("rec");
-    const txt=$("trIn").value.trim();
-    if(txt&&(got||!err)){doTr();return}
-    if(err==="not-allowed"||err==="service-not-allowed")micMsg("Voice input is blocked ("+err+"). On iPhone check Settings > Privacy & Security > Speech Recognition, Settings > General > Keyboard > Enable Dictation, and Safari's microphone permission (aA > Website Settings). The keyboard's microphone key also works.",true);
-    else if(err==="audio-capture")micMsg("No microphone found.",true);
-    else if(err==="network")micMsg("Voice input needs an internet connection.",true);
-    else if(err==="no-speech")micMsg("I didn't hear anything. Tap the mic, wait for Listening…, then speak.",true);
-    else if(!err||err==="aborted")micMsg(Date.now()-t0<3000?"If you just allowed the microphone, tap the mic again and speak.":"Voice input stopped. Tap the mic to try again.",false);
-    else micMsg("Voice input error: "+err+". The keyboard's microphone key also works.",true);
+    RECON=false;if(o.onEnd)o.onEnd();
+    const t=txt.trim();
+    if(t&&(got||!err)){o.onFinal(t);return}
+    if(err==="not-allowed"||err==="service-not-allowed")o.onFail(err,"Voice input is blocked ("+err+"). On iPhone check Settings > Privacy & Security > Speech Recognition, Settings > General > Keyboard > Enable Dictation, and Safari's microphone permission (aA > Website Settings). The keyboard's microphone key also works.");
+    else if(err==="audio-capture")o.onFail(err,"No microphone found.");
+    else if(err==="network")o.onFail(err,"Voice input needs an internet connection.");
+    else if(err==="no-speech")o.onFail(err,"I didn't hear anything. Tap the mic, wait for Listening…, then speak.");
+    else if(!err||err==="aborted")o.onFail("aborted",Date.now()-t0<3000?"If you just allowed the microphone, tap the mic again and speak.":"Voice input stopped. Tap the mic to try again.");
+    else o.onFail(err,"Voice input error: "+err+". The keyboard's microphone key also works.");
   };
-  micMsg("Starting microphone…",false);
-  try{r.start()}catch(e){RECON=false;micMsg("Couldn't start the microphone ("+(e&&e.name?e.name:"error")+"). Use the microphone key on your keyboard instead.",true);$("trIn").focus()}
+  if(o.onStarting)o.onStarting();
+  try{r.start()}catch(e){RECON=false;o.onFail("start","Couldn't start the microphone ("+(e&&e.name?e.name:"error")+"). Use the microphone key on your keyboard instead.")}
+}
+function startMic(){
+  listen({
+    lang:DIR==="th"?LG().tts:"en-US",
+    onStarting:()=>micMsg("Starting microphone…",false),
+    onStart:()=>{$("trMic").classList.add("rec");micMsg("Listening… speak now",false)},
+    onInterim:t=>{$("trIn").value=t},
+    onFinal:t=>{$("trIn").value=t;doTr()},
+    onFail:(k,m)=>{logErr("mic "+k,m);micMsg(m,k!=="aborted");if(k==="unsupported"||k==="start")$("trIn").focus()},
+    onEnd:()=>$("trMic").classList.remove("rec")
+  });
 }
 $("trMic").style.display="";
+$("trMic").onclick=startMic;
 $("trMic").onclick=startMic;
 function refreshLang(){
   const L=LG();
@@ -1344,20 +1447,70 @@ async function webTr(q,from,to){
   LASTERR="Google: "+gErr+" / MyMemory: "+mErr;
   throw new Error(LASTERR);
 }
-async function aiTr(q,from,to){
-  const prompt=`Translate this ${to==="en"?"text (probably "+nm(from)+", but detect the language if it is different)":nm(from)+" text"} into ${nm(to)} the way a native speaker would actually say it out loud on a film set or while travelling: everyday spoken register, not textbook or word-for-word. Drop pronouns when obvious, use the loanwords crews really use (in Thai: เทค, ซีน, คอลไทม์), and add softeners (in Thai: หน่อย, ด้วย, นะ) where natural. No politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","ro":"standard romanization if the translation is not written in Latin letters, with syllables separated by hyphens or spaces, otherwise an empty string","tn":"only for Thai: the spoken tone of each syllable in ro, one letter per syllable in order (M mid, L low, F falling, H high, R rising); otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"Formal or Casual or similar","t":"another natural way to say it","ro":"","ph":""}]}\nGive 0 to 2 alternatives, such as formal versus casual speech, and an empty alts array if there is no useful alternative.\nText: ${q}`;
+let SRVERR="";
+const STYLES={everyday:"Everyday",polite:"Polite",literal:"Literal"};
+function STY(){return STYLES[S.style]?S.style:"everyday"}
+function styleNote(style,toName,to){
+  if(style==="polite")return `Use polite, careful, respectful ${toName} suitable for strangers, officials or senior people, but still natural and not archaic.`+(to==="th"?" For Thai use polite wording without royal or stiff written words; the app adds ครับ/ค่ะ itself.":"");
+  if(style==="literal")return `Translate closely and literally, keeping the structure of the original, so the meaning can be checked word by word.`;
+  return `Write it the way a native speaker would actually say it out loud on a film set or while travelling: everyday spoken register, not textbook, formal or word-for-word. Drop pronouns when obvious and use short, common sentence patterns.`+(to==="th"?" For Thai use natural spoken Bangkok Thai: the particles and shortcuts people really use (for example หน่อย, ด้วย, นะ, เลย, มั้ย, ได้ไหม, ยัง), leave out ฉัน/ผม/คุณ when natural, avoid stiff written words, and use the loanwords Thai film crews say (for example เทค, ซีน, คอลไทม์, คัท, แอคชั่น, ไฟ, กล้อง). Stay polite enough to be respectful, never rude.":" Stay polite enough to be respectful, never rude.");
+}
+const STOPW=new Set("the a an is are to of in on at for and or you your i me my it this that please can could would do does we".split(" "));
+const toks=x=>normQ(x).split(" ").filter(w=>w&&!STOPW.has(w));
+function examplesFor(q,to){
+  if(to==="en")return[];
+  const gold=S.items.filter(i=>i.en&&getText(i,to).t&&(i.chk||i.edited||i.t||(to==="th"&&NATURAL.has(i.th))));
+  const qt=new Set(toks(q));
+  const hits=gold.map(i=>{const t=toks(i.en);let n=0;t.forEach(w=>{if(qt.has(w))n++});return{i,s:t.length?n/Math.max(t.length,qt.size):0}}).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,4).map(x=>x.i);
+  const rest=gold.filter(i=>!hits.includes(i)).filter((_,k)=>k%11===0).slice(0,6-hits.length);
+  return hits.concat(rest).slice(0,6).map(i=>({en:i.en,t:getText(i,to).t}));
+}
+function aiPrompt(q,from,to,style,exs){
+  const toName=nm(to);
+  let p=`Translate this ${to==="en"?"text (probably "+nm(from)+", but detect the language if it is different)":nm(from)+" text"} into ${toName}. ${styleNote(style,toName,to)} `;
+  if(to==="en"&&from==="th")p+="The Thai may be casual spoken language or slang, drop pronouns or use particles; give its real meaning in natural everyday English. ";
+  p+=`Do not add a politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","src":"the two-letter ISO 639-1 code of the language of the original text","ro":"standard romanization if the translation is not written in Latin letters, with syllables separated by hyphens or spaces, otherwise an empty string","tn":"only for Thai: the spoken tone of each syllable in ro, one letter per syllable in order (M mid, L low, F falling, H high, R rising); otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"More polite or More casual or similar","t":"another natural way to say it in a different register","ro":"","ph":""}]}\\nGive 0 to 2 alternatives in a different register (for example more polite, or more casual), and an empty alts array if there is no useful alternative.`;
+  if(exs&&exs.length)p+=`\\nReference translations approved for this app. Match their wording, register and spelling conventions where relevant:\\n`+exs.map(e=>`English: ${e.en} => ${toName}: ${e.t}`).join("\\n");
+  return p+`\\nText: ${q}`;
+}
+function casualizeTh(t){
+  let x=String(t||"").trim();
+  const V="ชอบ|อยาก|ต้องการ|จะ|ไม่|ขอ|มี|ไป|มา|รู้|เห็น|ได้|เป็น|อยู่|กิน|ดู|เข้าใจ|พูด|ชื่อ|ทำ|รัก|คิด|ว่า|ถึง|เคย|กำลัง|ควร|สามารถ|ช่วย|ลอง|รอ|ซื้อ|เอา|ใช้|นั่ง|ยืน";
+  x=x.replace(new RegExp("^(?:ฉัน|ผม|ดิฉัน|คุณ)(?=(?:"+V+"))"),"");
+  x=x.replace(/อยู่ที่ไหน/g,"อยู่ไหน");
+  x=x.replace(/(จอด|วาง|รอ|นั่ง|ยืน|ถ่าย|หยุด|ทำ|ใส่|เอามา|เอา|ไว้)ที่นี่/g,"$1ตรงนี้");
+  x=x.replace(/สักครู่/g,"แป๊บนึง");
+  if(/^กรุณา./.test(x)){x=x.replace(/^กรุณา/,"ช่วย");if(!/(หน่อย|ด้วย|นะ|ได้ไหม|ได้มั้ย)$/.test(x))x+="หน่อย"}
+  return x;
+}
+async function srvTr(q,from,to,style,exs){
+  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),20000);
+  try{
+    const r=await fetch(S.srvUrl.replace(/\/+$/,"")+"/translate",{method:"POST",headers:{"content-type":"application/json","x-app-code":S.srvCode||""},body:JSON.stringify({text:q,from,to,fromName:nm(from),toName:nm(to),style:style||"everyday",examples:exs||[]}),signal:ac.signal});
+    if(!r.ok){let m="";try{m=(await r.json()).error||""}catch(e){}throw new Error("Server "+r.status+(m?": "+m:""))}
+    return await r.json();
+  }finally{clearTimeout(tm)}
+}
+async function aiTr(q,from,to,style){
+  style=style||STY();
+  const exs=examplesFor(q,to);
+  const prompt=aiPrompt(q,from,to,style,exs);
+  SRVERR="";
   let r=null;
-  if(SM){r=await SM.json(prompt)}
-  else if(S.aiKey){
-    const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":S.aiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:600,messages:[{role:"user",content:prompt}]})});
-    if(!resp.ok){let m="";try{const e=await resp.json();m=e.error&&e.error.message?": "+e.error.message:""}catch(x){}throw new Error("Claude "+resp.status+m)}
-    const j=await resp.json();
-    const txt=(j.content||[]).map(c=>c.text||"").join("");
-    r=JSON.parse(txt.replace(/```json|```/g,"").trim());
-  }else return null;
-  if(!r||!r.t)throw new Error("Claude gave no translation");
+  if(S.srvUrl){try{r=await srvTr(q,from,to,style,exs)}catch(e){SRVERR=why(e);logErr("server",e)}}
+  if(!r){
+    if(SM){r=await SM.json(prompt)}
+    else if(S.aiKey){
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":S.aiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:700,messages:[{role:"user",content:prompt}]})});
+      if(!resp.ok){let m="";try{const e=await resp.json();m=e.error&&e.error.message?": "+e.error.message:""}catch(x){}throw new Error("Claude "+resp.status+m)}
+      const j=await resp.json();
+      const txt=(j.content||[]).map(c=>c.text||"").join("");
+      r=JSON.parse(txt.replace(/```json|```/g,"").trim());
+    }else return null;
+  }
+  if(!r||!r.t)throw new Error("the AI gave no translation");
   const alts=(Array.isArray(r.alts)?r.alts:[]).slice(0,2).map(a=>({label:String(a.label||"Other"),t:String(a.t||"").trim(),ro:a.ro||"",ph:a.ph||""})).filter(a=>a.t);
-  return{t:String(r.t).trim(),ro:r.ro||"",ph:r.ph||"",tn:/^[MLFHR]+$/.test(r.tn||"")?r.tn:"",alts};
+  return{t:String(r.t).trim(),ro:r.ro||"",ph:r.ph||"",tn:/^[MLFHR]+$/.test(r.tn||"")?r.tn:"",alts,src:String(r.src||"").toLowerCase(),style,exN:exs.length};
 }
 async function translateItem(it,L){
   const s=srcFor(it);
@@ -1514,7 +1667,7 @@ $("ghPub").onclick=async()=>{
 let ADDPH="";
 function openMore(){
   if(!RES)return;
-  $("moreBackOut").innerHTML="";$("moreBack").hidden=RES.dir!=="en";$("moreFresh").hidden=!RES.saved;
+  $("moreBackOut").innerHTML="";$("moreStyle").hidden=RES.dir!=="en";$("moreStyleHint").textContent=aiReady()?"":"Without the translation server or a Claude key, Everyday adds a casual clean-up to Thai, and the other two give the plain free translation.";$("moreBack").hidden=RES.dir!=="en";$("moreFresh").hidden=!RES.saved;
   const alts=RES.alts||[];
   $("moreAlts").innerHTML=alts.length?`<label>Other ways to say it</label>`+alts.map((a,i)=>`<button class="ib" data-alt="${i}" style="width:100%;margin-top:8px;text-align:left"><small style="display:block;color:var(--mute)">${esc(a.label)}</small>${esc(a.t)}</button>`).join(""):"";
   $("moreD").showModal();
@@ -1672,6 +1825,142 @@ $("edVerify").onclick=()=>{
   if(S.lang==="th")it.auto=0;else if(it.tr&&it.tr[S.lang])it.tr[S.lang].auto=0;
   save();render();markChanged();toast("✓ Marked as checked");
 };
+
+// ---- conversation mode ----
+const CONV=[];
+function convLabels(){
+  $("convMeLbl").textContent="Me · English";
+  $("convThemLbl").textContent="Them · "+LG().n;
+}
+function convRender(){
+  const L=$("convLog");
+  L.innerHTML=CONV.length?CONV.map((m,i)=>`<div class="cmsg ${m.who}"><div class="cwho">${m.who==="me"?"You, in "+esc(LG().n):esc(LG().n)+", in English"}</div><div class="cout" lang="${m.who==="me"?S.lang:"en"}" dir="auto">${m.busy?"…":esc(m.out)}</div>${m.who==="me"&&S.lang==="th"?`<div class="cph">${toneHTML(m.out,m.ph,m.tn,true)}</div>`:(m.ph?`<div class="cph">${esc(m.ph)}</div>`:"")}<div class="csrc">${esc(m.src)}</div>${m.err?`<div class="cerr">${esc(m.err)}</div>`:""}${m.busy?"":`<div class="cbtn"><button class="ib" data-cs="${i}">🔊 Replay</button><button class="ib" data-cb="${i}">Show</button></div>`}</div>`).join(""):`<div class="cempty">Tap <b>Me</b> to speak English. Tap <b>Them</b> when they reply in ${esc(LG().n)}. Each translation appears here, and yours is spoken aloud.</div>`;
+  L.scrollTop=L.scrollHeight;
+}
+function convSpeak(m){
+  if(m.who==="me")speak({th:m.out,ro:m.ph,en:m.src,cat:"x",np:0});
+  else speak({th:m.out,ro:"",en:m.src,cat:"x",np:1,lang:"en"},"en-US");
+}
+async function convSay(text,who){
+  const m={who,src:text,out:"",ph:"",busy:true};CONV.push(m);convRender();
+  try{
+    const r=await translateCore(text,who==="me",{});
+    if(r.sameLang){m.out=text}
+    else{m.out=r.t;m.tn=r.tn||"";m.ph=who==="me"?(r.ph||(S.lang==="th"&&r.ro?phonFromRo(r.ro):"")):""}
+    m.busy=false;convRender();
+    if(who==="me"||$("convAloud").checked)convSpeak(m);
+  }catch(e){logErr("conversation",e);m.busy=false;m.err="Couldn't translate: "+why(e);convRender()}
+}
+function convMic(who){
+  const btn=$(who==="me"?"convMeMic":"convThemMic");
+  listen({
+    lang:who==="me"?"en-US":LG().tts,
+    onStart:()=>{btn.classList.add("rec");$("convStat").textContent="Listening…"},
+    onInterim:t=>{$("convStat").textContent=t},
+    onFinal:t=>{$("convStat").textContent="";convSay(t,who)},
+    onFail:(k,m)=>{logErr("mic "+k,m);$("convStat").textContent=m},
+    onEnd:()=>btn.classList.remove("rec")
+  });
+}
+$("convBtn").onclick=()=>{convLabels();$("conv").hidden=false;convRender()};
+$("convClose").onclick=()=>{try{if(REC&&RECON)REC.stop()}catch(e){}$("conv").hidden=true};
+$("convClear").onclick=()=>{CONV.length=0;convRender()};
+$("convMeMic").onclick=()=>convMic("me");
+$("convThemMic").onclick=()=>convMic("them");
+$("convType").onclick=()=>{const r=$("convTypeRow");r.hidden=!r.hidden;if(!r.hidden)$("convIn").focus()};
+function convSend(who){const t=$("convIn").value.trim();if(!t)return;$("convIn").value="";convSay(t,who)}
+$("convSendMe").onclick=()=>convSend("me");
+$("convSendThem").onclick=()=>convSend("them");
+$("convIn").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();convSend("me")}};
+$("convLog").onclick=e=>{
+  const sp=e.target.closest("[data-cs]"),bg=e.target.closest("[data-cb]");
+  if(sp){const m=CONV[+sp.dataset.cs];if(m)convSpeak(m)}
+  if(bg){const m=CONV[+bg.dataset.cb];if(m)showBig(m.who==="me"?full({th:m.out,ro:m.ph,en:m.src,cat:"x",lang:S.lang}):{th:m.out,ro:"",en:m.src,lang:"en",tts:"en-US"})}
+};
+
+// ---- updates ----
+let UPDATED_AT=0;
+async function checkUpdate(manual){
+  if(window.__preview||!/^https?:$/.test(location.protocol)){if(manual)toast("Updates are checked on your GitHub page");return false}
+  try{
+    const r=await fetch(location.href.split("#")[0].split("?")[0],{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const t=await r.text();
+    const mb=t.match(/\bAPPVER="(\d{4}-\d{2}-\d{2}-\w+)"/),mv=t.match(/\/\*B\*\/\{"v":(\d+)/);
+    const newBuild=mb&&mb[1]!==APPVER,newData=mv&&(!BAKED||+mv[1]>(BAKED.v||0));
+    if(newBuild||newData){$("updBar").hidden=false;return true}
+    if(manual)toast("You have the latest version");
+  }catch(e){logErr("update",e);if(manual)toast("Couldn't check for updates: "+why(e),true)}
+  return false;
+}
+$("updNow").onclick=()=>{location.reload()};
+$("updLater").onclick=()=>{$("updBar").hidden=true};
+$("updChk").onclick=()=>checkUpdate(true);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-UPDATED_AT>30*60*1000){UPDATED_AT=Date.now();checkUpdate(false)}});
+setTimeout(()=>{UPDATED_AT=Date.now();checkUpdate(false)},4000);
+
+// ---- diagnostics ----
+async function buildReport(withTests){
+  const L=[];
+  const v=(a,b)=>L.push(a+": "+b);
+  L.push("Phil's Translator report");
+  v("Version",APPVER);v("Time",new Date().toISOString());
+  v("Page",location.href.split("#")[0]);v("Browser",navigator.userAgent);v("Online",navigator.onLine);
+  v("Language",LG().n+" ("+S.lang+")");
+  v("Direction",DIR==="en"?"English to "+LG().n:LG().n+" to English");
+  v("Theme",S.light?"light":"dark");v("Phrases",S.items.length);
+  v("Translation server",S.srvUrl?"set":"not set");v("Claude key",S.aiKey?"set":"not set");
+  v("Voices",allV.length+" total; "+LG().n+" "+(pickVoice()?"yes":"no")+"; English "+(pickVoice("en-US")?"yes":"no"));
+  v("Speech input",SR?"supported":"not supported");
+  if(RES)v("Last result",(RES.dir==="en"?"English to ":"to English from ")+LG().n+(RES.auto?" (machine translated)":""));
+  L.push("","Recent problems:");
+  const errs=(S.errs||[]).slice(-15);
+  if(!errs.length)L.push("(none logged)");
+  errs.forEach(x=>L.push(new Date(x.ts).toISOString().slice(11,19)+" ["+x.where+"] "+x.msg));
+  if(withTests){
+    L.push("","Checks:");
+    const t=async(label,fn)=>{try{L.push(label+": OK → "+await fn())}catch(e){QUOTA=false;L.push(label+": "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}};
+    if(S.srvUrl)await t("Server",()=>srvTr("Hello","en","th").then(r=>r.t));
+    await t("English to Thai, Google",()=>gtx("hello","en","th"));
+    await t("English to Thai, MyMemory",()=>mm("hello","en|th"));
+    await t("Thai to English, Google",()=>gtx("สวัสดี","auto","en"));
+    await t("Thai to English, MyMemory",()=>mm("สวัสดี","th|en"));
+  }
+  return L.join("\n");
+}
+async function sendReport(withTests){
+  toast("Preparing report…");
+  const text=await buildReport(withTests);
+  try{if(S.srvUrl)fetch(S.srvUrl.replace(/\/+$/,"")+"/report",{method:"POST",headers:{"content-type":"application/json","x-app-code":S.srvCode||""},body:JSON.stringify({report:text})}).catch(()=>{})}catch(e){}
+  if(navigator.share){try{await navigator.share({title:"Phil's Translator report",text});return}catch(e){if(e&&e.name==="AbortError")return}}
+  try{await navigator.clipboard.writeText(text);toast("Report copied. Paste it into a message.");return}catch(e){}
+  $("repTxt").value=text;$("repD").showModal();
+}
+$("sendRep").onclick=()=>sendReport(true);
+$("repClose").onclick=()=>$("repD").close();
+$("repCopy").onclick=()=>{$("repTxt").select();try{document.execCommand("copy");toast("Copied")}catch(e){}};
+
+// ---- translation server settings ----
+$("srvUrl").onchange=e=>{S.srvUrl=e.target.value.trim();save()};
+$("srvCode").onchange=e=>{S.srvCode=e.target.value.trim();save()};
+$("srvTest").onclick=async()=>{
+  const o=$("srvOut");
+  if(!S.srvUrl){o.textContent="Type the server address first.";return}
+  o.textContent="Testing…";
+  try{
+    const r=await srvTr("Where is the toilet?","en","th");
+    o.textContent="Server works: "+r.t+(r.ph?" ("+r.ph+")":"");
+  }catch(e){logErr("server test",e);o.textContent="Server problem: "+why(e)}
+};
+let TMPSTYLE="";
+$("styleSel").onchange=e=>{S.style=e.target.value;save()};
+$("sCas").onchange=e=>{S.casual=e.target.checked;save()};
+function aiReady(){return !!(S.srvUrl||SM||S.aiKey)}
+$("moreStyle").onclick=async e=>{
+  const b=e.target.closest("[data-style]");if(!b||!RES)return;
+  $("moreD").close();TMPSTYLE=b.dataset.style;SKIPSAVED=true;
+  try{await doTr()}finally{SKIPSAVED=false;TMPSTYLE=""}
+};
 let EID=null;
 function fillECat(sel){
   const cs=cats();
@@ -1756,8 +2045,8 @@ $("addGo2").onclick=add;
 $("addD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName!=="BUTTON"&&e.target.tagName!=="SELECT"){e.preventDefault();add()}};
 $("setBtn").onclick=()=>{
   if(!S.ghRepo&&/github\.io$/.test(location.hostname)){const rp=location.pathname.split("/")[1];if(rp)S.ghRepo=location.hostname.split(".")[0]+"/"+rp}
-  $("catExpSel").innerHTML=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("aiKey").value=S.aiKey||"";$("ghToken").value=S.ghToken||"";$("ghRepo").value=S.ghRepo||"";$("ghAuto").checked=!!S.ghAuto;
-  $("mmEmail").value=S.mmEmail||"";$("sLight").checked=!!S.light;$("pol").value=S.pol;$("sRo").checked=S.ro;$("tLeg").innerHTML=S.lang==="th"?"MLHRF".split("").map(t=>`<span>${ticon(t)}${TNAME[t]}</span>`).join(""):"";$("sEn").checked=S.en;$("setD").showModal()};
+  $("catExpSel").innerHTML=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("srvUrl").value=S.srvUrl||"";$("srvCode").value=S.srvCode||"";$("verTxt").textContent="Version "+APPVER+" · "+(S.errs||[]).length+" recent problems logged";$("aiKey").value=S.aiKey||"";$("ghToken").value=S.ghToken||"";$("ghRepo").value=S.ghRepo||"";$("ghAuto").checked=!!S.ghAuto;
+  $("mmEmail").value=S.mmEmail||"";$("sLight").checked=!!S.light;$("pol").value=S.pol;$("sRo").checked=S.ro;$("styleSel").value=STY();$("sCas").checked=S.casual!==false;$("tLeg").innerHTML=S.lang==="th"?"MLHRF".split("").map(t=>`<span>${ticon(t)}${TNAME[t]}</span>`).join(""):"";$("sEn").checked=S.en;$("setD").showModal()};
 $("setClose").onclick=()=>$("setD").close();
 $("pol").onchange=e=>{S.pol=e.target.value;save();render()};
 function applyTheme(){document.documentElement.setAttribute("data-th",S.light?"light":"night")}
@@ -1765,7 +2054,7 @@ $("sLight").onchange=e=>{S.light=e.target.checked;save();applyTheme()};
 $("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
 $("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
 $("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
-$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();save();cat="All";render();$("setD").close()}};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();save();cat="All";render();$("setD").close()}};
 
 load();applyTheme();refreshLang();render();loadVoices();renderHist();
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
