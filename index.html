@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14163a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Phil's Translator">
-<title>Phil's Translator</title>
+<meta name="apple-mobile-web-app-title" content="Phil's Speakeasy">
+<title>Phil's Speakeasy</title>
 <style>
 :root{--bg:#07070f;--card:#16162a;--ink:#ffffff;--mute:#d4d4ee;--line:#3b3b66;--acc:#ffd23f;--accink:#101010;--danger:#ff6b6b;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
@@ -106,7 +106,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--bf);font-size:var
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--cur) center/cover no-repeat;margin:0;width:auto;height:auto;left:0}
 h1,.sec,.sec2,.chip,.ib,#toast,.bigbtn,label,.note,.sw,#now,input,select,textarea,.tile small,.tile .en,.ren,.rro,.hint,.spd,.tabbar button,.langbar{font-family:var(--bf);letter-spacing:0;text-transform:none}
 .th,.rth{font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
-.card{margin:12px 12px 0;background:var(--card);border-radius:28px;box-shadow:var(--shadow)}
+.card{margin:12px 12px 0;background:var(--card);border-radius:var(--cr,28px);box-shadow:var(--shadow)}
 header{position:static;background:transparent;color:var(--ink);border:0;box-shadow:none;padding:16px 18px 6px}
 h1{font-size:var(--fs-l);line-height:1.1;font-weight:700;color:var(--ink)}
 h1::after{content:none}
@@ -151,7 +151,7 @@ header .ib{min-height:44px;border-color:var(--accent);color:var(--ink);backgroun
 .langbar .lb-t{display:flex;flex-direction:column;line-height:1.1;flex:1;min-width:0}
 .langbar .lb-s{font-size:var(--fs-s);color:var(--mute)}
 .langbar .lb-n{font-size:var(--fs-l);font-weight:700;color:var(--ink)}
-.tool .langbar select#lang{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;border:0;font-size:var(--fs-m)}
+.langbar select#lang{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;padding:0;border:0;font-size:var(--fs-m)}
 .dirrow{display:flex;gap:4px;padding:4px;background:var(--pill);border-radius:var(--r)}
 .dirrow .ib{flex:1;padding:2px 6px;font-size:var(--fs-s);min-height:42px;border:2px solid transparent;background:transparent;color:var(--mute);white-space:nowrap}
 .dirrow .ib.on{background:var(--card);color:var(--ink);border-color:var(--accent)}
@@ -192,11 +192,11 @@ main{padding:4px 18px 22px}
 .tile small{color:var(--ink)}
 .tile .auto{font-size:var(--fs-s);color:var(--mute);text-decoration:underline}
 .x{width:30px;height:30px;top:-8px;right:-6px;border:2px solid var(--card);border-radius:50%;background:var(--danger);color:#fff;font-family:system-ui,sans-serif;font-weight:900;font-size:var(--fs-s);line-height:1}
-.tabbar{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;background:var(--card);border:0;border-radius:28px;box-shadow:var(--shadow);padding:8px 4px}
+.tabbar{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;background:var(--card);border:0;border-radius:var(--cr,28px);box-shadow:var(--shadow);padding:8px 4px}
 .tabbar button{flex:1;background:none;border:0;color:var(--mute);font-size:var(--fs-s);font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0;cursor:pointer}
 .tabbar svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tabbar button:active{opacity:.6}
-dialog{background:var(--card);color:var(--ink);border:0;border-radius:28px;box-shadow:0 20px 50px rgba(20,24,80,.45);width:min(460px,94vw);padding:20px;max-height:90vh;overflow:auto}
+dialog{background:var(--card);color:var(--ink);border:0;border-radius:var(--cr,28px);box-shadow:0 20px 50px rgba(20,24,80,.45);width:min(460px,94vw);padding:20px;max-height:90vh;overflow:auto}
 dialog::backdrop{background:rgba(18,20,60,.55)}
 label{color:var(--mute);font-size:var(--fs-s);font-weight:600;margin:12px 0 4px}
 label.ck{color:var(--ink);font-size:var(--fs-m);font-weight:400}
@@ -286,12 +286,23 @@ header{padding:6px 16px 0}
 #big{position:fixed;inset:0;z-index:100;background:var(--card);color:var(--ink);display:flex;flex-direction:column}
 #big[hidden]{display:none}
 #bigBox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px;overflow:hidden;text-align:center;min-height:0}
-#bigTxt{line-height:1.2;max-width:100%;word-break:break-word;font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
+#bigTxt{line-height:1.2;max-width:100%;word-break:normal;overflow-wrap:normal;font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
 #bigSub{margin-top:10px}
 #bigSub .bsr{font-size:var(--fs-l);color:var(--accent)}
 #bigSub .bse{font-size:var(--fs-m);color:var(--mute)}
 #bigBar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
 #bigBar .ib{min-height:46px;padding:2px 16px;font-size:var(--fs-s)}
+#bigBar #bigX,html[data-look] #bigBar #bigX{background:#fde68a!important;color:#1e3a8a!important;border:0!important;font-weight:700;padding-left:22px;padding-right:22px}
+.npic{font-size:30px;line-height:1;margin-right:8px;vertical-align:middle;display:inline-block}
+#numBtn .npic{font-size:26px}
+.grid[data-gc] .tile.numpill .en{display:inline-flex;align-items:center;color:#172554!important;font-weight:800;text-shadow:none}
+/* every Close button looks the same: gold */
+#bigX,#nmX,#addCancel,#edCancel,#moreClose,#bldClose,html[data-look] #bigX,html[data-look] #nmX,html[data-look] #addCancel,html[data-look] #edCancel,html[data-look] #moreClose,html[data-look] #bldClose{background:#fde68a!important;color:#172554!important;border:0!important;font-weight:700}
+#undoBar{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:55;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px 10px 18px;border-radius:999px;background:#172554;color:#fff;font-size:18px;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+#undoBar[hidden]{display:none}
+#undoBar .ib,html[data-look] #undoBar .ib{background:#fde68a!important;color:#172554!important;border:0!important;min-height:44px;padding:0 18px;font-size:18px;font-weight:700}
+.bhint2 b{color:var(--ink);font-weight:600}
+.bhint2{font-size:14px;line-height:1.3;color:var(--mute);margin:-2px 2px 8px;opacity:.9}
 #moreAlts .ib small{font-size:var(--fs-s)}
 #bldSlots select,#bldT{width:100%}
 @media (max-height:900px){.sec{margin:10px 0 6px}}
@@ -308,44 +319,193 @@ html,body{overflow-x:hidden;max-width:100%}
 #offBar{margin:0 0 8px;padding:6px 16px;border-radius:999px;background:var(--hl);color:var(--ink);font-size:var(--fs-s)}
 #offBar[hidden]{display:none}
 #moreBack[hidden],#moreFresh[hidden]{display:none}
-/* conversation, update bar */
-#toast{z-index:120}
-#updBar{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:130;display:flex;align-items:center;gap:8px;background:var(--accent);color:var(--onaccent);border-radius:999px;padding:6px 8px 6px 18px;font-size:var(--fs-s);box-shadow:0 10px 24px rgba(0,0,0,.35)}
-#updBar[hidden]{display:none}
-#updBar span{flex:1}
-#updBar .ib{min-height:40px;padding:2px 16px;font-size:var(--fs-s);background:var(--card);color:var(--ink);border-color:var(--card)}
-#conv{position:fixed;inset:0;z-index:90;background:var(--page);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
-#conv[hidden]{display:none}
-#convTop{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px}
-#convTop .ib{min-height:42px;padding:2px 16px;font-size:var(--fs-s)}
-#convTop label{margin:0;display:flex;align-items:center;gap:8px;font-size:var(--fs-s);color:var(--ink)}
-#convLog{flex:1;min-height:0;overflow:auto;padding:6px 14px;display:flex;flex-direction:column;gap:10px}
-.cmsg{max-width:90%;padding:10px 16px;border-radius:24px;background:var(--card);box-shadow:var(--shadow);align-self:flex-start}
-.cmsg.me{align-self:flex-end;background:var(--pill)}
-.cwho{font-size:var(--fs-s);color:var(--mute)}
-.cout{font-size:var(--fs-l);line-height:1.25;overflow-wrap:anywhere;font-family:system-ui,-apple-system,"Noto Sans Thai","Noto Sans",sans-serif}
-.cph{font-size:var(--fs-m);color:var(--accent)}
-.csrc{font-size:var(--fs-s);color:var(--mute);overflow-wrap:anywhere}
-.cerr{font-size:var(--fs-s);color:var(--danger)}
-.cbtn{display:flex;gap:8px;margin-top:6px}
-.cbtn .ib{min-height:38px;padding:2px 14px;font-size:var(--fs-s)}
-.cempty{margin:auto;text-align:center;color:var(--mute);font-size:var(--fs-m);padding:0 20px}
-#convStat{min-height:28px;padding:0 16px;font-size:var(--fs-s);color:var(--accent)}
-#convTypeRow{display:flex;gap:8px;padding:6px 12px}
-#convTypeRow[hidden]{display:none}
-#convTypeRow input{flex:1;min-width:0}
-#convTypeRow .ib{min-height:46px;padding:2px 14px;font-size:var(--fs-s)}
-#convBar{display:flex;gap:8px;padding:8px 12px calc(10px + env(safe-area-inset-bottom,0px))}
-.convmic{flex:1;min-height:78px;font-size:var(--fs-m);border-radius:999px}
-.convmic.rec{background:var(--accent);color:var(--onaccent);animation:blink 1s steps(2,start) infinite}
-#convType{min-height:78px;min-width:64px;padding:0 14px}
 .tn{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px 7px}
 .ts{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1}
 .ts svg,.tlg svg{width:1.5em;height:.85em;min-width:20px;min-height:11px;margin-bottom:3px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
 .ts svg .tg,.tlg svg .tg{stroke-width:1;opacity:.3}
-.tlg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:2px 0 10px 28px;font-size:var(--fs-s);color:var(--mute)}
+.tlg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:2px 0 10px 28px;font-size:13px;color:var(--mute)}
 .tlg span{display:inline-flex;align-items:center;gap:4px}
-#moreStyle[hidden]{display:none}
+
+/* ===== looks (Settings > Look), the mic and Show buttons ===== */
+:root{--mic:#f0566a;--onmic:#ffffff}
+.micbtn,.micbtn:active{width:auto;min-width:118px;min-height:58px;padding:0 20px 0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--mic);color:var(--onmic);border:0;border-radius:var(--r);box-shadow:0 0 0 4px var(--hl);font-weight:700;font-size:var(--fs-m)}
+.micbtn svg{width:28px;height:28px}
+#trMic.rec{background:var(--danger);color:#fff;animation:none;box-shadow:0 0 0 0 var(--danger);animation:micpulse 1.2s ease-out infinite}
+@keyframes micpulse{0%{box-shadow:0 0 0 0 rgba(240,86,106,.55)}100%{box-shadow:0 0 0 16px rgba(240,86,106,0)}}
+@media (max-height:900px){.micbtn,.micbtn:active{min-height:48px;min-width:108px}.micbtn svg{width:24px;height:24px}}
+.showbtn{display:inline-flex;align-items:center;gap:6px}
+.showbtn .hand{width:1.2em;height:1.2em;flex:none}
+.actrow .speakbtn,.actrow .showbtn{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding-left:10px;padding-right:10px;white-space:nowrap}
+.actrow .speakbtn,.actrow .showbtn{min-height:56px!important;height:56px;font-size:var(--fs-m)!important;font-weight:600;padding-top:0!important;padding-bottom:0!important;box-sizing:border-box}
+.grid[data-gc] .tile.numpill,html[data-look] .grid[data-gc] .tile.numpill{background:rgba(253,230,138,.2)!important;border:2px solid rgba(253,230,138,.75)!important;box-shadow:none!important}
+.grid[data-gc] .tile.numpill .en{color:#fff6d5!important;font-weight:700;font-size:22px!important}
+.grid[data-gc] .tile.numpill{flex:1 1 100%;width:100%;justify-content:center!important;min-height:60px!important;margin-bottom:4px}
+.ways{margin-top:14px;padding:12px;border-radius:18px;background:rgba(15,23,60,.32)}
+.wayh{font-weight:700;font-size:18px;margin-bottom:4px}
+.waysub{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px}
+.wsp{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.wsw,.wsk{font-size:22px;cursor:pointer}
+.wsw s{color:#f9a8d4;text-decoration-thickness:2px}
+.wsk u{color:#86efac;text-decoration-thickness:3px;text-underline-offset:4px}
+.wsa{color:var(--mute)}
+.wsr{color:#fde68a;font-size:16px}
+.wtab{width:100%;border-collapse:separate;border-spacing:0 4px;table-layout:fixed}
+.wtab th{font-size:12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px}
+.wtab th.on{color:#fde68a}
+.wtab td{text-align:center;padding:6px 3px;background:rgba(255,255,255,.07);cursor:pointer;overflow-wrap:anywhere;vertical-align:middle}
+.wtab td:first-child{text-align:left;color:#fde68a;font-weight:600;font-size:14px;cursor:default;width:22%;border-radius:12px 0 0 12px}
+.wtab td:last-child{border-radius:0 12px 12px 0}
+.wtab td b{display:block;font-size:17px;font-weight:600;line-height:1.25}
+.wtab td small{display:block;font-size:12px;color:var(--mute);line-height:1.2}
+.wtab td.on{box-shadow:inset 0 0 0 2px #fde68a}
+.wtab td.in b{color:#86efac}
+.wayt{font-size:13px;color:var(--mute);margin-top:6px}
+.moreline{display:block;width:100%;margin-top:10px;min-height:46px;font-size:17px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:10px!important;padding-right:10px!important}
+.bldrow .ib{font-size:17px!important;white-space:nowrap;min-height:46px;padding-left:8px!important;padding-right:8px!important}
+
+/* two-way: who is talking, Thai side, reply from the Show window */
+.dirrow.who{gap:6px;padding:5px}
+.dirrow.who .ib{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;min-height:64px;white-space:normal;padding:6px 8px}
+.dirrow.who .ib b{font-size:var(--fs-m)}
+.dirrow.who .ib small{font-size:15px;font-weight:500;color:var(--mute)}
+.dirrow.who #dirTh.on{border-color:var(--mic)}
+.tool.thside #trIn{border:2px solid var(--mic)}
+.setq{margin:10px 0 14px;display:flex;flex-wrap:wrap;gap:10px 18px}
+#setD .langbar{margin:12px 0 4px}
+header{padding-bottom:10px}
+#bigReply{display:flex;gap:10px;padding:10px 12px 0;justify-content:center;flex-wrap:wrap}
+#bigReply .ib{flex:1 1 0;min-width:0;min-height:64px;display:inline-flex;align-items:center;justify-content:center;gap:10px;font-size:var(--fs-m);font-weight:700}
+#bigReply span{display:flex;flex-direction:column;line-height:1.1}
+#bigReply small{font-size:14px;font-weight:500;opacity:.85}
+#bigReply svg{width:28px;height:28px;flex:none}
+@media (max-height:900px){.dirrow.who .ib{min-height:54px}.dirrow.who .ib small{font-size:13px}#bigReply .ib{min-height:54px}}
+
+.sw[hidden]{display:none!important}
+.toprow .seg{flex:1 1 auto}
+.toprow .seg .ib{flex:1 1 0}
+.toprow{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;margin-top:8px}
+.toprow .sw{flex:none;width:auto;margin:0}
+.toprow .seg{flex:none;margin:0}
+.seg{display:flex;gap:2px;padding:3px;background:var(--pill);border-radius:var(--r)}
+.seg .ib{min-height:36px;padding:2px 10px;border:2px solid transparent;background:transparent;color:var(--mute);font-size:var(--fs-s)}
+.seg .ib.on{background:var(--card);color:var(--ink);border-color:var(--accent)}
+
+/* ===== looks: each has its own font (Thai + Latin), colours and button style ===== */
+html[data-look="glass"]{--page:#2563eb;--glassbg:linear-gradient(165deg,#0ea5e9 0%,#2563eb 45%,#3730a3 100%);--card:rgba(255,255,255,.12);--pill:rgba(255,255,255,.14);--ink:#ffffff;--mute:#dbe4ff;--accent:#ffffff;--onaccent:#1e3a8a;--line:rgba(255,255,255,.3);--hl:#ffffff26;--mic:#f472b6;--onmic:#ffffff;--r:999px;--cr:26px;--shadow:0 10px 30px rgba(0,0,0,.45);--ill:none;color-scheme:dark;--bf:"Prompt",system-ui,-apple-system,"Noto Sans Thai",sans-serif}
+html[data-look="glass"] .th,html[data-look="glass"] .rth,html[data-look="glass"] #bigTxt,html[data-look="glass"] textarea,html[data-look="glass"] input,html[data-look="glass"] select{font-family:var(--bf)}
+/* iPhone ignores fixed backgrounds, so the gradient sits on a fixed layer behind everything */
+html[data-look="glass"]{background:#2563eb}
+html[data-look="glass"] body{background:transparent}
+html[data-look="glass"] body::before{background:var(--glassbg)}
+html[data-look="glass"] .card,html[data-look="glass"] .tabbar{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.28)}
+html[data-look="glass"] dialog,html[data-look="glass"] #big{background:#1e3a8a}
+html[data-look="glass"] .ib:not(.dirrow .ib):not(.seg .ib):not(.pri):not(.micbtn):not(.savebtn){background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.45)}
+#sLightRow[hidden]{display:none}
+.spdrow{margin-top:6px}
+.spdrow .spd{flex:1 1 auto}
+.htile{cursor:pointer;padding-bottom:52px!important}
+.hsave{position:absolute;left:12px;right:12px;bottom:10px;min-height:36px;border:0;border-radius:var(--r);background:var(--accent);color:var(--onaccent);font:inherit;font-size:var(--fs-s);font-weight:600}
+.hsave.done{background:var(--pill);color:var(--mute)}
+header h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-size:clamp(22px,7.4vw,var(--fs-l))}
+.bhrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bhrow #editBtn{min-height:40px;padding:4px 18px;font-size:var(--fs-s)}
+
+/* compact tiles: three across, less scrolling */
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{min-height:0;padding:10px 8px 9px 13px;border-radius:16px;gap:1px;touch-action:manipulation}
+.tile::before{top:11px;bottom:11px;width:3px}
+.tile .th{font-size:15.5px;line-height:1.25;padding-right:14px}
+#chips{display:block}
+#chips .chrow1{display:flex;flex-wrap:wrap;gap:8px}
+#chips .chrow2{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:8px -18px 0 0;padding:0 18px 4px 0}
+#chips .chrow2::-webkit-scrollbar{display:none}
+#chips .chip{flex:none}
+.tile .ro{font-size:12.5px;line-height:1.2}
+.tile .en{font-size:15.5px;line-height:1.25;color:var(--ink);font-weight:500;opacity:.92}
+.tile .tn{gap:1px 4px}
+.fav{width:26px;height:26px;font-size:17px;top:2px;right:0}
+.seeall{display:block;width:100%;margin:8px 0 2px;padding:9px 12px;border:1px dashed var(--line);border-radius:var(--r);background:transparent;color:var(--ink);font:inherit;font-size:var(--fs-s);font-weight:600}
+@media (min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+/* drag to rearrange */
+.tile.holder{opacity:.25}
+.tile.ghost{position:fixed;z-index:200;margin:0;pointer-events:none;transform:scale(1.08) rotate(-2deg);box-shadow:0 18px 40px rgba(0,0,0,.35);background:var(--card);opacity:.96}
+body.dragging{user-select:none;-webkit-user-select:none}
+body.dragging .grid .tile:not(.holder){animation:jiggle .28s ease-in-out infinite alternate}
+@keyframes jiggle{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
+@media (prefers-reduced-motion:reduce){body.dragging .grid .tile{animation:none}}
+#tip{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:var(--cr,24px);background:var(--card);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.35);border:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+html[data-look="glass"] #tip{background:#1e3a8a}
+#tip .tipic{font-size:30px;line-height:1}
+#tip b{font-size:var(--fs-m)}
+#tip p{margin:4px 0 10px;font-size:var(--fs-s);color:var(--mute);line-height:1.35}
+#tip>div{width:100%}
+#tip b{display:block;font-size:22px;margin-bottom:8px}
+#tip ul{list-style:none;margin:0 0 14px;padding:0}
+#tip li{display:flex;gap:12px;align-items:flex-start;font-size:20px;line-height:1.35;margin:10px 0}
+#tip li span{flex:none;width:28px;text-align:center}
+#tip .ib{min-height:52px;width:100%;font-size:20px}
+.bldrow{display:flex;gap:8px;margin-top:10px}
+.bldrow .ib{flex:1 1 0;min-width:0}
+#numD{width:min(440px,94vw);text-align:center;padding:18px 16px}
+#nmVal{font-size:40px;font-weight:700;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+#nmTh{font-size:32px;line-height:1.35;font-weight:600;min-height:44px;margin-top:4px;overflow-wrap:anywhere}
+#nmRo{font-size:20px;min-height:30px;display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+#nmRo .nmhint{color:var(--mute);font-size:17px}
+html[data-look="glass"] #nmTh{color:#fde68a}
+.nmkeys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.nmkeys .ib{min-height:58px;font-size:28px;font-weight:600}
+.nmbtns{display:flex;gap:8px;margin-top:8px}
+.nmbtns .ib{flex:1 1 0;min-height:50px;font-size:18px;white-space:nowrap}
+/* compact pill phrase board (look D) */
+.grid[data-gc]{display:flex!important;flex-wrap:wrap;gap:7px!important}
+.grid[data-gc] .tile{width:auto;max-width:100%;min-height:0!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;text-align:left;padding:7px 13px!important;border:0!important;border-radius:999px!important;box-shadow:none!important;gap:5px}
+.grid[data-gc] .tile::before{display:none!important}
+.grid[data-gc] .tile .en{font-size:17px;line-height:1.3;padding:0!important;white-space:normal}
+.grid[data-gc] .tile .fav{display:none}
+.grid[data-gc] .tile .fav.on{display:inline;position:static;order:-1;width:auto;height:auto;font-size:15px;color:#fde68a}
+.grid[data-gc] .tile .auto{display:none}
+.grid[data-gc] .tile.holder{opacity:.25}
+.edit .grid[data-gc] .tile{padding-right:30px!important}
+.edit .grid[data-gc] .tile .x{top:50%;transform:translateY(-50%);right:4px;width:24px;height:24px}
+html[data-look="glass"] .grid[data-gc] .tile{background:rgba(15,23,60,.42)!important}
+html[data-look="glass"] .grid[data-gc] .tile.sel{box-shadow:inset 0 0 0 2px #fde68a!important}
+.board .sec{font-size:16px!important;margin:14px 0 6px!important}
+.seeall{display:inline-block;width:auto;border:0;padding:4px 0;margin:4px 0 6px;text-align:left;font-size:15px;background:none}
+html[data-look="glass"] .seeall{color:#bae6fd}
+.nmunits .ib.on{background:var(--accent);color:var(--onaccent,#fff)}
+#tip .ib{min-height:40px;padding:4px 20px}
+.boardhead .bhint{font-size:13px;line-height:1.3;margin:6px 2px 2px;opacity:.85}
+html[data-look="glass"] .tile .en{color:#fde68a;font-weight:600;opacity:1}
+/* English-only tiles, sized for easy reading */
+.tile.enonly .th,.tile.enonly .ro{display:none}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile.enonly{min-height:76px;justify-content:center;padding:12px 30px 12px 16px}
+.tile.enonly .en{font-size:20px;line-height:1.25;font-weight:700;padding-right:0;overflow-wrap:anywhere}
+html[data-look="glass"] .tile{background:rgba(15,23,60,.38)}
+html[data-look="glass"] .tile .en{color:#fde68a}
+@media (min-width:640px){.grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}}
+/* easy-to-see typing cursor */
+input,textarea{caret-color:var(--accent)}
+html[data-look="glass"] input,html[data-look="glass"] textarea{caret-color:#fde68a}
+#trOut:empty{min-height:0!important;background:none!important}
+html{touch-action:manipulation}
+button,.ib,dialog,.nmkeys{touch-action:manipulation}
+.toplang{flex:1;min-width:0;margin:0!important;padding:2px 14px!important;min-height:40px;gap:10px}
+.toplang svg{width:22px;height:22px}
+.toplang .lb-t{flex-direction:row;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden}
+.toplang .lb-s{display:none}
+.toplang .lb-n{font-size:var(--fs-m);line-height:1.2;overflow:hidden;text-overflow:ellipsis}
+.bi{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;gap:1px}
+.bi .bth{font-size:1.15em;font-weight:700}
+.bi .ben{font-size:.62em;font-weight:500;opacity:.85}
+.spk{width:1.35em;height:1.35em;flex:none}
+#bigSpk,#nmPlay{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+#nmShow .hand{width:1.3em;height:1.3em}
+.nmbtns .ib{min-width:0;padding-left:6px;padding-right:6px}
+html .nmunits .ib.on,html[data-look] .nmunits .ib.on{background:#fde68a!important;color:#1e3a8a!important;border-color:#fde68a!important;font-weight:700}
+#bigBar .tsz{display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px}
+#bigBar .tsz .ib{min-width:42px;padding:0 8px;font-size:26px;line-height:1;border:0;background:rgba(255,255,255,.12)}
+#bigBar .tszl{font-size:15px;opacity:.9;padding:0 2px;white-space:nowrap}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&display=swap" rel="stylesheet">
 </head>
@@ -353,35 +513,35 @@ html,body{overflow-x:hidden;max-width:100%}
 <div class="card top">
 <header>
   <div class="row">
-    <h1><span class="fl">🇹🇭</span> <span class="tt">Phil's Translator</span></h1>
+    <label class="langbar toplang" for="lang">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>
+      <span class="lb-t"><span class="lb-s">Language<span id="lbCount" hidden>19</span></span><span id="lbName" class="lb-n">Thai</span></span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <select id="lang" aria-label="Language"></select>
+  </label>
     <button class="ib big" id="setBtn" aria-label="Settings">⚙︎</button>
-    <button class="ib" id="editBtn">Edit</button>
   </div>
-  <div class="hrow">
-    <label class="sw" aria-label="Polite ending"><input type="checkbox" id="polT"><span class="trk"></span><span id="polTxt">Polite: off</span></label>
+  <div class="hrow toprow">
+    <label class="sw" aria-label="Polite ending" hidden><input type="checkbox" id="polT"><span class="trk"></span><span id="polTxt">Polite: off</span></label>
+    <div class="seg" id="regSeg" role="group" aria-label="How to speak"><button class="ib" data-r="friends">Friends</button><button class="ib" data-r="polite">Polite</button><button class="ib" data-r="formal">Formal</button></div>
+  </div>
+  <div class="hrow spdrow">
     <label class="spd" for="spd"><span>Speed</span><span aria-hidden="true">🐢</span><input type="range" id="spd" min="0.4" max="1.2" step="0.05" value="0.9"></label>
   </div>
   <div id="now"></div>
 </header>
 <section class="tool" id="tool">
   <div id="offBar" hidden>Offline: saved phrases still work. New translations need internet.</div>
-  <label class="langbar" for="lang">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>
-    <span class="lb-t"><span class="lb-s">Choose language<span id="lbCount" hidden>19</span></span><span id="lbName" class="lb-n">Thai</span></span>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-    <select id="lang" aria-label="Language"></select>
-  </label>
-  <div class="dirrow"><button class="ib on" id="dirEn">English → Thai</button><button class="ib" id="dirTh">Thai → English</button></div>
+  <div class="dirrow who"><button class="ib on" id="dirEn"></button><button class="ib" id="dirTh"></button></div>
   <textarea id="trIn" rows="2" maxlength="400" placeholder="Type English, or tap the mic…"></textarea>
-  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="ib micbtn" id="convBtn" aria-label="Conversation mode"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 4h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M19 9h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v3l-4-3h-4"/></svg></button></div>
+  <div class="trbtns"><button class="ib pri bigbtn" id="trGo" style="flex:1">Translate</button><button class="ib micbtn" id="trMic" style="display:none" aria-label="Speak your phrase"><svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="mlab">Talk</span></button></div>
   <div id="trOut"></div>
   <div id="hist"></div>
 </section>
 </div>
 <div class="card board">
-<div class="boardhead"><div class="sec2">Phrase board</div><input id="q" type="search" placeholder="Search phrases">
-  <div class="hint">Press and hold a tile to edit, move or delete it. Tap a star to keep it in Favourites.</div>
-  <button class="ib" id="bldBtn" style="margin-top:10px">Build a sentence</button></div>
+<div class="boardhead"><div class="bhrow"><div class="sec2">Phrase board</div><button class="ib" id="editBtn">Edit</button></div><div class="bhint2"><b>Tap</b> a phrase to hear it · <b>Hold ½ second, then let go</b> to show it full screen · <b>Hold, then slide</b> to move it</div><input id="q" type="search" placeholder="Search phrases">
+  <div class="bldrow"><button class="ib" id="bldBtn">Build a sentence</button></div></div>
 <div class="chips" id="chips"></div>
 <main id="main"></main>
 </div>
@@ -393,22 +553,31 @@ html,body{overflow-x:hidden;max-width:100%}
   <button data-go="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Settings</button>
 </nav>
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="updBar" hidden><span>A new version is ready.</span><button class="ib" id="updNow">Update now</button><button class="ib" id="updLater" aria-label="Later">✕</button></div>
-<div id="conv" hidden>
-  <div id="convTop"><button class="ib" id="convClose">Close</button><label class="ck"><input type="checkbox" id="convAloud"> Read replies aloud</label><button class="ib" id="convClear">Clear</button></div>
-  <div id="convLog"></div>
-  <div id="convStat"></div>
-  <div id="convTypeRow" hidden><input id="convIn" placeholder="Type here…" autocomplete="off"><button class="ib" id="convSendMe">As me</button><button class="ib" id="convSendThem">As them</button></div>
-  <div id="convBar"><button class="ib convmic" id="convMeMic"><span id="convMeLbl">Me · English</span></button><button class="ib convmic" id="convThemMic"><span id="convThemLbl">Them</span></button><button class="ib" id="convType" aria-label="Type instead">Aa</button></div>
-</div>
+<div id="undoBar" hidden><span id="undoMsg">Moved</span><button class="ib" id="undoBtn" type="button">↶ Undo</button></div>
 <div id="undoBar" hidden><span id="undoMsg"></span><button class="ib" id="undoBtn">Undo</button></div>
 <div id="big" hidden>
   <div id="bigBox"><div id="bigTxt" dir="auto"></div><div id="bigSub"></div></div>
-  <div id="bigBar"><button class="ib" id="bigMinus" aria-label="Smaller text">A−</button><button class="ib" id="bigPlus" aria-label="Bigger text">A+</button><button class="ib" id="bigSnd">Sounds</button><button class="ib" id="bigSpk">🔊</button><button class="ib" id="bigRot">Rotate</button><button class="ib" id="bigX">Close</button></div>
+  <div id="bigReply"><button class="ib micbtn" id="bigTalk"></button><button class="ib" id="bigType"></button></div>
+  <div id="bigBar"><button class="ib" id="bigSpk" aria-label="Play"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Play</button><button class="ib" id="bigSnd">Sounds</button><button class="ib" id="bigFav" hidden>☆ Fav</button><span class="tsz" role="group" aria-label="Text size"><button class="ib" id="bigMinus" aria-label="Smaller text">−</button><span class="tszl">Text</span><button class="ib" id="bigPlus" aria-label="Bigger text">+</button></span><button class="ib" id="bigRot">Rotate</button><button class="ib" id="bigX">Close</button></div>
 </div>
 
+<dialog id="numD" aria-label="Number keypad">
+  <div id="nmVal" aria-live="polite">0</div>
+  <div id="nmTh" dir="auto" lang="th"></div>
+  <div id="nmRo"></div>
+  <div class="nmkeys">
+    <button class="ib" data-k="1">1</button><button class="ib" data-k="2">2</button><button class="ib" data-k="3">3</button>
+    <button class="ib" data-k="4">4</button><button class="ib" data-k="5">5</button><button class="ib" data-k="6">6</button>
+    <button class="ib" data-k="7">7</button><button class="ib" data-k="8">8</button><button class="ib" data-k="9">9</button>
+    <button class="ib" data-k=".">.</button><button class="ib" data-k="0">0</button><button class="ib" data-k="back" aria-label="Delete">⌫</button>
+  </div>
+  <div class="nmbtns nmunits"><button class="ib" data-u="baht" aria-pressed="false">฿ Baht</button><button class="ib" data-u="beer" aria-pressed="false">🍺 Beer</button><button class="ib" data-u="coffee" aria-pressed="false">☕ Coffee</button></div>
+  <div class="nmbtns"><button class="ib" id="nmClr">Clear</button></div>
+  <div class="nmbtns"><button class="ib pri" id="nmPlay"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Play</button><button class="ib showbtn" id="nmShow"><svg class="hand" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="1" width="10" height="15" rx="2"/><path d="M14 3.5h3"/><path d="M10.5 6H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M10.5 8.7H8.4a1.35 1.35 0 0 0 0 2.7h2.1"/><path d="M10.5 11.4H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M7.6 6.6C6 7.6 5.2 9.5 5.3 12.2l.4 3.6"/><path d="M10.5 16l-.6 2"/><path d="M5.7 15.8L1.6 22.6"/><path d="M9.9 18L6.2 23.6"/></svg>Show</button><button class="ib" id="nmX">Close</button></div>
+</dialog>
+
 <dialog id="addD">
-  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0">Add a phrase</h3><div class="row"><button class="ib" id="addCancel">Close</button><button class="ib savebtn sm" id="addGo">Save</button></div></div>
+  <div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Add a phrase</h3><div class="row"><button class="ib" id="addCancel">Close</button><button class="ib savebtn sm" id="addGo">Save</button></div></div>
   <label for="en">English (type this, then tap Save)</label>
   <input id="en" placeholder="Coffee, please">
   <button class="ib savebtn" id="addGo2" style="margin-top:12px">💾 Save phrase</button>
@@ -424,7 +593,7 @@ html,body{overflow-x:hidden;max-width:100%}
 </dialog>
 
 <dialog id="edD">
-  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0">Edit phrase</h3><div class="row"><button class="ib" id="edCancel">Close</button><button class="ib savebtn sm" id="edSave">Save</button></div></div>
+  <div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Edit phrase</h3><div class="row"><button class="ib" id="edCancel">Close</button><button class="ib savebtn sm" id="edSave">Save</button></div></div>
   <label for="eth" id="edLbl">Thai text (spoken aloud)</label>
   <input id="eth" lang="th">
   <label for="ero">Romanization</label>
@@ -438,7 +607,7 @@ html,body{overflow-x:hidden;max-width:100%}
   <input id="ecatNew" placeholder="New category name" style="display:none;margin-top:8px">
   <button class="ib savebtn" id="edSave2" style="margin-top:12px">💾 Save changes</button>
   <button class="ib" id="edVerify" style="width:100%;margin-top:10px">✓ Mark as checked by a native speaker</button>
-  <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="ib" id="edUp">↑ Up</button><button class="ib" id="edDown">↓ Down</button><button class="ib" id="edTop">Top</button><button class="ib" id="edShow">Show</button></div>
+  <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="ib" id="edUp">↑ Up</button><button class="ib" id="edDown">↓ Down</button><button class="ib" id="edTop">Top</button><button class="ib showbtn" id="edShow"><svg class="hand" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="1" width="10" height="15" rx="2"/><path d="M14 3.5h3"/><path d="M10.5 6H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M10.5 8.7H8.4a1.35 1.35 0 0 0 0 2.7h2.1"/><path d="M10.5 11.4H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M7.6 6.6C6 7.6 5.2 9.5 5.3 12.2l.4 3.6"/><path d="M10.5 16l-.6 2"/><path d="M5.7 15.8L1.6 22.6"/><path d="M9.9 18L6.2 23.6"/></svg>Show</button></div>
   <label for="ecopy">Copy to another category</label>
   <div class="row" style="gap:8px"><select id="ecopy" style="flex:1;min-width:0"></select><button class="ib" id="edCopy">Copy</button></div>
   <button class="ib" id="edDel" style="margin-top:10px;width:100%;color:#ef8f8a;border-color:#ef8f8a">🗑 Delete this phrase</button>
@@ -446,45 +615,37 @@ html,body{overflow-x:hidden;max-width:100%}
 </dialog>
 
 <dialog id="moreD">
-  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0;font-size:var(--fs-l)">More</h3><button class="ib" id="moreClose">Close</button></div>
+  <div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:var(--fs-l)">Options</h3><button class="ib" id="moreClose">Close</button></div>
   <button class="ib" id="moreCopy" style="width:100%;margin-top:12px">Copy text</button>
   <button class="ib" id="moreEdit" style="width:100%;margin-top:10px">Edit before saving</button>
   <button class="ib" id="moreBack" style="width:100%;margin-top:10px">Check the meaning (translate back)</button>
   <div id="moreBackOut"></div>
-  <div id="moreStyle"><label>Say it in another style</label><div class="row" style="gap:8px;flex-wrap:wrap"><button class="ib" data-style="everyday">Everyday</button><button class="ib" data-style="polite">Polite</button><button class="ib" data-style="literal">Literal</button></div><div class="hint" id="moreStyleHint"></div></div>
   <button class="ib" id="moreFresh" style="width:100%;margin-top:10px" hidden>Translate again online</button>
   <div id="moreAlts"></div>
 </dialog>
 
 <dialog id="bldD">
-  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0;font-size:var(--fs-l)">Build a sentence</h3><button class="ib" id="bldClose">Close</button></div>
+  <div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:var(--fs-l)">Build a sentence</h3><button class="ib" id="bldClose">Close</button></div>
   <select id="bldT" aria-label="Sentence type" style="width:100%;margin-top:12px"></select>
   <div id="bldSlots"></div>
   <div id="bldOut" style="margin-top:12px"></div>
-  <div class="row actrow"><button class="ib speakbtn" id="bldSpk">🔊 Speak</button><button class="ib" id="bldShow">Show</button></div>
+  <div class="row actrow"><button class="ib speakbtn" id="bldSpk"><svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Play</button><button class="ib showbtn" id="bldShow" aria-label="Show full screen to the other person"><svg class="hand" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="1" width="10" height="15" rx="2"/><path d="M14 3.5h3"/><path d="M10.5 6H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M10.5 8.7H8.4a1.35 1.35 0 0 0 0 2.7h2.1"/><path d="M10.5 11.4H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M7.6 6.6C6 7.6 5.2 9.5 5.3 12.2l.4 3.6"/><path d="M10.5 16l-.6 2"/><path d="M5.7 15.8L1.6 22.6"/><path d="M9.9 18L6.2 23.6"/></svg>Show</button></div>
   <div class="row actrow"><select id="bldCat" aria-label="Save to category" style="flex:1;min-width:0"></select><button class="ib savebtn sm" id="bldSave">💾 Save</button></div>
-</dialog>
-
-<dialog id="repD">
-  <div class="row" style="justify-content:space-between;gap:10px"><h3 style="margin:0;font-size:var(--fs-l)">Report</h3><button class="ib" id="repClose">Close</button></div>
-  <div class="hint">Copy this and send it to me.</div>
-  <textarea id="repTxt" readonly rows="10" style="width:100%;margin-top:10px;font-size:var(--fs-s);border-radius:20px"></textarea>
-  <button class="ib savebtn" id="repCopy" style="margin-top:12px">Copy report</button>
 </dialog>
 
 <dialog id="setD">
   <h3 style="margin:0">Settings</h3>
-  <label for="pol">Speaker (sets which polite ending to use; turn it on or off with the Polite switch at the top)</label>
+  <div class="hrow setq">
+  </div>
+  <label for="pol">Speaker (sets which polite ending, ครับ or ค่ะ, the Polite and Formal settings use)</label>
   <select id="pol">
     <option value="m">ครับ khrap: male speaker</option>
     <option value="f">ค่ะ / คะ kha: female speaker</option>
   </select>
-  <label for="styleSel">Translation style</label>
-  <select id="styleSel"><option value="everyday">Everyday (how people really talk)</option><option value="polite">Polite and careful</option><option value="literal">Literal (close to the English)</option></select>
-  <label class="ck"><input type="checkbox" id="sCas"> Make free Thai translations more casual</label>
   <label for="voice">Thai voice</label>
   <select id="voice"></select>
-  <label class="ck"><input type="checkbox" id="sLight"> Light theme. Off = dark theme</label>
+  <label>Look <select id="sLook"><option value="">Lavender (classic)</option><option value="glass">Glass</option></select></label>
+  <label class="ck" id="sLightRow"><input type="checkbox" id="sLight"> Light theme. Off = dark theme</label>
   <label class="ck"><input type="checkbox" id="sRo"> Show phonetics (how it sounds)</label>
   <div class="tlg" id="tLeg"></div>
   <label class="ck"><input type="checkbox" id="sEn"> Show English</label>
@@ -496,12 +657,6 @@ html,body{overflow-x:hidden;max-width:100%}
   <div class="hint">Gives a bigger free daily translation limit for the translate-all feature.</div>
   <label for="catExpSel">Export one category</label>
   <div class="row" style="gap:8px"><select id="catExpSel" style="flex:1;min-width:0"></select><button class="ib" id="catExp">Export</button></div>
-  <label for="srvUrl">Translation server (optional)</label>
-  <input id="srvUrl" placeholder="https://your-name.workers.dev" autocomplete="off" autocapitalize="off">
-  <label for="srvCode">App code (only if your server uses one)</label>
-  <input id="srvCode" type="password" autocomplete="off">
-  <button class="ib" id="srvTest" style="width:100%;margin-top:10px">Test server</button>
-  <div class="hint" id="srvOut">A small server keeps the translation key off the phones, so everyone gets reliable, high-quality translation.</div>
   <label for="aiKey">Claude API key (optional)</label>
   <input id="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
   <div class="hint">Gives better translations plus English phonetics for any phrase. Stored only on this device. Get one at console.anthropic.com.</div>
@@ -514,12 +669,9 @@ html,body{overflow-x:hidden;max-width:100%}
   <button class="ib savebtn sm" id="ghPub" style="margin-top:10px;width:100%">Publish my edits to GitHub</button>
   <label class="ck"><input type="checkbox" id="ghAuto"> Publish automatically 30 seconds after I make a change</label>
   <div class="hint" id="pubOut">Needs a fine-grained token with Contents: read and write for this repository only. Stored only on this device.</div>
-  <button class="ib" id="updChk" style="width:100%;margin-top:12px">Check for updates</button>
-  <button class="ib" id="sendRep" style="width:100%;margin-top:10px">Send diagnostics</button>
-  <div class="hint" id="verTxt"></div>
   <button class="ib" id="testTr" style="width:100%;margin-top:12px">Test translation</button>
   <div class="hint" id="testOut"></div>
-  <div class="hint"></div>
+  <div class="hint">Version: 16 Oct 2026, build 44</div>
   <label>Backup (everything on this device)</label>
   <div class="row"><button class="ib" id="exp" style="flex:1">Export backup</button><button class="ib" id="imp" style="flex:1">Import backup</button></div>
   <input type="file" id="file" accept=".json,application/json" hidden>
@@ -531,7 +683,6 @@ html,body{overflow-x:hidden;max-width:100%}
 </dialog>
 
 <script>
-const APPVER="2026-10-14-1";
 const BAKED=/*B*/null/*E*/;
 const D={
 "Basics":["สวัสดี|sa-wat-dee|Hello","ขอบคุณ|khop khun|Thank you","ไม่เป็นไร|mai pen rai|You're welcome / no problem","ขอโทษ|khor thot|Sorry / excuse me","ใช่|chai|Yes (that's right)","ไม่ใช่|mai chai|No (that's not it)","ได้|dai|OK / can do","ไม่ได้|mai dai|Can't / not allowed","ไปก่อนนะ|pai gon na|Bye, I'm off","เข้าใจแล้ว|khao jai laeo|I understand","ไม่เข้าใจ|mai khao jai|I don't understand","พูดช้าๆ หน่อยได้ไหม|phuut chaa-chaa noi dai mai|Can you speak slowly?","พูดอีกทีได้ไหม|phuut eek thii dai mai|Can you say it again?","พูดไทยได้นิดหน่อย|phuut thai dai nit noi|I speak a little Thai","พูดอังกฤษได้ไหม|phuut ang-grit dai mai|Do you speak English?"],
@@ -757,7 +908,7 @@ function applyP13(){
   if(S.applied.includes(P13.key))return;
   P13.fix.forEach(([o,n,ro,en])=>S.items.forEach(i=>{
     if(i.t||i.th!==o)return;
-    i.th=n;i.ro=ro;i.ph="";i.auto=0;i.chk=1;if(en)i.en=en;
+    i.th=n;i.ro=ro;i.ph="";i.auto=0;if(en)i.en=en;
   }));
   P13.add.forEach(([cat,t,ro,en])=>{
     if(S.items.some(i=>i.th===t))return;
@@ -767,8 +918,140 @@ function applyP13(){
   });
   S.applied.push(P13.key);save();
 }
-const NATURAL=new Set(P13.fix.map(f=>f[1]).concat(P13.add.map(a=>a[1])));
-const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const P14={key:'casual1',add:[
+["Casual talk", "เจ๋ง", "jeng", "Cool! / Awesome", 1],
+["Casual talk", "สุดยอด", "sut yot", "Amazing! / The best", 1],
+["Casual talk", "ปังมาก", "pang maak", "Killer! (slang: awesome)", 1],
+["Casual talk", "เป๊ะ", "pe", "Spot on / perfect", 1],
+["Casual talk", "โอ้โห", "oh-hoh", "Wow!", 1],
+["Casual talk", "จริงดิ", "jing di", "Seriously? / For real?", 1],
+["Casual talk", "ไม่จริงอ่ะ", "mai jing a", "No way!", 1],
+["Casual talk", "ตายแล้ว", "taai laeo", "Oh my god!", 1],
+["Casual talk", "เออ", "oe", "Yeah (very casual)", 1],
+["Casual talk", "ได้เลย", "dai loei", "Sure thing", 1],
+["Casual talk", "โอเคเลย", "oh-khe loei", "Sure, all good", 1],
+["Casual talk", "จัดไป", "jat pai", "Let's do it / go for it", 1],
+["Casual talk", "ลุยเลย", "lui loei", "Let's go!", 1],
+["Casual talk", "เอาเลย", "ao loei", "Go ahead", 1],
+["Casual talk", "ชิลๆ", "chill chill", "Chill / no stress", 1],
+["Casual talk", "สบายๆ", "sa-baai sa-baai", "Take it easy", 1],
+["Casual talk", "ตามสบาย", "taam sa-baai", "Make yourself at home / as you like", 1],
+["Casual talk", "ช่างมัน", "chang man", "Forget it / whatever", 1],
+["Casual talk", "ไม่เป็นไรหรอก", "mai pen rai rok", "Don't worry about it", 1],
+["Casual talk", "ไม่รู้ดิ", "mai ruu di", "Dunno", 1],
+["Casual talk", "งงอ่ะ", "ngong a", "I'm confused", 1],
+["Casual talk", "เดี๋ยวก่อน", "diao gon", "Wait a sec", 1],
+["Casual talk", "แป๊บนึง", "paep neung", "Just a moment", 1],
+["Casual talk", "เดี๋ยวมา", "diao maa", "Be right back", 1],
+["Casual talk", "ไปละนะ", "pai la na", "I'm off then", 1],
+["Casual talk", "ว่าไง", "waa ngai", "What's up?", 1],
+["Casual talk", "ทำไรอยู่", "tham rai yuu", "What are you up to?", 1],
+["Casual talk", "ไปไหนมา", "pai nai maa", "Where've you been? (casual hello)", 1],
+["Casual talk", "กินข้าวยัง", "gin khao yang", "Eaten yet? (casual hello)", 1],
+["Casual talk", "กินแล้ว", "gin laeo", "Already ate", 1],
+["Casual talk", "ยังเลย", "yang loei", "Not yet", 1],
+["Casual talk", "หิวจัง", "hiu jang", "I'm so hungry", 1],
+["Casual talk", "ง่วงจัง", "nguang jang", "I'm so sleepy", 1],
+["Casual talk", "ร้อนจัง", "ron jang", "It's so hot", 1],
+["Casual talk", "เหนื่อยมาก", "nueay maak", "I'm exhausted", 1],
+["Casual talk", "ไม่ไหวแล้ว", "mai wai laeo", "I can't take any more", 1],
+["Casual talk", "เบื่อ", "buea", "I'm bored / fed up", 1],
+["Casual talk", "มันส์มาก", "man maak", "So much fun", 1],
+["Casual talk", "ตลกมาก", "ta-lok maak", "So funny", 1],
+["Casual talk", "น่ารักจัง", "naa rak jang", "So cute", 1],
+["Casual talk", "ชนแก้ว", "chon gaeo", "Cheers!", 1],
+["Casual talk", "เมาแล้ว", "mao laeo", "I'm drunk", 1],
+["Casual talk", "พอแล้ว", "phor laeo", "That's enough", 1],
+["Casual talk", "ขอบใจนะ", "khop jai na", "Thanks (to a friend)", 1],
+["Social", "ยินดีด้วย", "yin dii duay", "Congratulations", 0],
+["Social", "ไม่ต้องเกรงใจ", "mai tong kreng jai", "Don't be shy / no need to be formal", 0],
+["Social", "คิดถึงนะ", "khit thueng na", "Miss you", 1],
+["Social", "ฝันดีนะ", "fan dii na", "Sweet dreams", 1],
+["Social", "โชคดีนะ", "chok dii na", "Good luck", 1],
+["Social", "เดี๋ยวเจอกัน", "diao jer gan", "See you soon", 1],
+["Eating", "เผ็ดไหม", "phet mai", "Is it spicy?", 0],
+["Eating", "เอาเหมือนเดิม", "ao muean doem", "Same as usual", 0],
+["Eating", "ห่อกลับบ้าน", "hor glap baan", "To take away", 0],
+["Eating", "กินที่นี่", "gin thii nii", "Eat here", 0],
+["Eating", "อิ่มแล้ว", "im laeo", "I'm full", 0],
+["Eating", "ขอเพิ่มอีก", "khor phoem eek", "Can I get more?", 0],
+["Eating", "ไม่ใส่ผงชูรส", "mai sai phong chuu rot", "No MSG", 0],
+["Getting around", "ตรงไป", "trong pai", "Straight ahead", 0],
+["Getting around", "ถึงแล้ว", "thueng laeo", "We're here", 0],
+["Getting around", "อีกไกลไหม", "eek glai mai", "Is it much further?", 0],
+["Getting around", "รีบหน่อย", "riip noi", "Hurry a bit, please", 0],
+["Getting around", "รถติดมาก", "rot tit maak", "Traffic's terrible", 1],
+["Shopping", "แค่ดูเฉยๆ", "khae duu choei choei", "Just looking", 0],
+["Shopping", "ลดได้อีกไหม", "lot dai eek mai", "Any more discount?", 0],
+["Shopping", "มีไซซ์อื่นไหม", "mii sai uen mai", "Other sizes?", 0],
+["On set", "เยี่ยมเลย", "yiam loei", "Great job", 1],
+["On set", "เอาใหม่", "ao mai", "Again, from the top", 1],
+["On set", "เร็วๆ หน่อย", "reo reo noi", "A bit quicker", 1],
+["On set", "ช้าลงหน่อย", "chaa long noi", "Slow down a bit", 1],
+["On set", "พักห้านาที", "phak haa naa-thii", "Five-minute break", 1],
+["On set", "เลิกกอง", "loek gong", "That's a wrap", 1]
+]};
+function applyP14(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P14.key))return;
+  P14.add.forEach(([cat,t,ro,en,np])=>{
+    if(S.items.some(i=>i.th===t))return;
+    const it={id:uid(),th:t,ro,en,cat,np};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push(P14.key);save();
+}
+const P15={key:'slang1',add:[
+["Casual talk", "ฟินมาก", "fin maak", "So satisfying! / Pure bliss", 1],
+["Casual talk", "แซ่บมาก", "saep maak", "So tasty! (spicy-good)", 1],
+["Casual talk", "ขำๆ", "kham kham", "Just for fun / just joking", 1],
+["Casual talk", "ลำไย", "lam-yai", "Annoying! (slang)", 1],
+["Casual talk", "โดนแกง", "doon gaeng", "Got played / got tricked", 1],
+["Casual talk", "สุดปัง", "sut pang", "Absolutely stunning", 1],
+["Casual talk", "โป๊ะแตก", "po taek", "Busted! Cat's out of the bag", 1],
+["Casual talk", "เริ่ด", "roet", "Fabulous", 1],
+["Casual talk", "ฟาด", "faat", "Nailed it / killed it", 1],
+["Casual talk", "มองบน", "mong bon", "*eye roll*", 1],
+["Casual talk", "อย่าหาทำ", "yaa haa tham", "Don't even think about it", 1],
+["Casual talk", "กรอบ", "grop", "I'm broke", 1],
+["Casual talk", "เก็ต", "get", "Got it / I get it", 1],
+["Casual talk", "อินมาก", "in maak", "I'm so into it", 1],
+["Casual talk", "เว่อร์", "woe", "Over the top / exaggerating", 1],
+["Casual talk", "โคตรเท่", "khot the", "Super cool", 1],
+["Casual talk", "สู้ๆ", "suu suu", "You got this! Keep going", 1],
+["Casual talk", "แป๊บเดียว", "paep diao", "Just a sec", 1],
+["Casual talk", "ส้มหล่น", "som lon", "Lucky break", 1],
+["Casual talk", "จริงปะ", "jing pa", "Really? / Is that true?", 1],
+["Casual talk", "ใช่ปะ", "chai pa", "Right?", 1],
+["Casual talk", "ไรอ่ะ", "rai a", "What? / What's that?", 1],
+["Casual talk", "เอาไงดี", "ao ngai dii", "What should we do?", 1],
+["Casual talk", "ยังไงก็ได้", "yang ngai gor dai", "Whatever works", 1],
+["Casual talk", "แล้วแต่", "laeo tae", "Up to you", 1],
+["Casual talk", "ก็ได้", "gor dai", "OK then / fine", 1],
+["Casual talk", "ใช่เลย", "chai loei", "Exactly!", 1],
+["Casual talk", "นั่นแหละ", "nan lae", "That's it / exactly", 1],
+["Casual talk", "ไม่ต้อง", "mai tong", "No need", 1],
+["Casual talk", "เดี๋ยวจัดให้", "diao jat hai", "I'll sort it out", 1],
+["Casual talk", "ช่วยหน่อยดิ", "chuay noi di", "Give me a hand, come on", 1],
+["Casual talk", "กินด้วยกันมะ", "gin duay gan ma", "Wanna eat together?", 1],
+["Casual talk", "ไปเที่ยวกันมั้ย", "pai thiao gan mai", "Wanna go out?", 1],
+["Casual talk", "ไม่เป็นไรเนอะ", "mai pen rai noe", "It's fine, right?", 1],
+["Casual talk", "บ้าไปแล้ว", "baa pai laeo", "That's crazy", 1],
+["Casual talk", "ซวยแล้ว", "suay laeo", "Uh oh, we're in trouble", 1]
+]};
+function applyP15(){
+  if(!Array.isArray(S.applied))S.applied=[];
+  if(S.applied.includes(P15.key))return;
+  P15.add.forEach(([cat,t,ro,en,np])=>{
+    if(S.items.some(i=>i.th===t))return;
+    const it={id:uid(),th:t,ro,en,cat,np};
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    if(at<0)S.items.push(it);else S.items.splice(at+1,0,it);
+  });
+  S.applied.push(P15.key);save();
+}
+const OLD=["Basics","Eating","Getting around","Shopping","Numbers","Social","Casual talk","Emergency"];
 const bkey=i=>i.cat+"|"+(i.th||i.en);
 function fromBaked(){
   S.items=JSON.parse(JSON.stringify(BAKED.items));
@@ -785,17 +1068,7 @@ function bakedMerge(){
   fromBaked();mine.forEach(i=>S.items.push(i));
   S.bakedV=BAKED.v;save();
 }
-function logErr(where,e){
-  try{
-    S.errs=S.errs||[];
-    S.errs.push({ts:Date.now(),where,msg:String(e&&e.message?e.message:e).slice(0,200)});
-    if(S.errs.length>40)S.errs.shift();
-    saveSoon();
-  }catch(x){}
-}
-window.addEventListener("error",ev=>logErr("js",(ev.message||"error")+" line "+(ev.lineno||"?")));
-window.addEventListener("unhandledrejection",ev=>logErr("promise",ev.reason));
-function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("rate" in d))S.rate=d.slow?0.55:0.9;if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}bakedMerge();applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13()}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.items)){S=Object.assign(S,d);if(!("rate" in d))S.rate=d.slow?0.55:0.9;if(!("polite" in d)){S.polite=S.pol!=="";if(!S.pol)S.pol="m"}if(!Array.isArray(S.seen))S.seen=OLD.slice();const add=Object.keys(D).filter(c=>!S.seen.includes(c));if(add.length){defaults().filter(i=>add.includes(i.cat)).forEach(i=>S.items.push(i));S.seen=Object.keys(D);save()}bakedMerge();applyPatches();applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();applyP14();applyP15();return}}}catch(e){}S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();applyP14();applyP15()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return localStorage.getItem(KEY)!==null}catch(e){return false}}
 function testStore(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
 const STORE_OK=testStore();
@@ -811,7 +1084,7 @@ const LANGS=[
 {c:"zt",n:"Chinese (Traditional)",tts:"zh-TW",mm:"zh-TW"},{c:"my",n:"Burmese",tts:"my-MM",mm:"my"},{c:"ta",n:"Tamil",tts:"ta-IN",mm:"ta"},{c:"bn",n:"Bengali",tts:"bn-BD",mm:"bn"},{c:"ur",n:"Urdu",tts:"ur-PK",mm:"ur"},{c:"fa",n:"Persian",tts:"fa-IR",mm:"fa"},{c:"tr",n:"Turkish",tts:"tr-TR",mm:"tr"},{c:"pl",n:"Polish",tts:"pl-PL",mm:"pl"},{c:"nl",n:"Dutch",tts:"nl-NL",mm:"nl"},{c:"sv",n:"Swedish",tts:"sv-SE",mm:"sv"},{c:"el",n:"Greek",tts:"el-GR",mm:"el"},{c:"he",n:"Hebrew",tts:"he-IL",mm:"he"},{c:"uk",n:"Ukrainian",tts:"uk-UA",mm:"uk"},{c:"ne",n:"Nepali",tts:"ne-NP",mm:"ne"},{c:"si",n:"Sinhala",tts:"si-LK",mm:"si"},{c:"mn",n:"Mongolian",tts:"mn-MN",mm:"mn"},{c:"kk",n:"Kazakh",tts:"kk-KZ",mm:"kk"},{c:"sw",n:"Swahili",tts:"sw-KE",mm:"sw"},{c:"cs",n:"Czech",tts:"cs-CZ",mm:"cs"},{c:"ro",n:"Romanian",tts:"ro-RO",mm:"ro"},{c:"hu",n:"Hungarian",tts:"hu-HU",mm:"hu"}];
 const NAT={th:"ไทย",vi:"Tiếng Việt",lo:"ລາວ",km:"ខ្មែរ",zh:"中文",ja:"日本語",ko:"한국어",id:"Bahasa Indonesia",ms:"Bahasa Melayu",tl:"Filipino",hi:"हिन्दी",es:"Español",fr:"Français",de:"Deutsch",it:"Italiano",pt:"Português",ru:"Русский",ar:"العربية",uz:"Oʻzbekcha",zt:"繁體中文",my:"မြန်မာ",ta:"தமிழ்",bn:"বাংলা",ur:"اردو",fa:"فارسی",tr:"Türkçe",pl:"Polski",nl:"Nederlands",sv:"Svenska",el:"Ελληνικά",he:"עברית",uk:"Українська",ne:"नेपाली",si:"සිංහල",mn:"Монгол",kk:"Қазақша",sw:"Kiswahili",cs:"Čeština",ro:"Română",hu:"Magyar"};
 function LG(){return LANGS.find(l=>l.c===S.lang)||LANGS[0]}
-const ORDER=["SFX","On set","Schedule & meals","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
+const ORDER=["My vocab","SFX","Prosthetics & makeup","On set","Schedule & meals","Film production","Technical","Basics","Eating","Getting around","Shopping","Numbers","Social","Emergency"];
 const cats=()=>{const a=[...new Set(S.items.map(i=>i.cat))];const co=S.catOrder||[];const r=c=>{let k=co.indexOf(c);if(k>=0)return k;k=ORDER.indexOf(c);return k<0?999:100+k};return a.map((c,n)=>[c,n]).sort((x,y)=>r(x[0])-r(y[0])||x[1]-y[1]).map(x=>x[0])};
 
 // Polite particle: ครับ (male) / ค่ะ statements, คะ questions (female)
@@ -836,6 +1109,8 @@ function phonFromRo(ro){
 // Tone lines: TLEX holds hand-checked words as "tones romanization" (tones: M mid, L low, F falling, H high, R rising,
 // one letter per syllable). thPron() uses it first and sounds out any other Thai with the spelling rules.
 const TLEX={
+"ฟิน":"M fin","แซ่บ":"F saep","ขำ":"R kham","ลำไย":"MM lam-yai","โดน":"M doon","แกง":"M gaeng","โป๊ะ":"H po","แตก":"L taek","เริ่ด":"F roet","ฟาด":"F faat","มอง":"M mong","บน":"M bon","อย่า":"L yaa","กรอบ":"L grop","เก็ต":"L get","อิน":"M in","เว่อร์":"F woe","โคตร":"F khot","เท่":"F the","สู้":"F suu","ส้ม":"F som","หล่น":"L lon","ปะ":"L pa","แล้วแต่":"HL laeo-tae","แหละ":"L lae","มะ":"H ma","เที่ยว":"F thiao","มั้ย":"H mai","บ้า":"F baa","ซวย":"M suay",
+"เจ๋ง":"R jeng","สุดยอด":"LF sut-yot","ปัง":"M pang","เป๊ะ":"H pe","โอ้โห":"FR oh-hoh","ดิ":"H di","อ่ะ":"L a","ตาย":"M taai","เออ":"M oe","โอเค":"MM oh-khe","จัด":"L jat","ลุย":"M lui","ชิล":"H chill","ตาม":"M taam","รู้":"H ruu","งง":"M ngong","ละ":"H la","จัง":"M jang","ไหว":"R wai","เบื่อ":"L buea","มันส์":"M man","ตลก":"LH ta-lok","น่ารัก":"FH naa-rak","ชน":"M chon","เมา":"M mao","พอ":"M phor","ขอบใจ":"LM khop-jai","เกรงใจ":"MM kreng-jai","คิดถึง":"HR khit-thueng","ฝัน":"R fan","โชค":"F chok","เหมือน":"R muean","เดิม":"M doem","ผงชูรส":"RMH phong-chuu-rot","ถึง":"R thueng","เฉย":"R choei","ไซซ์":"M sai","เยี่ยม":"F yiam","ลง":"M long",
 "สวัสดี":"LLM sa-wat-dee","ขอบคุณ":"LM khop-khun","ไม่":"F mai","เป็น":"M pen","ไร":"M rai","ขอโทษ":"RF khor-thot","ใช่":"F chai","ได้":"F dai",
 "ไป":"M pai","ก่อน":"L gon","นะ":"H na","เข้าใจ":"FM khao-jai","แล้ว":"H laeo","พูด":"F phuut","ช้า":"H chaa","หน่อย":"L noi",
 "ไหม":"R mai","อีก":"L eek","ที":"M thii","ไทย":"M thai","นิดหน่อย":"HL nit-noi","อังกฤษ":"ML ang-grit","เอา":"M ao","ขอ":"R khor",
@@ -862,7 +1137,7 @@ const TLEX={
 "กว้าง":"F gwaang","แพน":"M phaen","ซูม":"M suum","เข้า":"F khao","ออก":"L ok","โฟกัส":"ML foh-gat","หลุด":"L lut","ปิด":"L pit",
 "มือถือ":"MR meu-thue","ห้าม":"F haam","ข้าว":"F khaao","คราฟต์":"F khraap","เซอร์วิส":"MH soe-wit","โต๊ะ":"H to","ขนม":"LR kha-nom","คอลไทม์":"MM khon-thaim",
 "เวลา":"MM we-laa","เตรียม":"M triam","ต้อง":"F tong","ใบ":"M bai","อนุญาต":"LHF a-nu-yaat","ทุก":"H thuk","เลนส์":"M len","ขา":"R khaa",
-"ดอลลี่":"MF don-lii","สเตดิแคม":"LMMM sa-te-dii-khaem","แอลอีดี":"MMM ael-ii-dii","ฟิลเตอร์":"MM fin-ter","ปั่น":"L pan","สาย":"R saai","ปลั๊ก":"H plak","พ่วง":"F phuang",
+"ดอลลี่":"MF don-lii","สเตดิแคม":"LMMM sa-te-dii-khaem","แอลอีดี":"MMM ael-ii-dii","ฟิลเตอร์":"MM fin-ter","ปั่น":"L pan","สาย":"R saai","ปลั๊ก":"H plak","หัวแปลงปลั๊ก":"RMH hua-plaeng-plak","อะแดปเตอร์":"LLM a-daep-ter","ปลั๊กพ่วง":"HF plak-puang","อ่างล้างมือ":"LHM aang-laang-meu","สายยาง":"RM saai-yaang","พ่วง":"F puang","แปลง":"M plaeng","พ่วง":"F phuang",
 "แบตเตอรี่":"LMF baet-toe-rii","การ์ด":"M gaat","จำ":"M jam","หู":"R huu","ฟัง":"M fang","วอล์กกี้":"HF wok-gii","ทอล์กกี้":"HF thok-gii","ไร้สาย":"HR rai-saai",
 "ปก":"L pok","รู":"M ruu","รับ":"H rap","แสง":"R saeng","ไว":"M wai","เร็ว":"M reo","ชัตเตอร์":"HM chat-toe","เฟรม":"M frem",
 "เรต":"H ret","ไวต์":"M wai","บาลานซ์":"MM baa-laan","ชัด":"H chat","ลึก":"H leuk","ระดับ":"HL ra-dap","ใช้":"H chai","แบต":"L baet",
@@ -988,6 +1263,22 @@ function loadVoices(){
   if(S.voice)$("voice").value=S.voice;
   render();
 }
+/* phones put the speaker to sleep when idle and clip the first syllable as it wakes,
+   so keep a silent Web Audio track running around each utterance and give a cold speaker a moment first */
+let AC=null,acSrc=null,acStop=0,lastAudio=0;
+function audioAwake(){
+  if(RECON)return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+    if(!AC)AC=new C();
+    if(AC.state!=="running")AC.resume();
+    clearTimeout(acStop);
+    if(!acSrc){const b=AC.createBuffer(1,AC.sampleRate,AC.sampleRate),g=AC.createGain();g.gain.value=0.0001;acSrc=AC.createBufferSource();acSrc.buffer=b;acSrc.loop=true;acSrc.connect(g).connect(AC.destination);acSrc.start()}
+  }catch(e){}
+}
+function audioOff(){clearTimeout(acStop);try{if(acSrc){acSrc.stop();acSrc.disconnect()}}catch(e){}acSrc=null;try{if(AC){AC.close()}}catch(e){}AC=null}
+function audioSleepSoon(){clearTimeout(acStop);lastAudio=Date.now();acStop=setTimeout(()=>{try{if(acSrc){acSrc.stop();acSrc.disconnect()}}catch(e){}acSrc=null},4000)}
+["pointerdown","touchend","keydown"].forEach(ev=>document.addEventListener(ev,e=>{if(e.target&&e.target.closest&&e.target.closest("#trMic,#bigTalk"))return;audioAwake();audioSleepSoon()},{capture:true,once:true}));
 function speak(i,tts){
   const f=full(i);
   if(!("speechSynthesis" in window)){toast("Speech isn't supported in this browser.",true);return}
@@ -996,13 +1287,16 @@ function speak(i,tts){
   u.lang=tts||LG().tts;u.rate=S.rate||0.9;
   const v=pickVoice(tts);
   if(v){u.voice=v;u.lang=v.lang}
-  u.onerror=e=>{if(e&&e.error&&e.error!=="canceled"&&e.error!=="interrupted")toast("Speech error: "+e.error,true)};
+  u.onerror=e=>{audioSleepSoon();if(e&&e.error&&e.error!=="canceled"&&e.error!=="interrupted")toast("Speech error: "+e.error,true)};
+  u.onend=audioSleepSoon;
+  const cold=!acSrc||Date.now()-lastAudio>3000;
+  audioAwake();
   const go=()=>{try{ss.resume()}catch(e){}ss.speak(u)};
-  if(ss.speaking||ss.pending){ss.cancel();setTimeout(go,150)}else go();
+  if(ss.speaking||ss.pending){ss.cancel();setTimeout(go,150)}else if(cold)setTimeout(go,350);else go();
   if(!v&&voicesLoaded)toast("No "+(tts?"English":LG().n)+" voice found on this phone. Add one in Settings > Accessibility > Spoken Content > Voices.",true);
 }
 
-const CMAP={"On set":"#f0d58c","SFX":"#f2a99b","Film production":"#8db4e6","Technical":"#9fcfae","Schedule & meals":"#f4c7a1","Basics":"#d8cdea","Eating":"#f0a8c0","Getting around":"#7cc7c4","Shopping":"#b9a7e0","Numbers":"#c9dc9a","Social":"#f4b8a0","Emergency":"#ef8f8a"};
+const CMAP={"On set":"#f0d58c","SFX":"#f2a99b","Prosthetics & makeup":"#e9a8d8","Film production":"#8db4e6","Technical":"#9fcfae","Schedule & meals":"#f4c7a1","Basics":"#d8cdea","Eating":"#f0a8c0","Getting around":"#7cc7c4","Shopping":"#b9a7e0","Numbers":"#c9dc9a","Social":"#f4b8a0","Emergency":"#ef8f8a"};
 const PAL=["#f0d58c","#8db4e6","#9fcfae","#b9a7e0","#f0a8c0","#7cc7c4","#c9dc9a","#f4b8a0"];
 function colr(c){if(c==="All")return"#e9e5f4";if(c==="__r")return"#f3d27a";if(c==="__f")return"#f2c14e";if(CMAP[c])return CMAP[c];let h=0;for(const ch of c)h=(h*31+ch.charCodeAt(0))>>>0;return PAL[h%PAL.length]}
 function selBarHTML(){
@@ -1011,13 +1305,14 @@ function selBarHTML(){
   const opts=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
   return`<div class="selbar"><span id="selCnt">${SEL.size} selected</span><select id="selCat">${opts}<option value="__new">＋ New category…</option></select><button class="ib" id="selMove">Move</button><button class="ib" id="selDel">Delete</button><button class="ib" id="selDone">Done</button></div>`;
 }
+const PREVIEW=12;
 function render(){
   const cs=cats();
   const hasR=S.items.some(i=>i.played);
-  if(cat!=="All"&&cat!=="__r"&&cat!=="__f"&&!cs.includes(cat))cat="All";
-  if(cat==="__r"&&!hasR)cat="All";
-  const chipLabel=c=>c==="__f"?"★ Favourites":c==="__r"?"Recently played":esc(c);
-  $("chips").innerHTML=["All","__f",...(hasR?["__r"]:[]),...cs].map(c=>`<button class="chip${c===cat?" on":""}" style="--c:${colr(c)}" data-c="${esc(c)}">${chipLabel(c)}</button>`).join("");
+  if(cat!=="All"&&cat!=="__r"&&cat!=="__t"&&cat!=="__f"&&!cs.includes(cat))cat="All";
+    const chipLabel=c=>c==="__f"?"★ Favs":c==="__r"?"🕘 Recent":c==="__t"?"🔤 Translated":esc(c);
+  const chip=c=>`<button class="chip${c===cat?" on":""}" style="--c:${colr(c)}" data-c="${esc(c)}">${chipLabel(c)}</button>`;
+  $("chips").innerHTML=`<div class="chrow1">${["All","__r","__t","__f"].map(chip).join("")}</div><div class="chrow2">${cs.map(chip).join("")}</div>`;
   $("cats").innerHTML=cs.map(c=>`<option value="${esc(c)}">`).join("");
   const ql=qs.toLowerCase();
   const hit=i=>{if(!ql)return true;const v=vw(i);return (v.th+" "+v.ro+" "+v.en).toLowerCase().includes(ql)};
@@ -1026,17 +1321,23 @@ function render(){
   if(voicesLoaded&&!pickVoice())h+=`<div class="note">No ${LG().n} voice found on this device, so phrases may sound wrong. Add one in your device's text-to-speech or accessibility settings.</div>`;
   {const miss=missingCount();if(miss>0)h+=`<div class="note"><span id="trLeft">${miss}</span> phrases still to translate. They load as you scroll and need internet, then work offline. Tiles marked auto are machine translated. <button class="ib" id="trAll">Save all for offline</button></div>`}
   if(edit)h+=`<div class="note">Edit mode: tap a phrase to edit, move or delete it. Use the arrows to reorder categories.</div>`+selBarHTML();
+  if(cat==="__t"){
+    const th=(S.hist||[]).map((x,n)=>[x,n]).filter(([x])=>(x.lang||"th")===S.lang&&(!ql||(x.th+" "+x.en).toLowerCase().includes(ql)));
+    if(th.length)h+=`<div class="note">Your translations, newest first. Tap one to hear it. Tap ＋ Save to keep it in My vocab.</div><div class="grid">`+th.map(([x,n])=>histTileHTML(x,n)).join("")+`</div>`;
+  }
   const everywhere=cat==="All"||!!ql;
-  (everywhere?cs:[cat]).forEach(c=>{
-    const list=c==="__r"?S.items.filter(i=>i.played&&hit(i)).sort((a,b)=>b.played-a.played).slice(0,20):c==="__f"?S.items.filter(i=>i.fav&&hit(i)).sort((a,b)=>(a.fo||0)-(b.fo||0)):S.items.filter(i=>i.cat===c&&hit(i));
+  (everywhere?cs:cat==="__t"?[]:[cat]).forEach(c=>{
+    const list=c==="__r"?S.items.filter(i=>i.played&&hit(i)).sort((a,b)=>b.played-a.played).slice(0,24):c==="__f"?S.items.filter(i=>i.fav&&hit(i)).sort((a,b)=>(a.fo||0)-(b.fo||0)):S.items.filter(i=>i.cat===c&&hit(i));
     if(!list.length)return;
     if(everywhere){
       const mv=edit&&!ql?`<span class="catmv"><button data-cm="up" data-c="${esc(c)}" aria-label="Move category up">↑</button><button data-cm="down" data-c="${esc(c)}" aria-label="Move category down">↓</button></span>`:"";
       h+=`<div class="sec" style="--c:${colr(c)}">${esc(c)}${mv}</div>`;
     }
-    h+=`<div class="grid">`+list.map(tileHTML).join("")+`</div>`;
+    const cut=everywhere&&!ql&&!edit&&c!=="Numbers"&&list.length>PREVIEW;
+    h+=`<div class="grid" data-gc="${esc(c)}">`+(c==="Numbers"&&!edit?`<button class="tile numpill" data-numpad="1" type="button"><span class="en"><span class="npic" aria-hidden="true">🔢</span>Type any number</span></button>`:"")+(cut?list.slice(0,PREVIEW):list).map(tileHTML).join("")+`</div>`;
+    if(cut)h+=`<button class="seeall" data-see="${esc(c)}">See all ${list.length} ${esc(c)} →</button>`;
   });
-  const emptyMsg=cat==="__f"&&!ql?"No favourites yet. Tap the star on any phrase to keep it here.":cat==="__r"&&!ql?"Phrases you play will appear here.":"Nothing here. Tap Add to add a phrase.";
+  const emptyMsg=cat==="__f"&&!ql?"No favourites yet. Hold a phrase, then tap ☆ Fav to keep it here.":cat==="__r"&&!ql?"Nothing yet. Phrases you tap will show up here, newest first.":cat==="__t"&&!ql?"Nothing yet. Everything you translate will be kept here so you can replay it and save it to your vocab.":"Nothing here. Tap Add to add a phrase.";
   $("main").className=edit?"edit":"";
   $("main").innerHTML=h+(/class="grid"/.test(h)?"":`<div class="empty">${emptyMsg}</div>`);
   $("editBtn").classList.toggle("on",edit);
@@ -1079,10 +1380,16 @@ function retag(it,c){
   it.cat=c;
   if(it.orig){const o=it.orig;it.edited=(it.th!==o.th||it.en!==o.en||it.cat!==o.cat||(it.ro||"")!==(o.ro||"")||(it.ph||"")!==(o.ph||""))?1:0}
 }
+/* undo for the last move */
+let UNDO=null,undoT=0;
+function offerUndo(msg,fn){UNDO=fn;$("undoMsg").textContent=msg;$("undoBar").hidden=false;clearTimeout(undoT);undoT=setTimeout(()=>{$("undoBar").hidden=true;UNDO=null},7000)}
+$("undoBtn").onclick=()=>{if(!UNDO)return;UNDO();UNDO=null;save();try{markChanged()}catch(x){}render();$("undoBar").hidden=true;toast("Undone")};
 function moveCat(c,dir){
   const o=cats();const k=o.indexOf(c),j=k+(dir==="up"?-1:1);
   if(k<0||j<0||j>=o.length)return;
+  const before=S.catOrder?S.catOrder.slice():null;
   [o[k],o[j]]=[o[j],o[k]];S.catOrder=o;save();render();markChanged();
+  offerUndo("Category moved",()=>{S.catOrder=before});
 }
 function moveItem(id,dir){
   const it=S.items.find(i=>i.id===id);if(!it)return;
@@ -1119,22 +1426,60 @@ function selMoveDo(){
 }
 let LPT=null,LONG=false,LX=0,LY=0;
 const mainEl=$("main");
+let DRAG=null,DSCROLL=0;
+const canDrag=()=>cat!=="__r"&&cat!=="__f"&&cat!=="__t"&&!qs;
 mainEl.addEventListener("pointerdown",e=>{
-  const t=e.target.closest(".tile");if(!t||edit)return;
+  const t=e.target.closest(".tile[data-id]");if(!t||edit||e.target.closest("[data-fav]"))return;
   LONG=false;LX=e.clientX;LY=e.clientY;clearTimeout(LPT);
-  LPT=setTimeout(()=>{LONG=true;if(navigator.vibrate)navigator.vibrate(15);openEdit(t.dataset.id)},550);
+  LPT=setTimeout(()=>{LONG=true;if(navigator.vibrate)navigator.vibrate(15);
+    if(!canDrag()){holdShow(t.dataset.id);return}
+    liftTile(t,LX,LY)},450);
 });
-mainEl.addEventListener("pointermove",e=>{if(Math.abs(e.clientX-LX)>10||Math.abs(e.clientY-LY)>10)clearTimeout(LPT)});
-["pointerup","pointercancel","pointerleave"].forEach(ev=>mainEl.addEventListener(ev,()=>clearTimeout(LPT)));
+function liftTile(t,x,y){
+  const r=t.getBoundingClientRect(),g=t.cloneNode(true);
+  g.className="tile ghost";g.style.cssText=`width:${r.width}px;height:${r.height}px;left:${r.left}px;top:${r.top}px`;
+  document.body.appendChild(g);t.classList.add("holder");document.body.classList.add("dragging");
+  DRAG={t,g,grid:t.parentElement,dx:x-r.left,dy:y-r.top,x0:x,y0:y,moved:false};
+  DSCROLL=setInterval(()=>{if(!DRAG)return;const y=DRAG.y||DRAG.y0;if(y<90)scrollBy(0,-14);else if(y>innerHeight-130)scrollBy(0,14)},30);
+}
+function dragMove(x,y){
+  if(!DRAG)return;DRAG.y=y;
+  if(Math.abs(x-DRAG.x0)>8||Math.abs(y-DRAG.y0)>8)DRAG.moved=true;
+  DRAG.g.style.left=(x-DRAG.dx)+"px";DRAG.g.style.top=(y-DRAG.dy)+"px";
+  DRAG.g.style.visibility="hidden";const el=document.elementFromPoint(x,y);DRAG.g.style.visibility="";
+  const o=el&&el.closest(".tile[data-id]");
+  if(!o||o===DRAG.t||o.parentElement!==DRAG.grid)return;
+  const kids=[...DRAG.grid.children],a=kids.indexOf(DRAG.t),b=kids.indexOf(o);
+  DRAG.grid.insertBefore(DRAG.t,a<b?o.nextSibling:o);
+}
+function dragEnd(){
+  clearTimeout(LPT);if(!DRAG)return;
+  const {t,g,grid,moved}=DRAG;DRAG=null;clearInterval(DSCROLL);g.remove();t.classList.remove("holder");document.body.classList.remove("dragging");
+  if(!moved){holdShow(t.dataset.id);return}
+  const ids=[...grid.querySelectorAll(".tile[data-id]")].map(d=>d.dataset.id);
+  const objs=ids.map(id=>S.items.find(i=>i.id===id)),slots=objs.map(o=>S.items.indexOf(o)).sort((a,b)=>a-b);
+  const before=S.items.slice();
+  slots.forEach((p,k)=>{S.items[p]=objs[k]});
+  save();try{markChanged()}catch(x){}render();offerUndo("Phrase moved",()=>{S.items=before});
+}
+mainEl.addEventListener("pointermove",e=>{if(DRAG){dragMove(e.clientX,e.clientY);return}if(Math.abs(e.clientX-LX)>10||Math.abs(e.clientY-LY)>10)clearTimeout(LPT)});
+document.addEventListener("touchmove",e=>{if(DRAG){e.preventDefault();const p=e.touches[0];dragMove(p.clientX,p.clientY)}},{passive:false});
+["pointerup","pointercancel"].forEach(ev=>document.addEventListener(ev,()=>{if(DRAG)dragEnd();else clearTimeout(LPT)}));
+document.addEventListener("touchend",()=>{if(DRAG)dragEnd()});
+mainEl.addEventListener("pointerleave",()=>{if(!DRAG)clearTimeout(LPT)});
 mainEl.addEventListener("contextmenu",e=>{if(e.target.closest(".tile"))e.preventDefault()});
 $("main").onclick=async e=>{
   if(LONG){LONG=false;return}
   if(e.target.closest("#trAll")){translateAll();return}
+  if(e.target.closest("[data-numpad]")){openNum("");return}
   const cm=e.target.closest("[data-cm]");if(cm){moveCat(cm.dataset.c,cm.dataset.cm);return}
   if(e.target.closest("#selTog")){selMode=true;render();return}
   if(e.target.closest("#selDone")){selMode=false;SEL.clear();render();return}
   if(e.target.closest("#selDel")){selDeleteDo();return}
   if(e.target.closest("#selMove")){selMoveDo();return}
+  const sa=e.target.closest("[data-see]");if(sa){cat=sa.dataset.see;render();document.querySelector(".board").scrollIntoView({block:"start"});return}
+  const hs=e.target.closest("[data-hsave]");if(hs){histSave(+hs.dataset.hsave);return}
+  const hi=e.target.closest("[data-hi]");if(hi){const x=S.hist[+hi.dataset.hi];if(x)speak({th:histClean(x.th),ro:x.ro||"",en:x.en||"",np:1,cat:"",lang:S.lang});return}
   const fv=e.target.closest("[data-fav]");if(fv){toggleFav(fv.dataset.fav);return}
   const d=e.target.closest("[data-del]");
   if(d){e.stopPropagation();deleteMany([d.dataset.del]);return}
@@ -1153,7 +1498,7 @@ $("main").onclick=async e=>{
     try{if(!(await translateItem(it,S.lang)))throw 0;save();paintTile(it.id)}
     catch(err){toast("Couldn't translate: "+why(err),true);return}
   }
-  it.played=Date.now();saveSoon();if(!document.querySelector('.chip[data-c="__r"]'))render();
+  it.played=Date.now();save();if(cat==="__r")render();
   speak({...it,...vw(it)});
 };
 $("editBtn").onclick=()=>{edit=!edit;if(!edit){selMode=false;SEL.clear()}render()};
@@ -1165,16 +1510,23 @@ async function translate(){
   if(!en||!SM)return false;
   $("trs").textContent="Translating…";
   try{
-    const r=await SM.json(`Translate this English phrase into natural, polite ${LG().n} for a traveler. Do not add a politeness particle at the end. Reply with ONLY JSON: {"th":"${LG().n} text","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
+    const r=await SM.json(`Translate this English phrase into ${LG().n} the way a local would actually say it out loud to a coworker on a film set: everyday spoken register, not textbook or written style. Drop pronouns when obvious, use loanwords crews really use, and add softeners (like หน่อย, ด้วย, นะ in Thai) where a native speaker would. Do not add a politeness particle at the end. Reply with ONLY JSON: {"th":"${LG().n} text","ro":"simple romanization with hyphenated syllables, no tone marks","cat":"one of: Basics, Eating, Getting around, Shopping, Numbers, Social, Emergency, or a short new category name"}\nPhrase: ${en}`);
     if(r&&r.th){$("th").value=r.th;$("ro").value=r.ro||"";if(r.cat&&cats().includes(r.cat))$("cat").value=r.cat;$("trs").textContent="Check it looks right, then tap Save.";return true}
   }catch(e){}
   $("trs").textContent="Couldn't translate. You can type the translation yourself.";
   return false;
 }
 let DIR="en",RES=null;
+function whoLabels(){
+  const th=DIR==="th",L=LG(),T=L.c==="th";
+  $("trIn").placeholder=!th?"Type English, or tap Talk…":T?"พิมพ์ภาษาไทยที่นี่ หรือกด พูด":"Type or speak "+L.n+"…";
+  $("trGo").innerHTML=bi("แปล","Translate");
+  const ml=$("trMic").querySelector(".mlab");if(ml&&!RECON)ml.innerHTML=bi("พูด","Talk");
+  $("tool").classList.toggle("thside",th);
+}
 function setDir(d){
   DIR=d;$("dirEn").classList.toggle("on",d==="en");$("dirTh").classList.toggle("on",d==="th");
-  $("trIn").placeholder=d==="en"?"Type English…":"Type or paste "+LG().n+"…";
+  whoLabels();
   $("trIn").lang=d==="th"?S.lang:"en";$("trIn").value="";$("trOut").innerHTML="";
 }
 async function mm(q,pair){
@@ -1189,10 +1541,15 @@ async function mm(q,pair){
     return String(t).trim();
   }finally{clearTimeout(to)}
 }
-function updatePol(){$("polTxt").textContent="Polite: "+(S.polite?"on":"off")}
+function updatePol(){updReg();$("polTxt").textContent="Polite: "+(S.polite?"on":"off")}
 function shown(r){return r.dir==="en"?full({th:r.th,ro:sx(r),en:r.en,cat:"x"}):{th:r.th,ro:sx(r),en:r.en}}
-function reshow(){if(RES)showRes(RES.th,RES.ro,RES.en,RES.note,RES.auto,true,RES.ph,RES.alts,RES.tn)}
+function reshow(){if(RES)showRes(RES.th,RES.ro,RES.en,RES.note,RES.auto,true,RES.ph,RES.alts)}
 const SUG=[["Emergency",/\b(help|police|ambulance|hospital|doctor|emergency|danger|lost|sick|medic)/i],["Eating",/\b(eat|food|drink|menu|water|coffee|tea|beer|rice|noodle|chicken|egg|fish|crab|shrimp|squid|lobster|spicy|sweet|the bill|hungry|thirsty|vegetarian|allerg)/i],["Getting around",/\b(where|toilet|bathroom|airport|hotel|taxi|bus|train|station|turn left|turn right|straight|stop here|how far|road|street|direction)/i],["Shopping",/\b(price|how much|cost|expensive|cheap|discount|buy|pay|card|cash|size|receipt)/i],["Schedule & meals",/\b(what time|when|call time|wrap|schedule|lunch|breakfast|tomorrow|today|yesterday|early|late)/i],["SFX",/\b(smoke|fog|rain|flame|spark|safe|safety|hide|clear the frame|get out of shot|extinguisher|glove|glasses|lighter|stand back)/i],["Technical",/\b(camera|lens|lighting|light|mic|microphone|battery|cable|generator|tripod|dolly|crane|focus|frame rate|iso|aperture|monitor|sound|audio)/i],["Film production",/\b(director|producer|crew|department|actor|script|editor|gaffer|grip|assistant)/i],["On set",/\b(scene|take|shot|rehears|quiet|set up|standing by|moving on|reset)/i],["Numbers",/^\s*\d+([.,]\d+)?\s*$|\b(one|two|three|four|five|six|seven|eight|nine|ten|hundred|thousand)\b/i],["Social",/\b(hello|hi there|goodbye|thank|sorry|please|nice to meet|how are you|good morning|good night|welcome)/i]];
+const SPK='<svg class="spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',HANDI='<svg class="hand" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="1" width="10" height="15" rx="2"/><path d="M14 3.5h3"/><path d="M10.5 6H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M10.5 8.7H8.4a1.35 1.35 0 0 0 0 2.7h2.1"/><path d="M10.5 11.4H8.7a1.35 1.35 0 0 0 0 2.7h1.8"/><path d="M7.6 6.6C6 7.6 5.2 9.5 5.3 12.2l.4 3.6"/><path d="M10.5 16l-.6 2"/><path d="M5.7 15.8L1.6 22.6"/><path d="M9.9 18L6.2 23.6"/></svg>';
+/* in Thai mode buttons show Thai large with English small underneath */
+function thMode(){return DIR==="th"&&LG().c==="th"}
+function bi(th,en){return thMode()?`<span class="bi"><span class="bth" lang="th">${th}</span><span class="ben">${en}</span></span>`:en}
+const norm=t=>String(t||"").trim().toLowerCase().replace(/[\s.?!,]+/g," ").trim();
 function suggestCat(en){for(const [c,re] of SUG)if(re.test(en||""))return c;return""}
 function showRes(th,ro,en,note,auto,nohist,ph,alts,tn){
   if(DIR==="en"&&S.lang==="th"){
@@ -1206,98 +1563,81 @@ function showRes(th,ro,en,note,auto,nohist,ph,alts,tn){
   const cs=cats();
   const opts=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
   const rev=DIR!=="en";let rp;
-  $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="${rev?"en":S.lang}" dir="auto">${esc(rev?en:f.th)}</div>${(!rev&&f.ro)?`<div class="rro">${toneHTML(f.th,f.ro,RES.tn,true)}</div>`:""}<div class="ren" lang="${rev?S.lang:"en"}" dir="auto">${esc(rev?th:en)}</div>${rev&&S.lang==="th"&&(rp=toneHTML(th,"","",true))?`<div class="rro">${rp}</div>`:""}</div>`+
-   `<div class="row actrow"><button class="ib speakbtn" data-a="sp">🔊 Speak</button><button class="ib" data-a="show">Show</button><button class="ib" data-a="more" aria-label="More options">⋯</button></div>`+
-   `<div class="row actrow"><select id="rcat" aria-label="Save to category" style="flex:1;min-width:0">${opts}<option value="__new">＋ New category…</option></select><button class="ib savebtn sm" data-a="save">💾 Save</button></div><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px">`+
+  $("trOut").innerHTML=`<div class="bub"><div class="rth" lang="${rev?"en":S.lang}" dir="auto">${esc(rev?en:f.th)}</div>${(!rev&&f.ro)?`<div class="rro">${toneHTML(f.th,f.ro,RES.tn,true)}</div>`:""}${(rev||norm(en)!==norm($("trIn").value))?`<div class="ren" lang="${rev?S.lang:"en"}" dir="auto">${esc(rev?th:en)}</div>`:""}${rev&&S.lang==="th"&&(rp=toneHTML(th,"","",true))?`<div class="rro">${rp}</div>`:""}</div>`+
+   `<div class="row actrow"><button class="ib speakbtn" data-a="sp">${SPK}${bi("ฟัง","Play")}</button><button class="ib showbtn" data-a="show" aria-label="Show full screen to the other person">${HANDI}${bi("แสดง","Show")}</button></div>`+
+   `<div class="row actrow"><select id="rcat" aria-label="Save to category" style="flex:1;min-width:0">${opts}<option value="__new">＋ New category…</option></select><button class="ib savebtn sm" data-a="save">💾 ${bi("บันทึก","Save")}</button></div><input id="rcatNew" placeholder="New category name" style="display:none;margin-top:8px"><button class="ib moreline" data-a="more">✏️ Copy · Edit · Check meaning</button>`+
    (note?`<div style="margin-top:10px;font-size:var(--fs-s)">${esc(note)}</div>`:"");
   const sg=suggestCat(en);
-  $("rcat").value=cs.includes(sg)?sg:(cs.includes(cat)?cat:cs[0]);
+  $("rcat").value=cs.includes(sg)?sg:(cs.includes(cat)?cat:(cs.find(c=>c!=="Numbers")||cs[0]));
   $("rcat").onchange=()=>{const n=$("rcat").value==="__new";$("rcatNew").style.display=n?"":"none";if(n)$("rcatNew").focus()};
-  if(!nohist)addHist({th,ro,en,ph,tn});
+  if(!nohist)addHist({th,ro,en,ph});
 }
 function addHist(h){
   S.hist=(S.hist||[]).filter(x=>!(x.th===h.th&&x.en===h.en));
-  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",tn:h.tn||"",lang:S.lang,dir:DIR});
-  S.hist=S.hist.slice(0,12);save();renderHist();
+  S.hist.unshift({th:h.th,ro:h.ro||"",en:h.en,ph:h.ph||"",lang:S.lang,dir:DIR});
+  S.hist=S.hist.slice(0,60);save();renderHist();if(cat==="__t")render();
 }
 function renderHist(){
   const h=(S.hist||[]).map((x,i)=>[x,i]).filter(([x])=>(x.lang||"th")===S.lang);
-  $("hist").innerHTML=h.length?`<div class="sec2" style="margin-top:16px">Recent translations</div><div class="chips" style="padding:8px 0 0">${h.map(([x,i])=>`<button class="chip" data-h="${i}" style="--c:#8a8ab5">${esc(x.en.length>28?x.en.slice(0,26)+"…":x.en)}</button>`).join("")}<button class="chip" data-h="clear" style="--c:#ff6b6b">Clear</button></div>`:"";
+  const hh=h.slice(0,12);$("hist").innerHTML=hh.length?`<div class="sec2" style="margin-top:16px">Recent translations</div><div class="chips" style="padding:8px 0 0">${hh.map(([x,i])=>`<button class="chip" data-h="${i}" style="--c:#8a8ab5">${esc(x.en.length>28?x.en.slice(0,26)+"…":x.en)}</button>`).join("")}<button class="chip" data-h="clear" style="--c:#ff6b6b">Clear</button></div>`:"";
 }
 $("hist").onclick=e=>{
   const b=e.target.closest("[data-h]");if(!b)return;
   if(b.dataset.h==="clear"){S.hist=[];save();renderHist();return}
-  const x=S.hist[+b.dataset.h];if(x){if(x.dir&&x.dir!==DIR)setDir(x.dir);showRes(x.th,x.ro,x.en,"",false,true,x.ph||"",[],x.tn||"")}
+  const x=S.hist[+b.dataset.h];if(x){if(x.dir&&x.dir!==DIR)setDir(x.dir);showRes(x.th,x.ro,x.en,"",false,true,x.ph||"")}
 };
-async function translateCore(q,dirEn,opt){
-  opt=opt||{};
-  if(!opt.fresh){
-    if(dirEn){
-      const m=savedFor(q);
-      if(m){const x=getText(m,S.lang);return{saved:true,t:x.t,ro:x.ro,ph:x.ph,tn:"",en:m.en,auto:!!x.auto,alts:[],note:"From your saved phrases, so it works offline and isn't machine translated"+(x.auto?" (still marked auto)":"")+"."}}
-    }else{
-      const m=savedRev(q);
-      if(m)return{saved:true,t:m.en,en:m.en,auto:false,alts:[],note:"From your saved phrases."};
-    }
-  }
-  let ai=null,aiErr="";
-  const style=opt.style||TMPSTYLE||STY();
-  try{ai=await aiTr(q,dirEn?"en":S.lang,dirEn?S.lang:"en",style)}catch(e){aiErr=why(e);logErr("ai",e)}
-  const why1=SRVERR||aiErr;
-  const fb=why1?"The "+(SRVERR&&!aiErr?"translation server":"AI")+" didn't answer ("+why1+"), so the free services were used. ":"";
-  if(ai){
-    if(!dirEn&&ai.src==="en")return{sameLang:true};
-    return{t:ai.t,ro:ai.ro,ph:ai.ph,tn:ai.tn,alts:ai.alts,en:q,auto:false,note:dirEn&&S.lang==="th"?"Style: "+STYLES[style]+(ai.exN?", guided by "+ai.exN+" approved phrases":"")+".":""};
-  }
-  const base="Automatic translation: please check it before relying on it.";
-  if(dirEn){
-    const b=await webTrBoth(q,"en",LG().mm,S.lang,"en");
-    const clean=x=>{if(S.lang==="th"){x=x.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(x))return""}return x};
-    let t=clean(b.t);if(!t)throw new Error("the answer wasn't in "+LG().n);
-    let alt=b.alt?clean(b.alt):"";
-    let casual="";
-    if(S.lang==="th"&&style==="everyday"&&S.casual!==false){const c=casualizeTh(t);if(c&&c!==t){casual=" Made more casual, like everyday speech.";t=c}if(alt)alt=casualizeTh(alt)}
-    let ro="",ph="";
-    if(S.lang==="th"){const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));if(k){ro=k.ro||"";ph=k.ph||""}}else ph=b.rm;
-    const alts=alt&&alt.toLowerCase()!==t.toLowerCase()?[{label:"Second opinion",t:alt,ro:"",ph:""}]:[];
-    return{t,ro,ph,alts,en:q,auto:true,note:fb+base+casual};
-  }
-  const b=await webTrBoth(q,"auto","en","en",LG().mm);
-  if(b.sameLang)return{sameLang:true};
-  let note=fb+base;
-  let det=(b.src||"").split("-")[0].toLowerCase();if(det==="iw")det="he";
-  const mine=LG().mm.split("-")[0].toLowerCase();
-  if(det&&det!==mine){const dl=LANGS.find(l=>l.mm.split("-")[0].toLowerCase()===det||l.c===det);note="Detected "+(dl?dl.n:det.toUpperCase())+" (you had "+LG().n+" selected). "+note}
-  return{t:b.t,auto:true,note,alts:[]};
-}
 async function doTr(depth){
   const q=$("trIn").value.trim();
   if(!q)return;
+  if(DIR==="en"&&S.lang==="th"&&/^[\d,]+(\.\d+)?$/.test(q)&&q.replace(/\D/g,"").length<=12){openNum(q.replace(/,/g,""));return}
+  if(!SKIPSAVED){
+    if(DIR==="en"){
+      const m=savedFor(q);
+      if(m){const x=getText(m,S.lang);showRes(x.t,x.ro,m.en,"From your saved phrases, so it works offline and isn't machine translated"+(x.auto?" (still marked auto)":"")+".",false,false,x.ph);RES.saved=true;return}
+    }else{
+      const m=savedRev(q);
+      if(m){showRes(q,"",m.en,"From your saved phrases.",false);RES.saved=true;return}
+    }
+  }
   $("trOut").innerHTML=`<div style="margin-top:12px">Translating…</div>`;
   try{
-    const r=await translateCore(q,DIR==="en",{fresh:SKIPSAVED});
-    if(r.sameLang){
-      if(depth!==1){toast("That's already English. Translating it into "+LG().n+" instead.");setDir("en");$("trIn").value=q;await doTr(1);return}
-      throw new Error("the text looks like English");
+    if(DIR==="en"){
+      const r=await aiTr(q,"en",S.lang);
+      if(r){showRes(r.t,r.ro,q,"",false,false,r.ph,r.alts,r.tn);return}
+      const b=await webTrBoth(q,"en",LG().mm,S.lang,"en");
+      const clean=x=>{if(S.lang==="th"){x=x.replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();if(!/[\u0e00-\u0e7f]/.test(x))return""}return x};
+      const t=clean(b.t);if(!t)throw new Error("the answer wasn't in "+LG().n);
+      const alt=b.alt?clean(b.alt):"";
+      let ro="",ph="";
+      if(S.lang==="th"){const k=S.items.find(i=>i.th===t&&(i.ro||i.ph));if(k){ro=k.ro||"";ph=k.ph||""}}else ph=b.rm;
+      const alts=alt&&alt.toLowerCase()!==t.toLowerCase()?[{label:"Second opinion",t:alt,ro:"",ph:""}]:[];
+      showRes(t,ro,q,"Automatic translation: please check it before relying on it.",true,false,ph,alts);
+    }else{
+      const r=await aiTr(q,S.lang,"en");
+      if(r){showRes(q,"",r.t,"",false);return}
+      const b=await webTrBoth(q,"auto","en","en",LG().mm);
+      if(b.sameLang){
+        if(depth!==1){toast("That's already English. Translating it into "+LG().n+" instead.");setDir("en");$("trIn").value=q;await doTr(1);return}
+        throw new Error("the text looks like English");
+      }
+      let note="Automatic translation: please check it before relying on it.";
+      let det=(b.src||"").split("-")[0].toLowerCase();if(det==="iw")det="he";
+      const mine=LG().mm.split("-")[0].toLowerCase();
+      if(det&&det!==mine){const dl=LANGS.find(l=>l.mm.split("-")[0].toLowerCase()===det||l.c===det);note="Detected "+(dl?dl.n:det.toUpperCase())+" (you had "+LG().n+" selected). "+note}
+      showRes(q,"",b.t,note,true);
     }
-    if(DIR==="en"){showRes(r.t,r.ro,r.en||q,r.note,r.auto,false,r.ph,r.alts,r.tn)}
-    else{showRes(q,"",r.t,r.note,r.auto)}
-    RES.saved=!!r.saved;
-  }catch(e){
-    logErr("translate",e);
-    $("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself. <button class="ib" id="errRep" style="margin-top:8px">Send report</button></div>`;
-  }
+  }catch(e){$("trOut").innerHTML=`<div style="margin-top:12px;color:#ff6b6b">Couldn't translate. ${esc(why(e))}.${esc(hintHost())} Try again, or type the translation yourself.</div>`}
 }
 $("dirEn").onclick=()=>setDir("en");
 $("dirTh").onclick=()=>setDir("th");
 $("trGo").onclick=doTr;
 $("trOut").onclick=e=>{
-  if(e.target.closest("#errRep")){sendReport(true);return}
+  const sy=e.target.closest("[data-say]");if(sy){speak({th:sy.dataset.say,ro:"",en:"",cat:"x",np:1,lang:"th"},"th-TH");return}
   const b=e.target.closest("[data-a]");if(!b||!RES)return;
-  if(b.dataset.a==="show"){showBig(RES.dir==="en"?shown(RES):{th:RES.en,ro:"",en:RES.th,lang:"en",tts:"en-US"});return}
+  if(b.dataset.a==="show"){if(RES.dir==="en"){BIG.sub=true;showBig({...shown(RES),tn:RES.tn,noEn:1})}else{BIG.sub=false;showBig({th:RES.en,ro:"",en:RES.th,lang:"en",tts:"en-US"})}return}
   if(b.dataset.a==="more"){openMore();return}
   if(b.dataset.a==="sp"){if(RES.dir==="en")speak({th:RES.th,ro:RES.ro,en:RES.en,cat:"x",np:0});else speak({th:RES.en,ro:"",en:RES.th,cat:"x",np:1,lang:"en"},"en-US")}
-  else if(b.dataset.a==="cp"){navigator.clipboard.writeText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true))}
+  else if(b.dataset.a==="cp"){copyText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true))}
   else if(b.dataset.a==="save"){
     let c=$("rcat").value;
     if(c==="__new"){c=$("rcatNew").value.trim();if(!c){$("rcatNew").focus();toast("Type a category name",true);return}}
@@ -1310,67 +1650,56 @@ $("trOut").onclick=e=>{
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let REC=null,RECON=false;
 function micMsg(m,bad){$("trOut").innerHTML=`<div style="margin-top:12px;font-weight:700;${bad?"color:#e5745f":""}">${esc(m)}</div>`}
-function listen(o){
+function startMic(){
   if(RECON){try{REC.stop()}catch(e){}return}
-  if(!SR){o.onFail("unsupported","Voice input isn't supported in this browser. Use the microphone key on your keyboard to dictate instead.");return}
+  if(!SR){micMsg("Voice input isn't supported in this browser. Tap the microphone key on your keyboard to dictate instead.",false);$("trIn").focus();return}
   try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}
+  audioOff();
   let r;
-  try{r=new SR()}catch(e){o.onFail("start","Couldn't start voice input. Use the microphone key on your keyboard instead.");return}
+  try{r=new SR()}catch(e){micMsg("Couldn't start voice input. Use the microphone key on your keyboard instead.",true);$("trIn").focus();return}
   REC=r;
-  r.lang=o.lang;r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
-  let got=false,err=null,txt="";const t0=Date.now();
-  r.onstart=()=>{RECON=true;if(o.onStart)o.onStart()};
+  r.lang=DIR==="th"?LG().tts:"en-US";r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+  let got=false,err=null;const t0=Date.now();
+  r.onstart=()=>{RECON=true;$("trMic").classList.add("rec");$("trMic").querySelector(".mlab").innerHTML=bi("กำลังฟัง","Listening");micMsg("Listening… speak now",false)};
   r.onresult=ev=>{
-    let t="";for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;
-    txt=t;if(o.onInterim)o.onInterim(t);
+    let txt="";for(let i=0;i<ev.results.length;i++)txt+=ev.results[i][0].transcript;
+    $("trIn").value=txt;
     if(ev.results[ev.results.length-1].isFinal)got=true;
   };
   r.onerror=ev=>{err=ev&&ev.error?ev.error:"unknown"};
   r.onend=()=>{
-    RECON=false;if(o.onEnd)o.onEnd();
-    const t=txt.trim();
-    if(t&&(got||!err)){o.onFinal(t);return}
-    if(err==="not-allowed"||err==="service-not-allowed")o.onFail(err,"Voice input is blocked ("+err+"). On iPhone check Settings > Privacy & Security > Speech Recognition, Settings > General > Keyboard > Enable Dictation, and Safari's microphone permission (aA > Website Settings). The keyboard's microphone key also works.");
-    else if(err==="audio-capture")o.onFail(err,"No microphone found.");
-    else if(err==="network")o.onFail(err,"Voice input needs an internet connection.");
-    else if(err==="no-speech")o.onFail(err,"I didn't hear anything. Tap the mic, wait for Listening…, then speak.");
-    else if(!err||err==="aborted")o.onFail("aborted",Date.now()-t0<3000?"If you just allowed the microphone, tap the mic again and speak.":"Voice input stopped. Tap the mic to try again.");
-    else o.onFail(err,"Voice input error: "+err+". The keyboard's microphone key also works.");
+    RECON=false;$("trMic").classList.remove("rec");whoLabels();
+    const txt=$("trIn").value.trim();
+    if(txt&&(got||!err)){doTr();return}
+    if(err==="not-allowed"||err==="service-not-allowed")micMsg("Voice input is blocked ("+err+"). On iPhone check Settings > Privacy & Security > Speech Recognition, Settings > General > Keyboard > Enable Dictation, and Safari's microphone permission (aA > Website Settings). The keyboard's microphone key also works.",true);
+    else if(err==="audio-capture")micMsg("No microphone found.",true);
+    else if(err==="network")micMsg("Voice input needs an internet connection.",true);
+    else if(err==="no-speech")micMsg("I didn't hear anything. Tap the mic, wait for Listening…, then speak.",true);
+    else if(!err||err==="aborted")micMsg(Date.now()-t0<3000?"If you just allowed the microphone, tap the mic again and speak.":"Voice input stopped. Tap the mic to try again.",false);
+    else micMsg("Voice input error: "+err+". The keyboard's microphone key also works.",true);
   };
-  if(o.onStarting)o.onStarting();
-  try{r.start()}catch(e){RECON=false;o.onFail("start","Couldn't start the microphone ("+(e&&e.name?e.name:"error")+"). Use the microphone key on your keyboard instead.")}
-}
-function startMic(){
-  listen({
-    lang:DIR==="th"?LG().tts:"en-US",
-    onStarting:()=>micMsg("Starting microphone…",false),
-    onStart:()=>{$("trMic").classList.add("rec");micMsg("Listening… speak now",false)},
-    onInterim:t=>{$("trIn").value=t},
-    onFinal:t=>{$("trIn").value=t;doTr()},
-    onFail:(k,m)=>{logErr("mic "+k,m);micMsg(m,k!=="aborted");if(k==="unsupported"||k==="start")$("trIn").focus()},
-    onEnd:()=>$("trMic").classList.remove("rec")
-  });
+  micMsg("Starting microphone…",false);
+  try{r.start()}catch(e){RECON=false;micMsg("Couldn't start the microphone ("+(e&&e.name?e.name:"error")+"). Use the microphone key on your keyboard instead.",true);$("trIn").focus()}
 }
 $("trMic").style.display="";
-$("trMic").onclick=startMic;
 $("trMic").onclick=startMic;
 function refreshLang(){
   const L=LG();
   const ordered=LANGS.slice().sort((a,b)=>a.c==="th"?-1:b.c==="th"?1:a.n.localeCompare(b.n));
   $("lang").innerHTML=ordered.map(l=>`<option value="${l.c}">${l.n} · ${NAT[l.c]||""}</option>`).join("");$("lang").value=S.lang;
   $("lbName").textContent=L.n+" · "+(NAT[L.c]||"");$("lbCount").textContent=LANGS.length;
-  $("dirEn").textContent="English → "+L.n;$("dirTh").textContent=L.n+" → English";
+  $("dirEn").innerHTML=`<b>🇬🇧 English</b><small>English → ${esc(L.n)}</small>`;$("dirTh").innerHTML=L.c==="th"?`<b>🇹🇭 ภาษาไทย</b><small>Thai speaker</small>`:`<b>${esc(NAT[L.c]||L.n)}</b><small>${esc(L.n)} → English</small>`;
   $("thLbl").textContent=L.n+" text (leave empty to translate automatically)";
   $("edLbl").textContent=L.n+" text (spoken aloud)";
   $("th").placeholder=S.lang==="th"?"เช่น ขอกาแฟหน่อย":"";
-  $("trIn").placeholder=DIR==="en"?"Type English…":"Type or paste "+L.n+"…";
+  whoLabels();
   const sw=$("polT").parentElement;if(sw)sw.style.display=S.lang==="th"?"":"none";
 }
 $("lang").onchange=e=>{S.lang=e.target.value;save();cat="All";qs="";$("q").value="";setDir("en");refreshLang();render();renderHist()};
 $("tabbar").onclick=e=>{
   const b=e.target.closest("[data-go]");if(!b)return;
   const g=b.dataset.go;
-  if(g==="tr"){$("tool").scrollIntoView({behavior:"smooth",block:"start"});$("trIn").focus({preventScroll:true})}
+  if(g==="tr"){window.scrollTo({top:0,behavior:"smooth"});$("trIn").focus({preventScroll:true})}
   else if(g==="board"){document.querySelector(".boardhead").scrollIntoView({behavior:"smooth",block:"start"})}
   else if(g==="add")$("fab").click();
   else if(g==="set")$("setBtn").click();
@@ -1439,78 +1768,38 @@ async function gtx(q,from,to){
     return t;
   }finally{clearTimeout(tm)}
 }
+// Spoken Thai: machine translators write textbook Thai, so turn the common written forms into what people actually say.
+const CASUAL=[[/^กรุณา\s*(.+?)(ด้วย|หน่อย)?$/,"$1หน่อย"],[/สักครู่/g,"แป๊บนึง"],[/ขณะนี้/g,"ตอนนี้"],[/ไม่ทราบ/g,"ไม่รู้"],[/ทราบ/g,"รู้"],[/รับประทาน/g,"กิน"],
+ [/เป็นอย่างไรบ้าง/g,"เป็นไงบ้าง"],[/อย่างไร/g,"ยังไง"],[/เท่าไร(?!่)/g,"เท่าไหร่"],[/เมื่อไร(?!่)/g,"เมื่อไหร่"],[/อย่างนี้/g,"แบบนี้"],[/อย่างนั้น/g,"แบบนั้น"],
+ [/ใช่หรือไม่/g,"ใช่ไหม"],[/หรือไม่\s*\??$/,"ไหม"],[/หรือไม่(?=\s|$)/g,"รึเปล่า"],[/ดิฉัน/g,"ฉัน"],[/(?<=[ก-๎])(?<!ที่)หนึ่ง(?![ก-๎])/g,"นึง"],[/ทำอะไรอยู่/g,"ทำไรอยู่"],[/แป๊บนึงหน่อย$/,"แป๊บนึงนะ"],[/(\s)กรุณา\s*/g,"$1"]];
+function casualTh(t){
+  if(!t||!/[฀-๿]/.test(t)||S.reg==="formal")return t;
+  let r=t.trim();CASUAL.forEach(([a,b])=>{r=r.replace(a,b)});
+  if(S.pol!=="f")r=r.replace(/^ฉัน/,"ผม").replace(/(\s)ฉัน/g,"$1ผม");
+  return r;
+}
 async function webTr(q,from,to){
   const toCode=codeFromMM(to);
   let gErr="",mErr="";
-  try{const gt=await tryTwice(()=>gtx(q,from,to));if(plausible(gt,q,toCode))return gt;gErr="the answer didn't look like "+nm(toCode)}catch(e){gErr=why(e)}
-  try{const mt=await mm(q,from+"|"+to);if(plausible(mt,q,toCode))return mt;mErr="the answer didn't look like "+nm(toCode)}catch(e){mErr=QUOTA?"daily free limit reached":why(e)}
+  try{const gt=await tryTwice(()=>gtx(q,from,to));if(plausible(gt,q,toCode))return toCode==="th"?casualTh(gt):gt;gErr="the answer didn't look like "+nm(toCode)}catch(e){gErr=why(e)}
+  try{const mt=await mm(q,from+"|"+to);if(plausible(mt,q,toCode))return toCode==="th"?casualTh(mt):mt;mErr="the answer didn't look like "+nm(toCode)}catch(e){mErr=QUOTA?"daily free limit reached":why(e)}
   LASTERR="Google: "+gErr+" / MyMemory: "+mErr;
   throw new Error(LASTERR);
 }
-let SRVERR="";
-const STYLES={everyday:"Everyday",polite:"Polite",literal:"Literal"};
-function STY(){return STYLES[S.style]?S.style:"everyday"}
-function styleNote(style,toName,to){
-  if(style==="polite")return `Use polite, careful, respectful ${toName} suitable for strangers, officials or senior people, but still natural and not archaic.`+(to==="th"?" For Thai use polite wording without royal or stiff written words; the app adds ครับ/ค่ะ itself.":"");
-  if(style==="literal")return `Translate closely and literally, keeping the structure of the original, so the meaning can be checked word by word.`;
-  return `Write it the way a native speaker would actually say it out loud on a film set or while travelling: everyday spoken register, not textbook, formal or word-for-word. Drop pronouns when obvious and use short, common sentence patterns.`+(to==="th"?" For Thai use natural spoken Bangkok Thai: the particles and shortcuts people really use (for example หน่อย, ด้วย, นะ, เลย, มั้ย, ได้ไหม, ยัง), leave out ฉัน/ผม/คุณ when natural, avoid stiff written words, and use the loanwords Thai film crews say (for example เทค, ซีน, คอลไทม์, คัท, แอคชั่น, ไฟ, กล้อง). Stay polite enough to be respectful, never rude.":" Stay polite enough to be respectful, never rude.");
-}
-const STOPW=new Set("the a an is are to of in on at for and or you your i me my it this that please can could would do does we".split(" "));
-const toks=x=>normQ(x).split(" ").filter(w=>w&&!STOPW.has(w));
-function examplesFor(q,to){
-  if(to==="en")return[];
-  const gold=S.items.filter(i=>i.en&&getText(i,to).t&&(i.chk||i.edited||i.t||(to==="th"&&NATURAL.has(i.th))));
-  const qt=new Set(toks(q));
-  const hits=gold.map(i=>{const t=toks(i.en);let n=0;t.forEach(w=>{if(qt.has(w))n++});return{i,s:t.length?n/Math.max(t.length,qt.size):0}}).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,4).map(x=>x.i);
-  const rest=gold.filter(i=>!hits.includes(i)).filter((_,k)=>k%11===0).slice(0,6-hits.length);
-  return hits.concat(rest).slice(0,6).map(i=>({en:i.en,t:getText(i,to).t}));
-}
-function aiPrompt(q,from,to,style,exs){
-  const toName=nm(to);
-  let p=`Translate this ${to==="en"?"text (probably "+nm(from)+", but detect the language if it is different)":nm(from)+" text"} into ${toName}. ${styleNote(style,toName,to)} `;
-  if(to==="en"&&from==="th")p+="The Thai may be casual spoken language or slang, drop pronouns or use particles; give its real meaning in natural everyday English. ";
-  p+=`Do not add a politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","src":"the two-letter ISO 639-1 code of the language of the original text","ro":"standard romanization if the translation is not written in Latin letters, with syllables separated by hyphens or spaces, otherwise an empty string","tn":"only for Thai: the spoken tone of each syllable in ro, one letter per syllable in order (M mid, L low, F falling, H high, R rising); otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"More polite or More casual or similar","t":"another natural way to say it in a different register","ro":"","ph":""}]}\\nGive 0 to 2 alternatives in a different register (for example more polite, or more casual), and an empty alts array if there is no useful alternative.`;
-  if(exs&&exs.length)p+=`\\nReference translations approved for this app. Match their wording, register and spelling conventions where relevant:\\n`+exs.map(e=>`English: ${e.en} => ${toName}: ${e.t}`).join("\\n");
-  return p+`\\nText: ${q}`;
-}
-function casualizeTh(t){
-  let x=String(t||"").trim();
-  const V="ชอบ|อยาก|ต้องการ|จะ|ไม่|ขอ|มี|ไป|มา|รู้|เห็น|ได้|เป็น|อยู่|กิน|ดู|เข้าใจ|พูด|ชื่อ|ทำ|รัก|คิด|ว่า|ถึง|เคย|กำลัง|ควร|สามารถ|ช่วย|ลอง|รอ|ซื้อ|เอา|ใช้|นั่ง|ยืน";
-  x=x.replace(new RegExp("^(?:ฉัน|ผม|ดิฉัน|คุณ)(?=(?:"+V+"))"),"");
-  x=x.replace(/อยู่ที่ไหน/g,"อยู่ไหน");
-  x=x.replace(/(จอด|วาง|รอ|นั่ง|ยืน|ถ่าย|หยุด|ทำ|ใส่|เอามา|เอา|ไว้)ที่นี่/g,"$1ตรงนี้");
-  x=x.replace(/สักครู่/g,"แป๊บนึง");
-  if(/^กรุณา./.test(x)){x=x.replace(/^กรุณา/,"ช่วย");if(!/(หน่อย|ด้วย|นะ|ได้ไหม|ได้มั้ย)$/.test(x))x+="หน่อย"}
-  return x;
-}
-async function srvTr(q,from,to,style,exs){
-  const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),20000);
-  try{
-    const r=await fetch(S.srvUrl.replace(/\/+$/,"")+"/translate",{method:"POST",headers:{"content-type":"application/json","x-app-code":S.srvCode||""},body:JSON.stringify({text:q,from,to,fromName:nm(from),toName:nm(to),style:style||"everyday",examples:exs||[]}),signal:ac.signal});
-    if(!r.ok){let m="";try{m=(await r.json()).error||""}catch(e){}throw new Error("Server "+r.status+(m?": "+m:""))}
-    return await r.json();
-  }finally{clearTimeout(tm)}
-}
-async function aiTr(q,from,to,style){
-  style=style||STY();
-  const exs=examplesFor(q,to);
-  const prompt=aiPrompt(q,from,to,style,exs);
-  SRVERR="";
+async function aiTr(q,from,to){
+  const prompt=`Translate this ${to==="en"?"text (probably "+nm(from)+", but detect the language if it is different)":nm(from)+" text"} into ${nm(to)} the way a native speaker would actually say it out loud on a film set or while travelling: everyday spoken register, not textbook or word-for-word. Drop pronouns when obvious, use the loanwords crews really use (in Thai: เทค, ซีน, คอลไทม์), and add softeners (in Thai: หน่อย, ด้วย, นะ) where natural.${S.reg==="formal"?" For Thai, use polite, respectful spoken Thai for strangers, elders, officials and clients: full forms like อะไร, ไหม, อย่างไร or ยังไง, no slang, and ผม for a male speaker or ดิฉัน/ฉัน for a female one. Keep it natural, not stiff written Thai.":` For Thai, write it the way Thais really talk, not how they write: use spoken forms like ไร for อะไร, ยังไง/ไง for อย่างไร, นึง for หนึ่ง after a classifier, มั้ย for ไหม, ป่ะ or รึเปล่า for หรือไม่, เท่าไหร่, เดี๋ยว, แป๊บนึง, and casual endings like อ่ะ, ดิ, เนอะ, ละ when they fit. Use ผม for a male speaker and ฉัน or เรา for a female one, or drop it.`} No politeness particle at the end. Reply with ONLY JSON: {"t":"the translation","ro":"standard romanization if the translation is not written in Latin letters, with syllables separated by hyphens or spaces, otherwise an empty string","tn":"only for Thai: the spoken tone of each syllable in ro, one letter per syllable in order (M mid, L low, F falling, H high, R rising); otherwise an empty string","ph":"how an English speaker should say the translation, written with plain English letters and spaces only: no symbols, no accents, no hyphens, no tone marks, no IPA. Empty string if the translation is English","alts":[{"label":"Formal or Casual or similar","t":"another natural way to say it","ro":"","ph":""}]}\nGive 0 to 2 alternatives: usually one labelled "Slang" with how Thai friends would say it among themselves (current slang is fine if it fits), and one labelled "Polite" for strangers or elders, and an empty alts array if there is no useful alternative.\nText: ${q}`;
   let r=null;
-  if(S.srvUrl){try{r=await srvTr(q,from,to,style,exs)}catch(e){SRVERR=why(e);logErr("server",e)}}
-  if(!r){
-    if(SM){r=await SM.json(prompt)}
-    else if(S.aiKey){
-      const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":S.aiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:700,messages:[{role:"user",content:prompt}]})});
-      if(!resp.ok){let m="";try{const e=await resp.json();m=e.error&&e.error.message?": "+e.error.message:""}catch(x){}throw new Error("Claude "+resp.status+m)}
-      const j=await resp.json();
-      const txt=(j.content||[]).map(c=>c.text||"").join("");
-      r=JSON.parse(txt.replace(/```json|```/g,"").trim());
-    }else return null;
-  }
-  if(!r||!r.t)throw new Error("the AI gave no translation");
+  if(SM){r=await SM.json(prompt)}
+  else if(S.aiKey){
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":S.aiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-haiku-5-5",max_tokens:600,messages:[{role:"user",content:prompt}]})});
+    if(!resp.ok){let m="";try{const e=await resp.json();m=e.error&&e.error.message?": "+e.error.message:""}catch(x){}throw new Error("Claude "+resp.status+m)}
+    const j=await resp.json();
+    const txt=(j.content||[]).map(c=>c.text||"").join("");
+    r=JSON.parse(txt.replace(/```json|```/g,"").trim());
+  }else return null;
+  if(!r||!r.t)throw new Error("Claude gave no translation");
   const alts=(Array.isArray(r.alts)?r.alts:[]).slice(0,2).map(a=>({label:String(a.label||"Other"),t:String(a.t||"").trim(),ro:a.ro||"",ph:a.ph||""})).filter(a=>a.t);
-  return{t:String(r.t).trim(),ro:r.ro||"",ph:r.ph||"",tn:/^[MLFHR]+$/.test(r.tn||"")?r.tn:"",alts,src:String(r.src||"").toLowerCase(),style,exN:exs.length};
+  return{t:String(r.t).trim(),ro:r.ro||"",ph:r.ph||"",tn:/^[MLFHR]+$/.test(r.tn||"")?r.tn:"",alts};
 }
 async function translateItem(it,L){
   const s=srcFor(it);
@@ -1548,10 +1837,22 @@ async function pumpTr(){
   }
   PUMP=false;if(DIRTY){save();DIRTY=0}
 }
+const VOCAB="My vocab";
+const histClean=t=>String(t||"").replace(/\s*(ครับ|ค่ะ|คะ)\s*$/,"").trim();
+function histSaved(x){const t=histClean(x.th);return S.items.some(i=>(i.th===t||(i.tr&&i.tr[S.lang]&&i.tr[S.lang].th===t)))}
+function histTileHTML(x,n){
+  const t=histClean(x.th),pr=S.ro?toneHTML(t,x.ro||"","",!x.ro):"",sv=histSaved(x);
+  return `<div class="tile htile${x.en?" enonly":""}" data-hi="${n}" role="button" tabindex="0"><span class="th" lang="${S.lang}" dir="auto">${esc(t)}</span>${pr?`<small class="ro">${pr}</small>`:""}${x.en?`<small class="en">${esc(x.en)}</small>`:""}<button class="hsave${sv?" done":""}" data-hsave="${n}"${sv?" disabled":""}>${sv?"✓ Saved":"＋ Save"}</button></div>`;
+}
+function histSave(n){
+  const x=S.hist[n];if(!x||histSaved(x))return;
+  S.items.push({id:uid(),th:histClean(x.th),ro:x.ro||"",en:x.en||"",cat:VOCAB,np:0,t:Date.now()});
+  save();render();toast("Saved to My vocab");
+}
 function tileHTML(i){
   const v=vw(i),f=full({th:v.th,ro:v.ro,en:v.en,cat:i.cat,np:i.np,lang:S.lang});
   const need=!v.th;let pr;
-  return `<button class="tile${need?" pend":""}${SEL.has(i.id)?" sel":""}"${need?' data-need="1"':""} style="--c:${colr(i.cat)}" data-id="${i.id}"><span class="th" lang="${S.lang}" dir="auto">${need?"…":esc(f.th)}</span>${(pr=S.ro&&!need?toneHTML(f.th,f.ro,"",!f.ro):"")?`<small class="ro">${pr}</small>`:""}${S.en&&f.en?`<small class="en">${esc(f.en)}</small>`:""}${v.auto&&!need?`<small class="auto">⚠ auto</small>`:""}<span class="fav${i.fav?" on":""}" data-fav="${i.id}" role="button" aria-label="Favourite">${i.fav?"★":"☆"}</span>${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`;
+  return `<button class="tile${f.en?" enonly":""}${need?" pend":""}${SEL.has(i.id)?" sel":""}"${need?' data-need="1"':""} style="--c:${colr(i.cat)}" data-id="${i.id}"><span class="th" lang="${S.lang}" dir="auto">${need?"…":esc(f.th)}</span>${(pr=S.ro&&!need?toneHTML(f.th,f.ro,"",!f.ro):"")?`<small class="ro">${pr}</small>`:""}${S.en&&f.en?`<small class="en">${esc(f.en)}</small>`:""}${v.auto&&!need?`<small class="auto">⚠ auto</small>`:""}<span class="fav${i.fav?" on":""}" data-fav="${i.id}" role="button" aria-label="Favourite">${i.fav?"★":"☆"}</span>${edit?`<span class="x" data-del="${i.id}">×</span>`:""}</button>`;
 }
 function paintTile(id){
   const el=document.querySelector('.tile[data-id="'+id+'"]');
@@ -1587,7 +1888,7 @@ $("expChg").onclick=async()=>{
   catch(e){$("bs").textContent="Couldn't save the file. Try Copy instead."}
 };
 $("expCopy").onclick=async()=>{
-  try{await navigator.clipboard.writeText(JSON.stringify(changesData()));$("bs").textContent="Changes copied. Paste them into a message to me."}
+  try{await copyText(JSON.stringify(changesData()));$("bs").textContent="Changes copied. Paste them into a message to me."}
   catch(e){$("bs").textContent="Couldn't copy."}
 };
 $("mmEmail").onchange=e=>{S.mmEmail=e.target.value.trim();save()};
@@ -1667,13 +1968,13 @@ $("ghPub").onclick=async()=>{
 let ADDPH="";
 function openMore(){
   if(!RES)return;
-  $("moreBackOut").innerHTML="";$("moreStyle").hidden=RES.dir!=="en";$("moreStyleHint").textContent=aiReady()?"":"Without the translation server or a Claude key, Everyday adds a casual clean-up to Thai, and the other two give the plain free translation.";$("moreBack").hidden=RES.dir!=="en";$("moreFresh").hidden=!RES.saved;
+  $("moreBackOut").innerHTML="";$("moreBack").hidden=RES.dir!=="en";$("moreFresh").hidden=!RES.saved;
   const alts=RES.alts||[];
   $("moreAlts").innerHTML=alts.length?`<label>Other ways to say it</label>`+alts.map((a,i)=>`<button class="ib" data-alt="${i}" style="width:100%;margin-top:8px;text-align:left"><small style="display:block;color:var(--mute)">${esc(a.label)}</small>${esc(a.t)}</button>`).join(""):"";
   $("moreD").showModal();
 }
 $("moreClose").onclick=()=>$("moreD").close();
-$("moreCopy").onclick=()=>{navigator.clipboard.writeText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true));$("moreD").close()};
+$("moreCopy").onclick=()=>{copyText(RES.dir==="en"?shown(RES).th:RES.en).then(()=>toast("✓ Copied")).catch(()=>toast("Couldn't copy",true));$("moreD").close()};
 $("moreEdit").onclick=()=>{
   $("moreD").close();
   ["th","ro","en"].forEach(k=>$(k).value="");$("trs").textContent="";$("catNew").value="";fillCat($("rcat")?$("rcat").value:undefined);
@@ -1690,22 +1991,48 @@ $("moreAlts").onclick=e=>{
 };
 
 let BIG={th:"",ro:"",en:"",sub:false,rot:false};
-function showBig(v){BIG.th=v.th;BIG.ro=v.ro||"";BIG.en=v.en||"";BIG.lang=v.lang||S.lang;BIG.tts=v.tts||"";$("big").hidden=false;paintBig()}
+function replySide(){return (BIG.lang||S.lang)==="en"?"en":"th"}
+function paintReply(){
+  const side=replySide(),T=LG().c==="th"&&side==="th";
+  const mic='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2" width="7" height="13" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5V22M8 22h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  $("bigTalk").innerHTML=mic+(T?"<span>พูดตอบ<small>Speak reply</small></span>":side==="th"?"<span>Speak "+esc(LG().n)+"</span>":"<span>Speak reply</span>");
+  $("bigType").innerHTML=T?"<span>⌨︎ พิมพ์ตอบ<small>Type reply</small></span>":"<span>⌨︎ Type reply</span>";
+}
+/* hold a tile (without dragging) = full-screen Show with Thai + phonetics, to turn toward a Thai speaker */
+function holdShow(id){
+  const it=S.items.find(i=>i.id===id);if(!it)return;
+  const v=vw(it),f=full({th:v.th,ro:v.ro,en:v.en,cat:it.cat,np:it.np,lang:S.lang});if(!f.th)return;
+  BIG.sub=true;showBig({th:f.th,ro:f.ro,en:f.en,id});
+}
+function replyGo(talk){
+  const side=replySide();$("big").hidden=true;setDir(side);
+  window.scrollTo(0,0);
+  if(talk)startMic();else $("trIn").focus();
+}
+$("bigTalk").onclick=()=>replyGo(true);$("bigType").onclick=()=>replyGo(false);
+function showBig(v){BIG.id=v.id||"";$("bigFav").hidden=!BIG.id;paintFav();BIG.th=v.th;BIG.ro=v.ro||"";BIG.en=v.en||"";BIG.lang=v.lang||S.lang;BIG.tts=v.tts||"";BIG.tn=v.tn||"";BIG.noEn=!!v.noEn;$("big").hidden=false;paintReply();paintBig()}
 function paintBig(){
   const t=$("bigTxt");t.textContent=BIG.th;t.lang=BIG.lang||S.lang;
-  $("bigSub").innerHTML=BIG.sub?`<div class="bsr">${(BIG.lang||S.lang)===S.lang?toneHTML(BIG.th,BIG.ro,"",!BIG.ro):esc(BIG.ro)}</div><div class="bse">${esc(BIG.en)}</div>`:"";
+  $("bigSub").innerHTML=BIG.sub?`<div class="bsr">${(BIG.lang||S.lang)===S.lang?toneHTML(BIG.th,BIG.ro,BIG.tn||"",!BIG.ro):esc(BIG.ro)}</div>${BIG.noEn?"":`<div class="bse">${esc(BIG.en)}</div>`}`:"";
   t.style.transform=BIG.rot?"rotate(180deg)":"";
   $("bigSnd").textContent=BIG.sub?"Thai only":"Sounds";
   fitBig();
+}
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);
+  return new Promise((ok,no)=>{try{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);const r=document.execCommand("copy");a.remove();r?ok():no()}catch(e){no(e)}});
 }
 function fitBig(){
   const box=$("bigBox"),el=$("bigTxt");if(!box.clientWidth)return;
   const sc=S.bigScale||0.85;
   const maxW=box.clientWidth-32,maxH=box.clientHeight-(BIG.sub?150:32);
-  let lo=20,hi=320,best=20;
+  el.style.overflowWrap="";let lo=20,hi=320,best=20;
   while(lo<=hi){const mid=(lo+hi)>>1;el.style.fontSize=mid+"px";if(el.scrollWidth<=maxW&&el.offsetHeight<=maxH){best=mid;lo=mid+1}else hi=mid-1}
   el.style.fontSize=Math.max(20,Math.round(best*sc))+"px";
+  if(best<=20)el.style.overflowWrap="anywhere";
 }
+function paintFav(){const it=BIG.id&&S.items.find(i=>i.id===BIG.id);$("bigFav").textContent=it&&it.fav?"★ Fav":"☆ Fav"}
+$("bigFav").onclick=()=>{if(!BIG.id)return;toggleFav(BIG.id);paintFav()};
 $("bigX").onclick=()=>{$("big").hidden=true};
 $("bigPlus").onclick=()=>{S.bigScale=Math.min(1,(S.bigScale||0.85)+0.1);save();fitBig()};
 $("bigMinus").onclick=()=>{S.bigScale=Math.max(0.3,(S.bigScale||0.85)-0.1);save();fitBig()};
@@ -1789,7 +2116,7 @@ function normQ(x){return String(x||"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu
 function savedFor(q){const n=normQ(q);if(!n)return null;return S.items.find(i=>normQ(i.en)===n&&getText(i,S.lang).t)||null}
 function savedRev(q){const n=normQ(q);if(!n)return null;return S.items.find(i=>{const x=getText(i,S.lang);return i.en&&x.t&&normQ(x.t)===n})||null}
 async function webTrBoth(q,from,to,toCode,mmFrom){
-  const key=from+"|"+to+"|"+q;
+  const key=from+"|"+to+"|"+q+(toCode==="th"&&S.reg==="formal"?"|formal":"");
   if(!SKIPSAVED){const c=cget(key);if(c){LASTSRC=c.src||"";return c}}
   LASTRM="";LASTSRC="";
   const [g,m]=await Promise.allSettled([tryTwice(()=>gtx(q,from,to)),tryTwice(()=>mm(q,(mmFrom||from)+"|"+to))]);
@@ -1802,9 +2129,9 @@ async function webTrBoth(q,from,to,toCode,mmFrom){
     const w2=m.status==="rejected"?(QUOTA?"daily free limit reached":why(m.reason)):(mt?"the answer didn't look like "+nm(toCode):"no answer");
     LASTERR="Google: "+w1+" / MyMemory: "+w2;throw new Error(LASTERR);
   }
-  const t=gOK?gt:mt;
-  const other=(gOK&&mOK)?mt:"";
-  const res={t,alt:(other&&other.toLowerCase()!==t.toLowerCase())?other:"",rm:gOK?rm:"",src};
+  let t=gOK?gt:mt,other=(gOK&&mOK)?mt:"",rr=gOK?rm:"";
+  if(toCode==="th"){const c=casualTh(t);if(c!==t){t=c;rr=""}other=casualTh(other)}
+  const res={t,alt:(other&&other.toLowerCase()!==t.toLowerCase())?other:"",rm:rr,src};
   cset(key,res);
   return res;
 }
@@ -1824,142 +2151,6 @@ $("edVerify").onclick=()=>{
   const x=getText(it,S.lang);if(!x.t){toast("Nothing to mark yet",true);return}
   if(S.lang==="th")it.auto=0;else if(it.tr&&it.tr[S.lang])it.tr[S.lang].auto=0;
   save();render();markChanged();toast("✓ Marked as checked");
-};
-
-// ---- conversation mode ----
-const CONV=[];
-function convLabels(){
-  $("convMeLbl").textContent="Me · English";
-  $("convThemLbl").textContent="Them · "+LG().n;
-}
-function convRender(){
-  const L=$("convLog");
-  L.innerHTML=CONV.length?CONV.map((m,i)=>`<div class="cmsg ${m.who}"><div class="cwho">${m.who==="me"?"You, in "+esc(LG().n):esc(LG().n)+", in English"}</div><div class="cout" lang="${m.who==="me"?S.lang:"en"}" dir="auto">${m.busy?"…":esc(m.out)}</div>${m.who==="me"&&S.lang==="th"?`<div class="cph">${toneHTML(m.out,m.ph,m.tn,true)}</div>`:(m.ph?`<div class="cph">${esc(m.ph)}</div>`:"")}<div class="csrc">${esc(m.src)}</div>${m.err?`<div class="cerr">${esc(m.err)}</div>`:""}${m.busy?"":`<div class="cbtn"><button class="ib" data-cs="${i}">🔊 Replay</button><button class="ib" data-cb="${i}">Show</button></div>`}</div>`).join(""):`<div class="cempty">Tap <b>Me</b> to speak English. Tap <b>Them</b> when they reply in ${esc(LG().n)}. Each translation appears here, and yours is spoken aloud.</div>`;
-  L.scrollTop=L.scrollHeight;
-}
-function convSpeak(m){
-  if(m.who==="me")speak({th:m.out,ro:m.ph,en:m.src,cat:"x",np:0});
-  else speak({th:m.out,ro:"",en:m.src,cat:"x",np:1,lang:"en"},"en-US");
-}
-async function convSay(text,who){
-  const m={who,src:text,out:"",ph:"",busy:true};CONV.push(m);convRender();
-  try{
-    const r=await translateCore(text,who==="me",{});
-    if(r.sameLang){m.out=text}
-    else{m.out=r.t;m.tn=r.tn||"";m.ph=who==="me"?(r.ph||(S.lang==="th"&&r.ro?phonFromRo(r.ro):"")):""}
-    m.busy=false;convRender();
-    if(who==="me"||$("convAloud").checked)convSpeak(m);
-  }catch(e){logErr("conversation",e);m.busy=false;m.err="Couldn't translate: "+why(e);convRender()}
-}
-function convMic(who){
-  const btn=$(who==="me"?"convMeMic":"convThemMic");
-  listen({
-    lang:who==="me"?"en-US":LG().tts,
-    onStart:()=>{btn.classList.add("rec");$("convStat").textContent="Listening…"},
-    onInterim:t=>{$("convStat").textContent=t},
-    onFinal:t=>{$("convStat").textContent="";convSay(t,who)},
-    onFail:(k,m)=>{logErr("mic "+k,m);$("convStat").textContent=m},
-    onEnd:()=>btn.classList.remove("rec")
-  });
-}
-$("convBtn").onclick=()=>{convLabels();$("conv").hidden=false;convRender()};
-$("convClose").onclick=()=>{try{if(REC&&RECON)REC.stop()}catch(e){}$("conv").hidden=true};
-$("convClear").onclick=()=>{CONV.length=0;convRender()};
-$("convMeMic").onclick=()=>convMic("me");
-$("convThemMic").onclick=()=>convMic("them");
-$("convType").onclick=()=>{const r=$("convTypeRow");r.hidden=!r.hidden;if(!r.hidden)$("convIn").focus()};
-function convSend(who){const t=$("convIn").value.trim();if(!t)return;$("convIn").value="";convSay(t,who)}
-$("convSendMe").onclick=()=>convSend("me");
-$("convSendThem").onclick=()=>convSend("them");
-$("convIn").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();convSend("me")}};
-$("convLog").onclick=e=>{
-  const sp=e.target.closest("[data-cs]"),bg=e.target.closest("[data-cb]");
-  if(sp){const m=CONV[+sp.dataset.cs];if(m)convSpeak(m)}
-  if(bg){const m=CONV[+bg.dataset.cb];if(m)showBig(m.who==="me"?full({th:m.out,ro:m.ph,en:m.src,cat:"x",lang:S.lang}):{th:m.out,ro:"",en:m.src,lang:"en",tts:"en-US"})}
-};
-
-// ---- updates ----
-let UPDATED_AT=0;
-async function checkUpdate(manual){
-  if(window.__preview||!/^https?:$/.test(location.protocol)){if(manual)toast("Updates are checked on your GitHub page");return false}
-  try{
-    const r=await fetch(location.href.split("#")[0].split("?")[0],{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const t=await r.text();
-    const mb=t.match(/\bAPPVER="(\d{4}-\d{2}-\d{2}-\w+)"/),mv=t.match(/\/\*B\*\/\{"v":(\d+)/);
-    const newBuild=mb&&mb[1]!==APPVER,newData=mv&&(!BAKED||+mv[1]>(BAKED.v||0));
-    if(newBuild||newData){$("updBar").hidden=false;return true}
-    if(manual)toast("You have the latest version");
-  }catch(e){logErr("update",e);if(manual)toast("Couldn't check for updates: "+why(e),true)}
-  return false;
-}
-$("updNow").onclick=()=>{location.reload()};
-$("updLater").onclick=()=>{$("updBar").hidden=true};
-$("updChk").onclick=()=>checkUpdate(true);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&Date.now()-UPDATED_AT>30*60*1000){UPDATED_AT=Date.now();checkUpdate(false)}});
-setTimeout(()=>{UPDATED_AT=Date.now();checkUpdate(false)},4000);
-
-// ---- diagnostics ----
-async function buildReport(withTests){
-  const L=[];
-  const v=(a,b)=>L.push(a+": "+b);
-  L.push("Phil's Translator report");
-  v("Version",APPVER);v("Time",new Date().toISOString());
-  v("Page",location.href.split("#")[0]);v("Browser",navigator.userAgent);v("Online",navigator.onLine);
-  v("Language",LG().n+" ("+S.lang+")");
-  v("Direction",DIR==="en"?"English to "+LG().n:LG().n+" to English");
-  v("Theme",S.light?"light":"dark");v("Phrases",S.items.length);
-  v("Translation server",S.srvUrl?"set":"not set");v("Claude key",S.aiKey?"set":"not set");
-  v("Voices",allV.length+" total; "+LG().n+" "+(pickVoice()?"yes":"no")+"; English "+(pickVoice("en-US")?"yes":"no"));
-  v("Speech input",SR?"supported":"not supported");
-  if(RES)v("Last result",(RES.dir==="en"?"English to ":"to English from ")+LG().n+(RES.auto?" (machine translated)":""));
-  L.push("","Recent problems:");
-  const errs=(S.errs||[]).slice(-15);
-  if(!errs.length)L.push("(none logged)");
-  errs.forEach(x=>L.push(new Date(x.ts).toISOString().slice(11,19)+" ["+x.where+"] "+x.msg));
-  if(withTests){
-    L.push("","Checks:");
-    const t=async(label,fn)=>{try{L.push(label+": OK → "+await fn())}catch(e){QUOTA=false;L.push(label+": "+(e&&e.name?e.name+" "+(e.message||""):"no usable answer"))}};
-    if(S.srvUrl)await t("Server",()=>srvTr("Hello","en","th").then(r=>r.t));
-    await t("English to Thai, Google",()=>gtx("hello","en","th"));
-    await t("English to Thai, MyMemory",()=>mm("hello","en|th"));
-    await t("Thai to English, Google",()=>gtx("สวัสดี","auto","en"));
-    await t("Thai to English, MyMemory",()=>mm("สวัสดี","th|en"));
-  }
-  return L.join("\n");
-}
-async function sendReport(withTests){
-  toast("Preparing report…");
-  const text=await buildReport(withTests);
-  try{if(S.srvUrl)fetch(S.srvUrl.replace(/\/+$/,"")+"/report",{method:"POST",headers:{"content-type":"application/json","x-app-code":S.srvCode||""},body:JSON.stringify({report:text})}).catch(()=>{})}catch(e){}
-  if(navigator.share){try{await navigator.share({title:"Phil's Translator report",text});return}catch(e){if(e&&e.name==="AbortError")return}}
-  try{await navigator.clipboard.writeText(text);toast("Report copied. Paste it into a message.");return}catch(e){}
-  $("repTxt").value=text;$("repD").showModal();
-}
-$("sendRep").onclick=()=>sendReport(true);
-$("repClose").onclick=()=>$("repD").close();
-$("repCopy").onclick=()=>{$("repTxt").select();try{document.execCommand("copy");toast("Copied")}catch(e){}};
-
-// ---- translation server settings ----
-$("srvUrl").onchange=e=>{S.srvUrl=e.target.value.trim();save()};
-$("srvCode").onchange=e=>{S.srvCode=e.target.value.trim();save()};
-$("srvTest").onclick=async()=>{
-  const o=$("srvOut");
-  if(!S.srvUrl){o.textContent="Type the server address first.";return}
-  o.textContent="Testing…";
-  try{
-    const r=await srvTr("Where is the toilet?","en","th");
-    o.textContent="Server works: "+r.t+(r.ph?" ("+r.ph+")":"");
-  }catch(e){logErr("server test",e);o.textContent="Server problem: "+why(e)}
-};
-let TMPSTYLE="";
-$("styleSel").onchange=e=>{S.style=e.target.value;save()};
-$("sCas").onchange=e=>{S.casual=e.target.checked;save()};
-function aiReady(){return !!(S.srvUrl||SM||S.aiKey)}
-$("moreStyle").onclick=async e=>{
-  const b=e.target.closest("[data-style]");if(!b||!RES)return;
-  $("moreD").close();TMPSTYLE=b.dataset.style;SKIPSAVED=true;
-  try{await doTr()}finally{SKIPSAVED=false;TMPSTYLE=""}
 };
 let EID=null;
 function fillECat(sel){
@@ -2009,7 +2200,7 @@ $("edDel").onclick=()=>{if(confirm("Delete this phrase?")){const id=EID;$("edD")
 $("edD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();$("edSave").click()}};
 function fillCat(sel){
   const cs=cats();
-  const pick=sel||((cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:(cs[0]||"__new"));
+  const pick=sel||((cat!=="All"&&cat!=="__r"&&cs.includes(cat))?cat:(cs.find(c=>c!=="Numbers")||cs[0]||"__new"));
   $("cat").innerHTML=cs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")+`<option value="__new">＋ New category…</option>`;
   $("cat").value=pick;
   $("catNew").style.display=$("cat").value==="__new"?"":"none";
@@ -2045,20 +2236,163 @@ $("addGo2").onclick=add;
 $("addD").onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName!=="BUTTON"&&e.target.tagName!=="SELECT"){e.preventDefault();add()}};
 $("setBtn").onclick=()=>{
   if(!S.ghRepo&&/github\.io$/.test(location.hostname)){const rp=location.pathname.split("/")[1];if(rp)S.ghRepo=location.hostname.split(".")[0]+"/"+rp}
-  $("catExpSel").innerHTML=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("srvUrl").value=S.srvUrl||"";$("srvCode").value=S.srvCode||"";$("verTxt").textContent="Version "+APPVER+" · "+(S.errs||[]).length+" recent problems logged";$("aiKey").value=S.aiKey||"";$("ghToken").value=S.ghToken||"";$("ghRepo").value=S.ghRepo||"";$("ghAuto").checked=!!S.ghAuto;
-  $("mmEmail").value=S.mmEmail||"";$("sLight").checked=!!S.light;$("pol").value=S.pol;$("sRo").checked=S.ro;$("styleSel").value=STY();$("sCas").checked=S.casual!==false;$("tLeg").innerHTML=S.lang==="th"?"MLHRF".split("").map(t=>`<span>${ticon(t)}${TNAME[t]}</span>`).join(""):"";$("sEn").checked=S.en;$("setD").showModal()};
+  $("catExpSel").innerHTML=cats().map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");$("aiKey").value=S.aiKey||"";$("ghToken").value=S.ghToken||"";$("ghRepo").value=S.ghRepo||"";$("ghAuto").checked=!!S.ghAuto;
+  $("mmEmail").value=S.mmEmail||"";$("sLight").checked=!!S.light;$("sLook").value=S.look||"";$("pol").value=S.pol;$("sRo").checked=S.ro;$("tLeg").innerHTML=S.lang==="th"?"MLHRF".split("").map(t=>`<span>${ticon(t)}${TNAME[t]}</span>`).join(""):"";$("sEn").checked=S.en;$("setD").showModal()};
 $("setClose").onclick=()=>$("setD").close();
 $("pol").onchange=e=>{S.pol=e.target.value;save();render()};
-function applyTheme(){document.documentElement.setAttribute("data-th",S.light?"light":"night")}
+const LOOKFONT={"glass":"Prompt:wght@400;500"};
+function applyTheme(){const h=document.documentElement;if(!S.regV){S.regV=1;if(S.reg!=="formal")S.polite=true;save()}if(!S.lookV){S.look="glass";S.lookV=1;save()}if(S.look&&!LOOKFONT[S.look])S.look="";if(S.look){let l=$("lookFont");if(!l){l=document.createElement("link");l.id="lookFont";l.rel="stylesheet";document.head.appendChild(l)}const u="https://fonts.googleapis.com/css2?family="+LOOKFONT[S.look]+"&display=swap";if(l.href!==u)l.href=u}h.setAttribute("data-th",S.light?"light":"night");if(S.look)h.setAttribute("data-look",S.look);else h.removeAttribute("data-look");const r=$("sLightRow");if(r)r.hidden=!!S.look}
+$("sLook").onchange=e=>{S.look=e.target.value;save();applyTheme()};
 $("sLight").onchange=e=>{S.light=e.target.checked;save();applyTheme()};
 $("sRo").onchange=e=>{S.ro=e.target.checked;save();render()};
 $("sEn").onchange=e=>{S.en=e.target.checked;save();render()};
 $("voice").onchange=e=>{S.voice=e.target.value;save();speak({th:"สวัสดี",cat:"Basics"})};
-$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();applyP13();save();cat="All";render();$("setD").close()}};
+$("reset").onclick=()=>{if(confirm("Replace all phrases with the defaults? Your added phrases will be lost.")){S.items=defaults();S.seen=Object.keys(D);S.applied=Object.keys(PATCHES);if(BAKED&&BAKED.items){fromBaked();S.bakedV=BAKED.v}applyPatches2();applyP3();applyP4();applyP5();applyP6();applyP7();applyP8();applyP9();applyP10();applyP11();applyP12();save();cat="All";render();$("setD").close()}};
 
-load();applyTheme();refreshLang();render();loadVoices();renderHist();
+
+/* number keypad: digits -> Thai words, worked out on the phone (no internet needed) */
+const NW={0:["ศูนย์","R","suun"],1:["หนึ่ง","L","neung"],2:["สอง","R","song"],3:["สาม","R","saam"],4:["สี่","L","sii"],5:["ห้า","F","haa"],6:["หก","L","hok"],7:["เจ็ด","L","jet"],8:["แปด","L","paet"],9:["เก้า","F","gao"]};
+const NX={sip:["สิบ","L","sip"],yii:["ยี่","F","yii"],et:["เอ็ด","L","et"],jut:["จุด","L","jut"],baat:["บาท","L","baat"],bia:["เบียร์","M","bia"],kuat:["ขวด","L","kuat"],gaa:["กา","M","gaa"],fae:["แฟ","M","fae"],gaeo:["แก้ว","F","gaeo"],laan:["ล้าน","H","laan"]};
+const NP=[null,NX.sip,["ร้อย","H","roi"],["พัน","M","phan"],["หมื่น","L","muen"],["แสน","R","saen"]];
+function thNumWords(ds){/* ds: digit string without leading zeros, under a million */
+  const out=[],n=ds.length;
+  for(let k=0;k<n;k++){
+    const d=+ds[k],p=n-1-k;if(!d)continue;
+    if(p===1){if(d===2)out.push(NX.yii);else if(d!==1)out.push(NW[d]);out.push(NX.sip)}
+    else if(p===0){out.push(d===1&&n>1&&/[1-9]/.test(ds.slice(0,-1))?NX.et:NW[d])}
+    else out.push(NW[d],NP[p]);
+  }
+  return out;
+}
+function thNum(str,baht){
+  let [ip,fp]=String(str).split(".");ip=(ip||"").replace(/^0+(?=\d)/,"");
+  let w=[];
+  if(!ip||/^0+$/.test(ip))w=[NW[0]];
+  else{const parts=[];let x=ip;while(x.length>6){parts.unshift(x.slice(-6));x=x.slice(0,-6)}parts.unshift(x);
+    parts.forEach((pt,i)=>{const t=pt.replace(/^0+/,"");if(t){const ww=thNumWords(t);if(i>0&&t==="1"&&w.length)ww[0]=NX.et;w.push(...ww)}if(i<parts.length-1&&(t||w.length))w.push(NX.laan)});
+    while(w.length>1&&w[w.length-1]===NX.laan&&w[w.length-2]===NX.laan)w.pop()}
+  if(fp!==undefined&&fp!==""){w.push(NX.jut);for(const c of fp)w.push(NW[+c])}
+  if(baht===true||baht==="baht")w.push(NX.baat);
+  else if(baht==="beer"){w.unshift(NX.bia);w.push(NX.kuat)}
+  else if(baht==="coffee"){w.unshift(NX.gaa,NX.fae);w.push(NX.gaeo)}
+  return{th:w.map(x=>x[0]).join(""),tn:w.map(x=>x[1]).join(""),ro:w.map(x=>phonFromRo(x[2])||x[2]).join(" ")};
+}
+const NUNIT={baht:[" ฿"," baht"],beer:[" 🍺"," beers"],coffee:[" ☕"," coffees"]};
+let NKV="",NKB="";
+function nkU(){return S.numUnit!==undefined?S.numUnit:(S.numBaht?"baht":"")}
+function numFmt(v){if(!v)return"0";const [a,b]=v.split(".");return a.replace(/\B(?=(\d{3})+(?!\d))/g,",")+(b!==undefined?"."+b:"")}
+function numPaint(){
+  $("nmVal").textContent=numFmt(NKV)+(NKB?NUNIT[NKB][0]:"");
+  document.querySelectorAll("#numD [data-u]").forEach(b=>{const on=b.dataset.u===NKB;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+  if(!NKV){$("nmTh").textContent="";$("nmRo").innerHTML="<span class='nmhint'>Tap the numbers below</span>";return}
+  const r=thNum(NKV,NKB);$("nmTh").textContent=r.th;$("nmRo").innerHTML=toneHTML(r.th,r.ro,r.tn);
+}
+function numKey(k){
+  if(k==="back")NKV=NKV.slice(0,-1);
+  else if(k==="."){if(!NKV.includes(".")&&NKV.replace(".","").length<12)NKV=(NKV||"0")+"."}
+  else{const [a,b]=NKV.split(".");if(b!==undefined?b.length<4:(a||"").length<12)NKV=(NKV==="0"?"":NKV)+k}
+  numPaint();
+}
+function openNum(v){NKV=v||"";NKB=nkU();numPaint();if(!$("numD").open)$("numD").showModal()}
+
+document.querySelectorAll("#numD [data-k]").forEach(b=>b.onclick=()=>numKey(b.dataset.k));
+$("numD").addEventListener("keydown",e=>{if(/^[0-9.]$/.test(e.key)){numKey(e.key);e.preventDefault()}else if(e.key==="Backspace"){numKey("back");e.preventDefault()}});
+document.querySelectorAll("#numD [data-u]").forEach(b=>b.onclick=()=>{NKB=NKB===b.dataset.u?"":b.dataset.u;S.numUnit=NKB;save();numPaint()});
+$("nmClr").onclick=()=>{NKV="";numPaint()};
+$("nmPlay").onclick=()=>{if(NKV){const r=thNum(NKV,NKB);speak({th:r.th,ro:r.ro,en:numFmt(NKV),cat:"x",np:1,lang:"th"},"th-TH")}};
+$("nmShow").onclick=()=>{if(!NKV)return;const r=thNum(NKV,NKB);$("numD").close();BIG.sub=true;showBig({th:r.th,ro:r.ro,en:numFmt(NKV)+(NKB?(NKV==="1"?NUNIT[NKB][1].replace(/s$/,""):NUNIT[NKB][1]):""),tts:"th-TH"})};
+$("nmX").onclick=()=>$("numD").close();
+
+/* "Ways to say it" under a translation: how words are really said (B) and casual/polite/formal word swaps (D) */
+const SPOKEN=[["ไม่เป็นไร","ไม่เปงไร","mai peng rai","เป็น","เปง"],["อย่างไร","ยังไง","yang ngai"],["อย่างนี้","ยังงี้","yang ngee"],["อย่างนั้น","ยังงั้น","yang ngan"],["หรือเปล่า","รึเปล่า / ป่ะ","reu bplao / bpa"],["หรือไม่","มั้ย","mai"],["ไหม","มั้ย","mai"],["เท่าไร","เท่าไหร่","tao rai"],["หนึ่ง","นึง","neung"],["เขา","เค้า","kao"],["ฉัน","ชั้น","chan"]];
+const SWAPS=[
+ ["Eat",[["กิน","gin"],["ทาน","taan"],["รับประทาน","rap-bpra-taan"]]],
+ ["Thanks",[["ขอบใจ","kop jai"],["ขอบคุณ","kop kun"],["ขอบพระคุณ","kop pra kun"]]],
+ ["Sorry",[["โทษที","toht tee"],["ขอโทษ","kor toht"],["ขออภัย","kor a-pai"]]],
+ ["Wait",[["แป๊บ","bpaep"],["รอแป๊บนึง","ror bpaep neung"],["สักครู่","sak kroo"]]],
+ ["I / me",[["เรา","rao"],["ผม / ฉัน","pom / chan"],["กระผม / ดิฉัน","gra-pom / di-chan"]]],
+ ["…or not?",[["ป่ะ","bpa"],["มั้ย","mai"],["หรือไม่","reu mai"]]],
+ ["How much",[["กี่บาท","gee baht"],["เท่าไหร่","tao rai"],["ราคาเท่าไร","raa-kaa tao rai"]]],
+ ["Hello",[["หวัดดี","wat dee"],["สวัสดี","sa-wat-dee"],["สวัสดี","sa-wat-dee"]]]
+];
+function waysHTML(th){
+  if(!th)return"";
+  const sp=[],seen=new Set();
+  for(const [w,k,ro,part,np] of SPOKEN){
+    const hasW=th.includes(w),hasK=k.split(" / ").some(x=>th.includes(x));
+    if(!(hasW||hasK)||seen.has(k))continue;seen.add(k);
+    const wr=part?esc(w).replace(part,`<s>${part}</s>`):`<s>${esc(w)}</s>`;
+    const kk=part?esc(k).replace(np,`<u>${np}</u>`):`<u>${esc(k)}</u>`;
+    sp.push(`<div class="wsp"><span class="wsw" data-say="${esc(w)}">${wr}</span><span class="wsa" aria-hidden="true">→</span><span class="wsk" data-say="${esc(k.split(" / ")[0])}">${kk}</span><span class="wsr">${esc(ro)}</span></div>`);
+    if(sp.length>=4)break;
+  }
+  const words=x=>x.split(" / ");
+  const rows=SWAPS.filter(([,fs])=>fs.some(([t])=>words(t).some(x=>th.includes(x)))).slice(0,4);
+  if(!sp.length&&!rows.length)return"";
+  const reg=regNow(),ri={friends:0,polite:1,formal:2}[reg];
+  let h=`<div class="ways"><div class="wayh">Ways to say it</div>`;
+  if(sp.length)h+=`<div class="waysub">Written → how it's really said</div>`+sp.join("");
+  if(rows.length){
+    h+=`<div class="waysub">Swap a word to change the tone</div><table class="wtab"><thead><tr><th></th>${["Friends","Polite","Formal"].map((x,i)=>`<th${i===ri?' class="on"':""}>${x}</th>`).join("")}</tr></thead><tbody>`+
+      rows.map(([lab,fs])=>`<tr><td>${esc(lab)}</td>`+fs.map(([t,ro],i)=>`<td class="${i===ri?"on ":""}${words(t).some(x=>th.includes(x))?"in":""}" data-say="${esc(words(t)[0])}"><b>${esc(t)}</b><small>${esc(ro)}</small></td>`).join("")+`</tr>`).join("")+`</tbody></table>`;
+  }
+  return h+`<div class="wayt">Tap any word to hear it.</div></div>`;
+}
+function dragTip(){
+  if(S.tipHold2||$("tip"))return;
+  const d=document.createElement("div");d.id="tip";d.setAttribute("role","dialog");
+  d.innerHTML=`<div><b>Using the phrases</b><ul><li><span aria-hidden="true">👆</span>Hold a phrase to show it full screen to a Thai speaker</li><li><span aria-hidden="true">✋</span>Hold and drag a phrase to move it</li><li><span aria-hidden="true">☆</span>To keep one in Favourites, hold it, then tap ☆ Fav</li><li><span aria-hidden="true">🔢</span>Tap 🔢 Numbers for a keypad that says any number in Thai</li></ul><button class="ib pri" id="tipOk">Got it</button></div>`;
+  document.body.appendChild(d);$("tipOk").onclick=()=>{S.tipHold2=1;S.tipHold=1;S.tipDrag=1;save();d.remove()};
+}
+/* always open at the very top (phones otherwise restore an old scroll position) */
+try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
+const toTop=()=>window.scrollTo(0,0);toTop();addEventListener("load",toTop);addEventListener("pageshow",toTop);
+load();
+/* one time: Numbers category first */
+/* one time: power adapters in Technical */
+if(!S.tech1){try{[["Technical",[["หัวแปลงปลั๊ก","hua plaeng plak","Adapter (plug)"],["อะแดปเตอร์","a-daep-ter","Power adapter"],["ปลั๊กพ่วง","plak puang","Powerboard"]]]].forEach(([cat,list])=>{
+    const add=list.filter(([t])=>!S.items.some(i=>i.th===t&&i.cat===cat));
+    let at=-1;S.items.forEach((x,n)=>{if(x.cat===cat)at=n});
+    const its=add.map(([th,ro,en])=>({id:uid(),th,ro,en,cat,np:1}));
+    if(at<0)S.items.push(...its);else S.items.splice(at+1,0,...its)});
+  S.tech1=1;save()}catch(e){}}
+/* one time: Prosthetics & makeup category, placed right after SFX */
+if(!S.pros1){try{const PC="Prosthetics & makeup";
+  [["ขอเติมเมคอัพหน่อย", "khor term mek-ap noi", "Makeup touch-up, please", 0], ["ถึงเวลาแต่งหน้าแล้ว", "teung we-la taeng naa laeo", "Time for makeup", 0], ["อยู่นิ่งๆ นะ", "yoo ning ning na", "Hold still, please", 0], ["หลับตา", "lap taa", "Close your eyes", 0], ["ลืมตา", "leum taa", "Open your eyes", 0], ["มองขึ้น", "mong keun", "Look up", 0], ["มองลง", "mong long", "Look down", 0], ["ทำหน้าเฉยๆ", "tam naa choei choei", "Relax your face", 0], ["เจ็บไหม", "jep mai", "Does it hurt?", 0], ["คันไหม", "kan mai", "Is it itchy?", 0], ["ร้อนไหม", "ron mai", "Is it too hot?", 0], ["ถ้าเจ็บบอกนะ", "taa jep bok na", "Tell me if it hurts", 0], ["แพ้อะไรไหม", "phae a-rai mai", "Any allergies?", 0], ["อย่าจับหน้า", "yaa jap naa", "Don't touch your face", 0], ["อย่าขยี้", "yaa ka-yee", "Don't rub it", 0], ["อย่าเพิ่งกินหรือดื่มอะไร", "yaa perng gin reu deum a-rai", "Don't eat or drink yet", 0], ["ใช้หลอดนะ", "chai lot na", "Use a straw", 0], ["ต้องถอดชิ้นงานออก", "dtong tot chin ngaan ork", "We need to take the prosthetic off", 0], ["ใช้เวลาประมาณหนึ่งชั่วโมง", "chai we-la bpra-maan neung chua-mong", "It takes about an hour", 0], ["เลือดปลอม", "leuat bplom", "Fake blood", 1], ["กาว", "gaao", "Glue / adhesive", 1], ["น้ำยาล้าง", "nam-yaa laang", "Remover", 1], ["ชิ้นซิลิโคน", "chin si-li-kon", "Silicone piece", 1], ["วิก", "wik", "Wig", 1], ["กระจก", "gra-jok", "Mirror", 1], ["ฟองน้ำ", "fong nam", "Sponge", 1], ["แปรง", "bpraeng", "Brush", 1], ["ทิชชู่", "tit-choo", "Tissue", 1], ["เหงื่อ", "ngeua", "Sweat", 1], ["อ่างล้างมือ", "aang laang mue", "Sink", 1], ["น้ำ", "nam", "Water", 1], ["ล้าง", "laang", "Wash", 1], ["ทำความสะอาด", "tam kwaam sa-aat", "Clean", 1], ["สายยาง", "saai yaang", "Hose", 1], ["ผ้าขนหนู", "phaa kon noo", "Towel", 1]].forEach(([th,ro,en,np])=>{if(!S.items.some(i=>i.th===th&&i.cat===PC))S.items.push({id:uid(),th,ro,en,cat:PC,np})});
+  const o=cats().filter(c=>c!==PC),k=o.indexOf("SFX");o.splice(k<0?o.length:k+1,0,PC);S.catOrder=o;
+  const ex=S.items.find(i=>i.th==="ปลั๊กพ่วง"&&i.en==="Extension cord");if(ex)ex.en="Powerboard / extension cord";
+  S.pros1=1;save()}catch(e){}}
+/* one time: blood words in Prosthetics & makeup, next to Fake blood */
+if(!S.blood1){try{const PC="Prosthetics & makeup";
+  const add=[["เพิ่มเลือดหน่อย","phoem leuat noi","More blood, please",0],["ลดเลือดหน่อย","lot leuat noi","Less blood, please",0],["เลือด","leuat","Blood",1]].filter(([th])=>!S.items.some(i=>i.th===th&&i.cat===PC)).map(([th,ro,en,np])=>({id:uid(),th,ro,en,cat:PC,np}));
+  let at=S.items.findIndex(i=>i.cat===PC&&i.th==="เลือดปลอม");if(at<0)S.items.forEach((x,n)=>{if(x.cat===PC)at=n});
+  if(at<0)S.items.push(...add);else S.items.splice(at+1,0,...add);S.blood1=1;save()}catch(e){}}
+/* one time: your / my call time, next to "Call time" */
+if(!S.call1){try{const base=S.items.find(i=>i.th==="คอลไทม์")||S.items.find(i=>/call time/i.test(i.en||""));const cat=base?base.cat:"Schedule & meals";
+  const add=[["คอลไทม์ของคุณ","khon-thaim khong khun","Your call time",1],["คอลไทม์ของผม","khon-thaim khong phom","My call time",1],["คุณคอลไทม์กี่โมง","khun khon-thaim gii mohng","What's your call time?",0]].filter(([t])=>!S.items.some(i=>i.th===t));
+  const its=add.map(([th,ro,en,np])=>({id:uid(),th,ro,en,cat,np}));
+  const at=base?S.items.indexOf(base):-1;if(at<0)S.items.push(...its);else S.items.splice(at+1,0,...its);S.call1=1;save()}catch(e){}}
+/* one time: the word "Coffee", next to the other coffee phrases */
+if(!S.cof1){try{if(!S.items.some(i=>i.th==="กาแฟ")){const base=S.items.find(i=>/coffee/i.test(i.en||""));const it={id:uid(),th:"กาแฟ",ro:"gaa-fae",en:"Coffee",cat:base?base.cat:"Schedule & meals",np:1};
+  const at=base?S.items.indexOf(base):-1;if(at<0)S.items.push(it);else S.items.splice(at,0,it)}S.cof1=1;save()}catch(e){}}
+/* one time: 200-500 in Numbers, right after 100 */
+if(!S.num2){try{const add=[["สองร้อย","song roi","200"],["สามร้อย","saam roi","300"],["สี่ร้อย","sii roi","400"],["ห้าร้อย","haa roi","500"]].filter(([t])=>!S.items.some(i=>i.th===t));
+  let at=S.items.findIndex(i=>i.cat==="Numbers"&&i.en==="100");if(at<0){S.items.forEach((x,n)=>{if(x.cat==="Numbers")at=n})}
+  const its=add.map(([th,ro,en])=>({id:uid(),th,ro,en,cat:"Numbers",np:1}));
+  if(at<0)S.items.push(...its);else S.items.splice(at+1,0,...its);S.num2=1;save()}catch(e){}}
+if(!S.numFirst){try{const c=cats();S.catOrder=["Numbers",...c.filter(x=>x!=="Numbers")];S.numFirst=1;save()}catch(e){}}
+if(!S.fr1){S.regV=1;S.reg="casual";S.polite=false;S.fr1=1;save()}
+applyTheme();refreshLang();render();loadVoices();renderHist();
 if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=loadVoices;
 $("polT").checked=S.polite;updatePol();
+function regNow(){return S.reg==="formal"?"formal":S.polite?"polite":"friends"}
+function updReg(){const n=regNow();document.querySelectorAll("#regSeg [data-r]").forEach(b=>b.classList.toggle("on",n===b.dataset.r))}
+const REGTIP={friends:"Friends: casual, no ครับ/ค่ะ",polite:"Polite: everyday Thai with ครับ/ค่ะ",formal:"Formal: full wording with ครับ/ค่ะ"};
+document.querySelectorAll("#regSeg [data-r]").forEach(b=>b.onclick=()=>{
+  const r=b.dataset.r;S.reg=r==="formal"?"formal":"casual";S.polite=r!=="friends";$("polT").checked=S.polite;
+  save();updatePol();render();reshow();toast(REGTIP[r]);
+  if($("trIn").value.trim()&&$("trOut").innerHTML)doTr();
+});
 $("polT").onchange=e=>{S.polite=e.target.checked;save();updatePol();render();reshow()};
 $("spd").value=S.rate||0.9;
 $("spd").oninput=e=>{S.rate=+e.target.value;save()};
