@@ -1245,6 +1245,7 @@ function toneHTML(th,ph,tn,force){
     if(P&&t.length!==sy.length&&(force||!sy.length))sy=P.ro.map(x=>phonFromRo(x)||x);
   }
   if(!t||t.length!==sy.length)return esc(ph||"");
+  if(regNow()==="friends"){const sp=spokenTh(th);if(sp!==th){const A=thPron(th),B=thPron(sp);if(A&&B&&A.tn.length===t.length&&B.tn.length===t.length)t=[...t].map((c,k)=>A.tn[k]!==B.tn[k]?B.tn[k]:c).join("")}}
   return `<span class="tn">${sy.map((x,k)=>`<span class="ts">${ticon(t[k])}${esc(x)}</span>`).join("")}</span>`;
 }
 function sx(r){return r.ph||(r.ro?(S.lang==="th"?phonFromRo(r.ro):r.ro):"")}
